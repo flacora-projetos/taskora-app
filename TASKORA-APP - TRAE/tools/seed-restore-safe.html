@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <title>Taskora • Seed de restauração segura</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 820px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    button { padding: 10px 16px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; }
+    pre { background: #f7f7f7; padding: 12px; border-radius: 8px; min-height: 120px; max-height: 360px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>Taskora — Seed de restauração segura</h1>
+  <p>1) Garanta que o app está com o ZIP restaurado.<br/>
+     2) Garanta que <code>assets/js/config/firebase-test.js</code> carrega o <em>config</em> do projeto atual (Spark).<br/>
+     3) Clique abaixo para criar: <strong>Cliente Demo</strong>, <strong>Responsável Demo</strong> e <strong>1 Tarefa</strong> no <strong>hoje</strong>.</p>
+
+  <button id="run">Semear dados mínimos</button>
+  <pre id="log"></pre>
+
+  <!-- carrega a config (expõe window.firebaseConfig) -->
+  <script type="module" src="../assets/js/config/firebase-test.js"></script>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+    import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+    import {
+      getFirestore, collection, query, where, getDocs, addDoc, doc, setDoc,
+      serverTimestamp, Timestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+    const log = (m)=>{ const el=document.getElementById('log'); el.textContent += m + '\\n'; };
+
+    function ymd(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${da}`; }
+
+    document.getElementById('run').onclick = async ()=>{
+      try {
+        if (!window.firebaseConfig) { alert('firebaseConfig não encontrado. Verifique ../assets/js/config/firebase-test.js'); return; }
+        const app = initializeApp(window.firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        await signInAnonymously(auth);
+
+        // 1) CLIENTE DEMO (coleção: clients)
+        const clientsCol = collection(db, 'clients');
+        let clientId = null;
+        {
+          const qSnap = await getDocs(query(clientsCol, where('displayName','==','Cliente Demo')));
+          if (!qSnap.empty) { clientId = qSnap.docs[0].id; }
+          else {
+            const ref = await addDoc(clientsCol, {
+              displayName: 'Cliente Demo',
+              status: 'ATIVO',
+              createdAt: serverTimestamp(),
+              orgId: 'dacora'
+            });
+            clientId = ref.id;
+          }
+          log(`Cliente Demo: ${clientId}`);
+        }
+
+        // 2) RESPONSÁVEL DEMO (coleção que o app legado usa: owners)
+        const ownersCol = collection(db, 'owners');
+        let ownerId = null;
+        {
+          const qSnap = await getDocs(query(ownersCol, where('name','==','Responsável Demo')));
+          if (!qSnap.empty) { ownerId = qSnap.docs[0].id; }
+          else {
+            const ref = await addDoc(ownersCol, {
+              name: 'Responsável Demo',
+              role: 'colaborador',
+              createdAt: serverTimestamp(),
+              orgId: 'dacora'
+            });
+            ownerId = ref.id;
+          }
+          log(`Responsável Demo: ${ownerId}`);
+        }
+
+        // 3) 1 TAREFA HOJE (coleção: tasks) — formato que o calendário original costuma consultar
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0, 0);
+        const end   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0);
+        const dateStr = ymd(now);
+
+        const task = {
+          orgId: 'dacora',
+          title: 'Revisar pauta (DEMO)',
+          description: 'Tarefa de demonstração para o calendário',
+          client: 'Cliente Demo',
+          owner: 'Responsável Demo',
+          status: 'NAO_REALIZADA',            // use exatamente estes valores que você citou
+          priority: 'MEDIUM',
+          date: dateStr,                       // o calendar legado costuma usar esta string
+          startAt: Timestamp.fromDate(start),  // e também estes (se usar range)
+          dueAt:   Timestamp.fromDate(end),
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          estimatedMinutes: 60,
+          spentMinutes: 0
+        };
+
+        const ref = await addDoc(collection(db,'tasks'), task);
+        log(`Tarefa criada: ${ref.id} em ${dateStr}`);
+
+        alert('Seed concluído. Agora volte ao app → Ctrl+F5 → Calendário (Status/Cliente/Responsável: "Todos"; Intervalo: Hoje/Últimos 30 dias).');
+      } catch (e) {
+        console.error(e);
+        alert('Erro no seed: ' + e.message);
+      }
+    };
+  </script>
+</body>
+</html>
