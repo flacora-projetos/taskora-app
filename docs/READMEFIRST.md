@@ -1,5 +1,5 @@
 # 📖 READMEFIRST - Orientações Iniciais  
-**Versão do app:** `taskora_v4sem_legado_new_firebase`
+**Versão do app:** `taskora_v5.3_history_module.html`
 
 Este documento deve ser lido **antes de qualquer modificação no app Taskora**.  
 Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de trabalho, evitando retrabalho, inconsistências e perda de tempo.
@@ -8,66 +8,220 @@ Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de traba
 
 ## 📌 Objetivo
 - O **Taskora** é a base tecnológica usada pela **Dácora** em **white label**.  
-- **UI e branding permanecem Dácora**, com a assinatura **“powered by Taskora”** (não alterar).  
-- Esta versão do app é **Taskora independente (sem legado)**, identificada por: **`taskora_v4sem_legado_new_firebase`**.  
+- **UI e branding permanecem Dácora**, com a assinatura **"powered by Taskora"** (não alterar).  
+- Esta versão do app é **Taskora v5.3 com módulo de histórico completo**, identificada por: **`taskora_v5.3_history_module.html`**.  
 - Firestore inicia em **modo Produção**, com **autenticação anônima habilitada** (sem tela de login).
 
 ---
 
 ## 1) Primeira Regra: Seja um **Expert no App**
 Antes de escrever qualquer linha de código:
-- Ler o código do ZIP base.
-- Ler os documentos em `docs/`:
+- Ler o código do arquivo principal: `taskora_v5.3_history_module.html`
+- Ler os documentos atualizados em `docs/`:
   - `TASKORA_GUIDE.md`, `SCHEMA_TASKORA.md`, `FIRESTORE_RULES.md`, `INDEXES.md`, `CHANGELOG.md`.
 - Entender layout, páginas, componentes JS/CSS e integração com Firebase:
   - **Config** em `assets/js/config/firebase-test.js` (injeta `window.firebaseConfig`).  
   - **Bootstrap** em `assets/js/firebase.js` (inicializa `app/db`).
+  - **Roteamento** em `assets/js/app.js` (router por hash).
 - **Só após familiaridade completa** começar ajustes/melhorias.
 - Não implementar sem entender o fluxo inteiro.
 
 ---
 
-## 2) Banco de Dados (Taskora, sem legado)
-- Banco **independente da Dácora** (sem necessidade de compatibilização).  
-- **Clientes**: `defaultAssigneeRef` (responsável padrão) e subcoleção `budgets` (orçamentos mensais por plataforma).  
-- **Tarefas**: tempo em **minutos inteiros** (`estimatedMinutes`, `spentMinutes`), exibido em **HH:MM**; `assigneeRef` é obrigatório (herda do cliente se vazio).  
-- **Calendário**: coleção `calendarEvents`, podendo referenciar `taskRef`.  
-- **Histórico**: coleção `taskActivities` (auditoria).  
-- Detalhes completos em `SCHEMA_TASKORA.md`.
+## 2) Estado Atual da Aplicação (v5.3)
+
+### **Módulos Totalmente Implementados ✅**
+- **Clientes** (`assets/js/pages/clients.js` + `assets/js/data/clientsRepo.js`)
+  - CRUD completo, filtros avançados, exportação CSV/PDF
+  - Sistema de orçamentos por plataforma, plataformas ativas
+  - Modal de detalhes, criação/edição com validação
+  
+- **Tarefas** (`assets/js/pages/tasks.js` + `assets/js/data/tasksRepo.js`)
+  - CRUD completo, sistema de filtros integrado
+  - Sistema de horas corrigido (HH:MM ↔ decimal)
+  - Integração com clientes via referências
+  
+- **Calendário** (`assets/js/pages/calendar.js`)
+  - Grid perfeito 7x6 sem overflow
+  - Sistema "Mostrar Mais" (2 tarefas por célula)
+  - Edição inline, pills coloridas por status
+  - Integração com filtros globais
+  
+- **Histórico** (`assets/js/pages/history.js`) **[NOVO v5.3]**
+  - Seletor de cliente inteligente
+  - Cards de estatísticas, timeline visual
+  - Sistema de filtros avançado
+  - Layout responsivo completo
+
+### **Módulos Placeholder ⏳**
+- **Insights** (`assets/js/pages/insights.js`) - "Em breve"
+- **Team** (`assets/js/pages/team.js`) - "Em breve"
+- **Ajustes** (`assets/js/pages/settings.js`) - "Preferências locais"
 
 ---
 
-## 3) Fluxo de Trabalho (disciplina de processo)
-Sequência obrigatória: **planejamento → validação → implementação → teste (console limpo) → ajustes finais**.
-- **Validar antes** de implementar (prints, modo simulado quando aplicável).
-- **Entregas completas** (arquivos inteiros; nunca trechos soltos).
-- **Consistência visual**: manter cores, tipografia e espaçamento existentes (UI Dácora).
-- **White label**: preservar “Dácora powered by Taskora”.
+## 3) Banco de Dados (Taskora v5.3, implementação real)
+
+### **Coleções Implementadas:**
+- **`clients`**: Gestão completa com orçamentos por plataforma como campos diretos
+- **`tasks`**: Sistema de horas em decimal, soft delete, referências validadas
+
+### **Coleções NÃO Implementadas:**
+- **`calendarEvents`**: Eventos derivados diretamente de `tasks`
+- **`taskActivities`**: Histórico lê diretamente de `tasks`
+- **`settingsOrg/settingsUser`**: Apenas placeholders
+- **`insightsDaily`**: Apenas placeholder
+
+### **Sistema de Horas Implementado:**
+- **Entrada:** HH:MM (interface do usuário)
+- **Armazenamento:** Campo `hours` em decimal (1.5 = 1h30min)
+- **Exibição:** HH:MM (convertido de decimal)
+- **Fallback:** Campos `estimatedMinutes`/`spentMinutes` para compatibilidade
+
+### **Eventos em Tempo Real:**
+- Sistema de CustomEvents implementado
+- `taskora:clients:changed` e `taskora:tasks:changed`
+- Atualizações automáticas entre módulos
 
 ---
 
-## 4) Segurança e Índices
-- Firestore em **Produção** + **autenticação anônima** ativada.  
-- **Regras**: isolamento por `orgId`; papéis `viewer/member/admin`; proteção de campos de auditoria; limites de `tags` e valores. Ver `FIRESTORE_RULES.md`.  
-- **Índices**: compostos para tarefas, calendário, clientes e histórico. Ver `INDEXES.md`.
+## 4) Fluxo de Trabalho (disciplina de processo)
+Sequência obrigatória: **análise do código → planejamento → validação → implementação → teste (console limpo) → ajustes finais**.
+
+### **Antes de Implementar:**
+- **Analisar código existente** nos repositórios (`clientsRepo.js`, `tasksRepo.js`)
+- **Entender padrões** de mapeamento UI ↔ DB (`mapUiToDb`, `mapDbToUi`)
+- **Verificar sistema de eventos** em tempo real
+- **Validar com dados de teste** (modo anônimo)
+
+### **Durante Implementação:**
+- **Entregas completas** (arquivos inteiros; nunca trechos soltos)
+- **Consistência visual**: manter cores, tipografia e espaçamento existentes
+- **Paleta oficial**: Verde #014029, Terracota #993908, Off-white #F2EFEB
+- **White label**: preservar "Dácora powered by Taskora"
+
+### **Após Implementação:**
+- **Console limpo** (sem erros JavaScript)
+- **Testes funcionais** em todos os módulos afetados
+- **Validação de eventos** em tempo real
+- **Verificação de filtros** e integrações
 
 ---
 
-## 5) Documentação Complementar
-- `TASKORA_GUIDE.md`: visão de módulos e práticas.  
-- `SCHEMA_TASKORA.md`: coleções e campos oficiais.  
-- `FIRESTORE_RULES.md`: segurança e validações.  
-- `INDEXES.md`: índices compostos necessários.  
-- `CHANGELOG.md`: histórico de mudanças, incluindo a entrada desta versão **`taskora_v4sem_legado_new_firebase`**.
+## 5) Arquitetura e Componentes
+
+### **Sistema de Roteamento:**
+```javascript
+// Router simples por hash em assets/js/app.js
+const routes = {
+  "#/tasks": window.TaskoraPages.tasks,
+  "#/calendar": window.TaskoraPages.calendar,
+  "#/clients": window.TaskoraPages.clients,
+  "#/history": window.TaskoraPages.history,
+  // ...
+};
+```
+
+### **Sistema de Filtros:**
+- **Filtros Globais** (`assets/js/components/layout/GlobalFiltersBar.js`)
+- **Store de Filtros** (`assets/js/store/filtersStore.js`)
+- **Ocultação inteligente** em páginas com filtros próprios (clientes, histórico)
+
+### **Repositórios de Dados:**
+- **Padrão consistente** entre `clientsRepo.js` e `tasksRepo.js`
+- **Validação de referências** via `resolveClientRefByName()`, `resolveAssigneeRefByName()`
+- **Mapeamento robusto** UI ↔ DB com fallbacks
+- **Emissão de eventos** após operações CRUD
 
 ---
 
-## 6) Validação de Melhorias
-- Novas funcionalidades devem ser validadas com **dados de teste** (modo anônimo).  
-- Aprovado → gravação real no Firestore.  
-- Fluxos não validados devem ser sinalizados no `TASKORA_GUIDE.md`.
+## 6) Segurança e Validação
+
+### **Autenticação:**
+- **Anônima habilitada** (sem tela de login)
+- **Isolamento por `orgId`** em todas as consultas
+- **Configuração** em `assets/js/config/firebase-test.js`
+
+### **Validação de Dados:**
+- **Campos obrigatórios** validados no código JavaScript
+- **Referências cruzadas** validadas antes da gravação
+- **Formato de horas** validado (HH:MM → decimal → HH:MM)
+- **Status e enums** validados conforme constantes definidas
+
+### **Proteção de Campos:**
+- **Timestamps** gerenciados automaticamente
+- **Referências** validadas via funções específicas
+- **Soft delete** implementado via `deletedAt`
+
+---
+
+## 7) Documentação Atualizada (v5.3)
+- `TASKORA_GUIDE.md`: módulos implementados e funcionalidades reais
+- `SCHEMA_TASKORA.md`: campos e estruturas conforme código atual
+- `FIRESTORE_RULES.md`: regras baseadas na implementação
+- `INDEXES.md`: índices para consultas realmente implementadas
+- `CHANGELOG.md`: histórico completo incluindo v5.3
+- `READMEFIRST.md`: este documento atualizado
+
+---
+
+## 8) Validação de Melhorias
+
+### **Antes de Implementar:**
+- Novas funcionalidades devem ser validadas com **dados de teste** (modo anônimo)
+- Verificar **compatibilidade** com sistema de eventos em tempo real
+- Testar **integração** com filtros globais e locais
+
+### **Após Implementar:**
+- **Console limpo** obrigatório
+- **Testes em todos os módulos** afetados
+- **Validação de performance** nas consultas
+- **Verificação de responsividade** em diferentes telas
+
+### **Fluxos Validados:**
+- ✅ **CRUD de clientes** com orçamentos e plataformas
+- ✅ **CRUD de tarefas** com sistema de horas corrigido
+- ✅ **Calendário** com grid perfeito e edição inline
+- ✅ **Histórico** com timeline e filtros avançados
+- ✅ **Filtros globais** com integração inteligente
+- ✅ **Exportação** CSV/PDF de clientes
+- ✅ **Eventos em tempo real** entre módulos
+
+---
+
+## 9) Estrutura de Arquivos Atual
+
+```
+taskora-app/
+├── index.html (redirecionamento)
+├── taskora_v5.3_history_module.html (arquivo principal)
+├── assets/
+│   ├── js/
+│   │   ├── app.js (roteamento)
+│   │   ├── firebase.js (bootstrap)
+│   │   ├── config/firebase-test.js
+│   │   ├── data/
+│   │   │   ├── clientsRepo.js ✅
+│   │   │   └── tasksRepo.js ✅
+│   │   ├── pages/
+│   │   │   ├── clients.js ✅
+│   │   │   ├── tasks.js ✅
+│   │   │   ├── calendar.js ✅
+│   │   │   ├── history.js ✅ [v5.3]
+│   │   │   ├── insights.js ⏳
+│   │   │   ├── team.js ⏳
+│   │   │   └── settings.js ⏳
+│   │   ├── components/layout/
+│   │   ├── store/filtersStore.js
+│   │   ├── tools/ (utilitários)
+│   │   └── utils/ (formatação)
+│   └── css/ (estilos)
+└── docs/ (documentação atualizada)
+```
 
 ---
 
 ✅ Este documento é o **primeiro ponto de leitura** em cada novo chat.  
-Garante consistência, reduz retrabalho e mantém a evolução alinhada ao banco Taskora e ao fluxo de trabalho definido.
+Garante consistência, reduz retrabalho e mantém a evolução alinhada ao estado real da aplicação v5.3 e ao fluxo de trabalho definido.
+
+**Lembre-se:** A documentação agora reflete **exatamente** o que está implementado no código, não mais especulações ou planejamentos futuros.

@@ -3,127 +3,221 @@
 ## 📌 Visão Geral
 
 O **Taskora** é a base tecnológica do aplicativo utilizado pela **Dácora**.  
-No front-end, a identidade visual **permanece 100% como Dácora**, com a assinatura **“powered by Taskora”**.  
+No front-end, a identidade visual **permanece 100% como Dácora**, com a assinatura **"powered by Taskora"**.  
 Toda a evolução descrita aqui é **estrutural e técnica**, não alterando a UI ou branding.
 
-O Taskora organiza informações em cinco módulos principais:
-- **Clientes**  
-- **Tarefas**  
-- **Calendário**  
-- **Insights** (em desenvolvimento)  
-- **Ajustes**
+**Versão atual:** `taskora_v5.3_history_module.html`  
+**Arquivo principal:** `taskora_v5.3_history_module.html` (com redirecionamento via `index.html`)
+
+O Taskora organiza informações em módulos principais:
+- **Clientes** ✅ (Totalmente implementado)
+- **Tarefas** ✅ (Totalmente implementado)  
+- **Calendário** ✅ (Totalmente implementado)
+- **Histórico** ✅ (Totalmente implementado - v5.3)
+- **Insights** ⏳ (Placeholder - "Em breve")
+- **Team** ⏳ (Placeholder - "Em breve")
+- **Ajustes** ⏳ (Placeholder - "Preferências locais")
 
 ---
 
-## 🔑 Mudanças Recentes
+## 🔑 Arquitetura Atual
 
-- Fim da obrigatoriedade de compatibilidade direta com o banco da Dácora.  
-- Criação de um **schema próprio do Taskora**, mais limpo e padronizado.  
-- Adicionado campo `defaultAssigneeRef` em clientes.  
-- Adicionada subcoleção `budgets` em clientes (orçamentos mensais por plataforma de mídia).  
-- Alterado formato de tempo em tarefas: agora armazenado em **minutos inteiros**, exibido em **HH:MM**.  
-- Criada coleção `taskActivities` para histórico/auditoria de tarefas.  
-- Atualizadas regras de segurança baseadas em `orgId` e papéis (`viewer`, `member`, `admin`).  
-- Definidos índices otimizados para consultas de clientes, tarefas e calendário.
+### **Firebase & Autenticação**
+- **Firestore** em modo produção com autenticação anônima
+- **Configuração:** `assets/js/config/firebase-test.js`
+- **Bootstrap:** `assets/js/firebase.js`
+- **Isolamento por `orgId`** com papéis: `viewer`, `member`, `admin`
 
----
+### **Sistema de Roteamento**
+- **Router simples por hash** em `assets/js/app.js`
+- **Filtros globais** ocultados automaticamente em páginas com filtros próprios (clientes, histórico)
+- **Layout responsivo** com sidebar, topbar e área de conteúdo
 
-## 🧩 Estrutura dos Módulos
-
-### 1. Clientes
-- **Campos principais:**  
-  - `displayName`, `cnpj`, `email`, `phone`, `status`, `tags`  
-  - `defaultAssigneeRef` (responsável padrão para novas tarefas)  
-- **Subcoleção `budgets`:**  
-  - `platform` (Meta Ads, Google Ads, TikTok, Pinterest etc.)  
-  - `month` (YYYY-MM)  
-  - `amountBRL` (número em reais)  
-  - `notes`  
-- **Exemplo de uso:**  
-  - Cliente "Padaria Sol" com orçamentos distintos em plataformas de marketing.  
-  - Ao criar uma tarefa para esse cliente, o `assigneeRef` padrão pode ser herdado.
+### **Sistema de Dados**
+- **Repositórios:** `clientsRepo.js`, `tasksRepo.js`
+- **Eventos em tempo real:** Sistema de eventos customizados para atualizações automáticas
+- **Formato de tempo:** Minutos inteiros (armazenado) → HH:MM (exibido)
 
 ---
 
-### 2. Tarefas
-- **Campos principais:**  
-  - `clientRef`, `title`, `description`, `status`, `assigneeRef`, `priority`, `tags`  
-  - `startAt`, `dueAt`, `reminderAt`  
-  - `estimatedMinutes`, `spentMinutes`  
-- **Formato de tempo:**  
-  - O usuário informa **HH:MM**, e o sistema converte para minutos.  
-  - Evita decimais como 0,1h (6 minutos).  
-- **Regras:**  
-  - `assigneeRef` é obrigatório (se não informado, usa o `defaultAssigneeRef` do cliente).  
-  - Soft delete via campo `deletedAt`.
+## 🧩 Módulos Implementados
+
+### 1. **Clientes** ✅ COMPLETO
+**Arquivo:** `assets/js/pages/clients.js`  
+**Repositório:** `assets/js/data/clientsRepo.js`
+
+#### **Funcionalidades Principais:**
+- **CRUD completo** de clientes
+- **Sistema de filtros avançado:** Status, Tier, Responsável, Orçamento
+- **Busca inteligente:** Nome, email, responsável, website, Instagram
+- **Cards de estatísticas:** Total clientes, Orçamento total, Key Accounts, Ativos
+- **Exportação:** CSV e PDF com dados filtrados
+- **Modal de detalhes** com links funcionais
+- **Modal de criação/edição** com validação completa
+
+#### **Campos Principais:**
+- `displayName`, `email`, `phone`, `website`, `instagram`
+- `status` (Ativo, Inativo, Prospect)
+- `tier` (Key Account, Mid Tier, Low Tier)
+- `defaultAssigneeRef` (responsável padrão)
+- **Orçamentos por plataforma:** Meta Ads, Google Ads, TikTok, LinkedIn, etc.
+- **Plataformas ativas:** Checkboxes para seleção múltipla
+
+#### **Paleta de Cores:**
+- **Verde corporativo:** #014029
+- **Terracota:** #993908
+- **Off-white:** #F2EFEB
 
 ---
 
-### 3. Calendário
-- **Coleção própria `calendarEvents`.**  
-- Pode ou não estar vinculado a uma tarefa (`taskRef`).  
-- Campos: `title`, `startAt`, `endAt`, `allDay`, `assigneeRef`, `clientRef`, `tags`, `source`.  
-- Usado para exibir tarefas e eventos manuais em visões de **mês/semana/dia**.
+### 2. **Tarefas** ✅ COMPLETO
+**Arquivo:** `assets/js/pages/tasks.js`  
+**Repositório:** `assets/js/data/tasksRepo.js`
+
+#### **Funcionalidades Principais:**
+- **CRUD completo** de tarefas
+- **Sistema de filtros** integrado com filtros globais
+- **Modal de criação/edição** com validação
+- **Sistema de horas:** Entrada em HH:MM, armazenamento em minutos
+- **Cards de estatísticas** com formatação correta
+- **Integração com clientes** via referências
+
+#### **Campos Principais:**
+- `clientRef`, `title`, `description`, `status`, `assigneeRef`, `priority`
+- `startAt`, `dueAt`, `reminderAt` (Timestamps)
+- `estimatedMinutes`, `spentMinutes` (inteiros)
+- **Status:** Não Realizada, Em Progresso, Concluída, Cancelada
+- **Prioridade:** Low, Medium, High, Urgent
+
+#### **Correções Implementadas:**
+- **Sistema de horas corrigido:** Formato HH:MM consistente
+- **Mapeamento robusto:** `mapUiToDb` e `mapDbToUi` com fallbacks
+- **Compatibilidade:** Dados novos e legados
 
 ---
 
-### 4. Histórico de Tarefas
-- **Coleção `taskActivities`** (ou subcoleção em `tasks`).  
-- Guarda cada alteração feita: criação, mudança de status, comentários, tempo logado.  
-- Permite auditoria e linha do tempo por tarefa.
+### 3. **Calendário** ✅ COMPLETO
+**Arquivo:** `assets/js/pages/calendar.js`  
+**Utilitários:** `assets/js/tools/calendar-fit.js`, `calendar-sizing-override.js`
+
+#### **Funcionalidades Principais:**
+- **Grid perfeito 7x6** sem overflow vertical/horizontal
+- **Células com altura fixa** (125px) aproveitando 100% da viewport
+- **Sistema "Mostrar Mais":** Máximo 2 tarefas por célula, resto em "+X mostrar mais"
+- **Edição inline** no modal sem duplicação
+- **Pills coloridas por status**
+- **Integração com filtros globais**
+
+#### **Melhorias Técnicas:**
+- **Função `fitCalendarGrid`:** Cálculo preciso de altura
+- **Sistema de ajuste fino:** RequestAnimationFrame para correções de 1-2px
+- **Datas normalizadas:** Formato americano (MM/DD/YYYY) em todo o sistema
+- **Responsividade mantida:** Breakpoints para diferentes tamanhos de tela
 
 ---
 
-### 5. Ajustes
-- **Por usuário (`settingsUser`):**  
-  - tema claro/escuro, fuso horário, preferências de notificação.  
-- **Por organização (`settingsOrg`):**  
-  - horário comercial, fluxo de status, políticas de notificação.
+### 4. **Histórico** ✅ COMPLETO (v5.3)
+**Arquivo:** `assets/js/pages/history.js`
+
+#### **Funcionalidades Principais:**
+- **Seletor de cliente inteligente:** "Todos os Clientes" + clientes individuais
+- **Cards de estatísticas:** Total de tarefas, concluídas, horas trabalhadas, taxa de conclusão
+- **Timeline visual:** Organização cronológica por mês com tarefas agrupadas
+- **Sistema de filtros avançado:** Status, cliente, responsável, datas e filtros rápidos
+- **Título dinâmico:** "Histórico de Tarefas - [Cliente] - [Período]" contextual
+- **Layout responsivo:** Adaptação completa para desktop e mobile
+
+#### **Interface e UX:**
+- **Design consistente:** Paleta de cores alinhada com identidade Taskora
+- **Timeline intuitiva:** Dots coloridos por status, informações organizadas
+- **Filtros inteligentes:** Aplicação automática com feedback visual
+- **Estados vazios:** Mensagens contextuais para orientar o usuário
+- **Navegação integrada:** Acesso via modal de clientes e menu lateral
 
 ---
 
-### 6. Insights (futuro)
-- Será usado para relatórios e métricas.  
-- Baseado em dados agregados por dia, cliente e responsável.  
-- Ex.: tarefas concluídas no mês, tempo gasto por cliente, orçamento vs. gasto real.
+### 5. **Insights** ⏳ PLACEHOLDER
+**Arquivo:** `assets/js/pages/insights.js`  
+**Status:** Apenas placeholder com mensagem "Em breve"
+
+### 6. **Team** ⏳ PLACEHOLDER
+**Arquivo:** `assets/js/pages/team.js`  
+**Status:** Apenas placeholder com mensagem "Em breve"
+
+### 7. **Ajustes** ⏳ PLACEHOLDER
+**Arquivo:** `assets/js/pages/settings.js`  
+**Status:** Apenas placeholder com mensagem "Preferências locais do app aparecerão aqui"
 
 ---
 
-## 🔒 Segurança
+## ⚡ Sistemas de Apoio
 
-- Todos os documentos têm campo `orgId` → usuários só acessam docs da sua organização.  
-- Papéis:  
-  - **Viewer:** leitura.  
-  - **Member:** cria/edita suas tarefas.  
-  - **Admin:** gerencia clientes, orçamentos, configurações.  
-- Campos de auditoria (`createdAt`, `createdBy`) não podem ser alterados pelo client.  
-- Limite de `tags.length <= 20`.
+### **Filtros Globais**
+**Arquivo:** `assets/js/components/layout/GlobalFiltersBar.js`
+- **Integração inteligente:** Oculto automaticamente em páginas com filtros próprios
+- **Sincronização:** Publica eventos para `dateFrom/dateTo` e `startDate/endDate`
+- **Quick Range:** Opções rápidas incluindo "Ontem"
+
+### **Store de Filtros**
+**Arquivo:** `assets/js/store/filtersStore.js`
+- **Estado global:** Gerenciamento centralizado de filtros
+- **Eventos:** Sistema de pub/sub para atualizações em tempo real
+
+### **Utilitários**
+- **Formatação de datas:** `assets/js/utils/dateFormat.js`
+- **Refresh automático:** `assets/js/tools/tasks-live-refresh.js`
+- **Verificação de consistência:** `assets/js/tools/consistencyCheck.js`
 
 ---
 
-## ⚡ Índices Atuais
+## 🎨 Design System
 
-- **Tarefas:** por `status+dueAt`, por `assigneeRef+dueAt`, por `clientRef+updatedAt`, por `tags+updatedAt`.  
-- **Calendário:** por `startAt`, por `assigneeRef+startAt`.  
-- **Clientes:** por `status+updatedAt`, por `displayName`.  
-- **Histórico:** por `taskRef+createdAt`.
+### **Paleta de Cores Oficial:**
+- **Verde Dácora:** #014029 (títulos, elementos principais)
+- **Terracota:** #993908 (acentos, hover states)
+- **Off-white:** #F2EFEB (backgrounds suaves)
+
+### **Tipografia:**
+- **Fonte:** Red Hat Display (400, 500, 600, 700)
+- **Títulos:** font-weight: 800, letter-spacing otimizado
+- **Hierarquia visual:** Tamanhos consistentes (24px números, 10px labels)
+
+### **Componentes:**
+- **Cards compactos:** padding 18px 16px, gap 16px
+- **Botões modernos:** border-radius 8px, text-transform uppercase
+- **Animações suaves:** hover com translateY(-1px) e box-shadow
+- **Modais centralizados:** z-index 9999, posicionamento perfeito
 
 ---
 
-## 📅 Fluxo de Trabalho
+## 📅 Fluxo de Trabalho Atual
 
-1. Criar/editar cliente.  
-2. Definir responsável padrão (`defaultAssigneeRef`).  
-3. Definir orçamentos mensais em `budgets`.  
-4. Criar tarefas vinculadas a clientes.  
-5. Acompanhar no calendário e registrar tempo gasto.  
-6. Consultar histórico (`taskActivities`).  
-7. Ajustar preferências em `settingsUser` e `settingsOrg`.  
+1. **Gestão de Clientes:**
+   - Criar/editar cliente com responsável padrão
+   - Definir orçamentos mensais por plataforma
+   - Configurar plataformas ativas
+
+2. **Gestão de Tarefas:**
+   - Criar tarefas vinculadas a clientes
+   - Herdar responsável padrão do cliente
+   - Registrar tempo em formato HH:MM
+
+3. **Visualização:**
+   - Acompanhar no calendário com grid perfeito
+   - Consultar histórico com timeline visual
+   - Aplicar filtros avançados
+
+4. **Exportação:**
+   - Exportar dados de clientes em CSV/PDF
+   - Relatórios com filtros aplicados
 
 ---
 
 ## ✅ Observação Final
 
-- **UI e branding continuam da Dácora.**  
-- Todas as melhorias descritas são **internas** (estrutura de dados, regras, índices, segurança).  
-- O app continua sendo entregue como **white label**, “Dácora powered by Taskora”.
+- **UI e branding continuam da Dácora** com assinatura "powered by Taskora"
+- **Módulos principais totalmente funcionais:** Clientes, Tarefas, Calendário, Histórico
+- **Módulos em desenvolvimento:** Insights, Team, Ajustes (apenas placeholders)
+- **Sistema robusto** com eventos em tempo real e filtros avançados
+- **Design consistente** com paleta de cores e tipografia padronizadas
+- **Performance otimizada** com grid perfeito e sistema de refresh inteligente

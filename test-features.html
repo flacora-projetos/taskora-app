@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Funcionalidades Taskora</title>
+    <style>
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            margin: 20px;
+            background: var(--bg-primary, #ffffff);
+            color: var(--text-primary, #333333);
+            transition: all 0.3s ease;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 8px;
+            background: var(--bg-secondary, #f8f9fa);
+        }
+        
+        .test-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: var(--bg-primary, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 4px;
+            cursor: grab;
+        }
+        
+        .test-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-iniciada { background: #EEF0F3; color: #334155; }
+        .status-em-progresso { background: #FFF3D6; color: #8A5B00; }
+        .status-concluida { background: #E7F4EC; color: #0B6B2C; }
+        .status-nao-realizada { background: #FDE9E7; color: #8A1C12; }
+        
+        .error-log {
+            background: #fee;
+            border: 1px solid #fcc;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .success-log {
+            background: #efe;
+            border: 1px solid #cfc;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            background: var(--bg-primary, #fff);
+            color: var(--text-primary, #333);
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: var(--hover-bg, rgba(0,0,0,0.05));
+        }
+    </style>
+    
+    <!-- CSS do tema escuro -->
+    <link rel="stylesheet" href="assets/css/dark-theme.css">
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste das Funcionalidades Taskora</h1>
+        
+        <div class="test-section">
+            <h2>🌙 Teste do Tema Escuro</h2>
+            <p>O botão de toggle deve aparecer no canto superior direito.</p>
+            <p>Atalho: <kbd>Ctrl+Shift+T</kbd></p>
+            <button onclick="testTheme()">Testar Toggle Manual</button>
+            <div id="theme-status" class="success-log">Aguardando teste...</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 Teste do Drag & Drop</h2>
+            <p>Arraste os itens abaixo (simulação de tarefas):</p>
+            
+            <div class="test-item" data-task-row="true" data-row-id="test-1">
+                <span class="status-indicator status-iniciada">INICIADA</span>
+                Tarefa de Teste 1 - Implementar funcionalidade X
+            </div>
+            
+            <div class="test-item" data-task-row="true" data-row-id="test-2">
+                <span class="status-indicator status-em-progresso">EM PROGRESSO</span>
+                Tarefa de Teste 2 - Revisar código Y
+            </div>
+            
+            <div class="test-item" data-task-row="true" data-row-id="test-3">
+                <span class="status-indicator status-concluida">CONCLUÍDA</span>
+                Tarefa de Teste 3 - Documentar processo Z
+            </div>
+            
+            <button onclick="testDragDrop()">Inicializar Drag & Drop</button>
+            <div id="dragdrop-status" class="success-log">Aguardando inicialização...</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🐛 Log de Erros</h2>
+            <div id="error-log" class="error-log">Nenhum erro detectado ainda...</div>
+            <button onclick="clearErrors()">Limpar Log</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Status dos Módulos</h2>
+            <div id="modules-status">
+                <p>🔄 Verificando módulos...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts dos módulos -->
+    <script type="module">
+        // Capturar erros
+        const errorLog = document.getElementById('error-log');
+        const errors = [];
+        
+        window.addEventListener('error', (e) => {
+            const error = `❌ ${e.filename}:${e.lineno} - ${e.message}`;
+            errors.push(error);
+            errorLog.textContent = errors.join('\n');
+        });
+        
+        window.addEventListener('unhandledrejection', (e) => {
+            const error = `❌ Promise Rejection: ${e.reason}`;
+            errors.push(error);
+            errorLog.textContent = errors.join('\n');
+        });
+        
+        window.clearErrors = () => {
+            errors.length = 0;
+            errorLog.textContent = 'Log limpo.';
+        };
+        
+        // Testar tema
+        window.testTheme = () => {
+            const status = document.getElementById('theme-status');
+            try {
+                if (window.themeManager) {
+                    window.themeManager.toggleTheme();
+                    status.textContent = '✅ Tema alternado com sucesso!';
+                    status.className = 'success-log';
+                } else {
+                    status.textContent = '❌ ThemeManager não encontrado';
+                    status.className = 'error-log';
+                }
+            } catch (e) {
+                status.textContent = `❌ Erro: ${e.message}`;
+                status.className = 'error-log';
+            }
+        };
+        
+        // Testar drag & drop
+        window.testDragDrop = async () => {
+            const status = document.getElementById('dragdrop-status');
+            try {
+                if (window.initTasksDragDrop) {
+                    const dragDrop = window.initTasksDragDrop();
+                    
+                    // Simular dados de tarefa
+                    const testItems = document.querySelectorAll('[data-task-row]');
+                    testItems.forEach((item, index) => {
+                        dragDrop.dragDropManager.makeDraggable(item, {
+                            type: 'task',
+                            taskId: `test-${index + 1}`,
+                            title: `Tarefa de Teste ${index + 1}`
+                        });
+                    });
+                    
+                    status.textContent = '✅ Drag & Drop inicializado! Arraste os itens acima.';
+                    status.className = 'success-log';
+                } else {
+                    status.textContent = '❌ initTasksDragDrop não encontrado';
+                    status.className = 'error-log';
+                }
+            } catch (e) {
+                status.textContent = `❌ Erro: ${e.message}`;
+                status.className = 'error-log';
+            }
+        };
+        
+        // Verificar status dos módulos
+        async function checkModules() {
+            const status = document.getElementById('modules-status');
+            const checks = [];
+            
+            // Theme Manager
+            if (window.ThemeManager) {
+                checks.push('✅ ThemeManager carregado');
+            } else {
+                checks.push('❌ ThemeManager não carregado');
+            }
+            
+            // Drag Drop Manager
+            if (window.DragDropManager) {
+                checks.push('✅ DragDropManager carregado');
+            } else {
+                checks.push('❌ DragDropManager não carregado');
+            }
+            
+            // Tasks Drag Drop
+            if (window.TasksDragDrop) {
+                checks.push('✅ TasksDragDrop carregado');
+            } else {
+                checks.push('❌ TasksDragDrop não carregado');
+            }
+            
+            // Theme Manager Instance
+            if (window.themeManager) {
+                checks.push('✅ themeManager instanciado');
+                checks.push(`📋 Tema atual: ${window.themeManager.getCurrentTheme()}`);
+            } else {
+                checks.push('❌ themeManager não instanciado');
+            }
+            
+            status.innerHTML = checks.map(check => `<p>${check}</p>`).join('');
+        }
+        
+        // Carregar módulos
+        try {
+            await import('./assets/js/utils/themeManager.js');
+            await import('./assets/js/utils/dragDropManager.js');
+            await import('./assets/js/utils/tasksDragDrop.js');
+            
+            // Aguardar um pouco para os módulos se inicializarem
+            setTimeout(checkModules, 1000);
+        } catch (e) {
+            document.getElementById('modules-status').innerHTML = `<p>❌ Erro ao carregar módulos: ${e.message}</p>`;
+        }
+    </script>
+</body>
+</html>

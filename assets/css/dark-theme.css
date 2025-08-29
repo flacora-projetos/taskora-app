@@ -1,0 +1,414 @@
+/* ========== TASKORA DARK THEME ========== */
+/* Sistema completo de tema escuro usando CSS custom properties */
+
+/* ===== VARIÁVEIS DO TEMA ESCURO ===== */
+:root {
+  /* Cores principais */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  
+  /* Cores da marca */
+  --brand-green: #016B3A;
+  --brand-green-dark: #014029;
+  --brand-orange: #B8621B;
+  --brand-terracota: #993908;
+  
+  /* Estados */
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --active-bg: rgba(0, 0, 0, 0.1);
+  --focus-ring: rgba(1, 107, 58, 0.2);
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  /* Modal */
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --modal-bg: #ffffff;
+}
+
+/* ===== TEMA ESCURO ===== */
+[data-theme="dark"] {
+  /* Cores principais */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+  --text-muted: #999999;
+  --border-color: #404040;
+  --border-light: #333333;
+  
+  /* Estados */
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --active-bg: rgba(255, 255, 255, 0.15);
+  --focus-ring: rgba(1, 107, 58, 0.4);
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  
+  /* Modal */
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+  --modal-bg: #2d2d2d;
+}
+
+/* ===== APLICAÇÃO DAS VARIÁVEIS ===== */
+
+/* Body e elementos base */
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  background: var(--brand-green);
+  border-right: 1px solid var(--border-color);
+}
+
+/* ===== TOPBAR ===== */
+.topbar,
+.app-header {
+  background: var(--brand-orange);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ===== FILTROS ===== */
+.filters-bar {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filters-bar .filter-input {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.filters-bar .filter-input:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.filter-field label {
+  color: var(--text-secondary);
+}
+
+.filters-bar .button.clear {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.filters-bar .button.clear:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ===== CONTEÚDO PRINCIPAL ===== */
+.page-root,
+.main-content {
+  background: var(--bg-primary);
+}
+
+.module-title,
+.page-title {
+  color: var(--brand-green);
+}
+
+.module-header {
+  border-bottom-color: var(--border-color);
+}
+
+/* ===== CALENDÁRIO ===== */
+.tk-cal-head .tk-head-cell {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.tk-day {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.tk-day .tk-day-num {
+  color: var(--text-primary);
+}
+
+.tk-task-pill {
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Pills de status no tema escuro */
+[data-theme="dark"] .tk-task-pill.status-iniciada {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #7dd3fc;
+}
+
+[data-theme="dark"] .tk-task-pill.status-em-progresso {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+[data-theme="dark"] .tk-task-pill.status-concluída {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+}
+
+[data-theme="dark"] .tk-task-pill.status-não-realizada {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.tk-more-link {
+  background: rgba(180, 83, 9, 0.2);
+  color: var(--brand-terracota);
+}
+
+[data-theme="dark"] .tk-more-link {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fed7aa;
+}
+
+/* ===== MODAL ===== */
+.tk-cal-modal {
+  background: var(--modal-overlay);
+}
+
+.tk-cal-modal .tk-dialog {
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-lg);
+}
+
+.tk-cal-item {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.tk-item-actions .btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.tk-item-actions .btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ===== CARDS E COMPONENTES ===== */
+.card,
+.stats-card,
+.client-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover,
+.stats-card:hover,
+.client-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== TABELAS ===== */
+table {
+  background: var(--bg-primary);
+}
+
+th {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+td {
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+tr:hover {
+  background: var(--hover-bg);
+}
+
+/* ===== FORMULÁRIOS ===== */
+input,
+select,
+textarea {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ===== BOTÕES ===== */
+.btn,
+.button {
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--brand-green);
+  border-color: var(--brand-green);
+}
+
+.btn-primary:hover {
+  background: var(--brand-green-dark);
+  border-color: var(--brand-green-dark);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+}
+
+/* ===== TOGGLE DO TEMA ===== */
+.theme-toggle {
+  position: fixed;
+  top: 80px;
+  right: 15px;
+  z-index: 999;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle:hover {
+  background: var(--bg-tertiary);
+  transform: scale(1.05);
+}
+
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-primary);
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover svg {
+  transform: rotate(180deg);
+}
+
+/* Ícones do tema */
+.theme-toggle .sun-icon {
+  display: none;
+}
+
+.theme-toggle .moon-icon {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .sun-icon {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle .moon-icon {
+  display: none;
+}
+
+/* ===== SCROLLBAR PERSONALIZADA ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ===== ANIMAÇÕES ===== */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 70px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .theme-toggle svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ===== ACESSIBILIDADE ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #404040;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #999999;
+    --border-color: #404040;
+    --border-light: #333333;
+  }
+}
+
+/* Foco visível para acessibilidade */
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--brand-green);
+  outline-offset: 2px;
+}
+
+/* ===== ESTADOS DE LOADING ===== */
+.loading {
+  opacity: 0.6;
+  pointer-events: none

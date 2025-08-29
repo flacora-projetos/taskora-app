@@ -4,6 +4,30 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.4] - 2025-01-21
+### 🎯 Módulo de Tarefas - Cabeçalho Congelado
+**Implementação de cabeçalho sticky para melhor UX**
+
+#### Interface Aprimorada
+- **Cabeçalho Congelado:** Cabeçalho da tabela sempre visível na área sticky
+- **Alinhamento Perfeito:** Colunas do cabeçalho perfeitamente alinhadas com dados
+- **Estrutura Otimizada:** Thead invisível mantém larguras fixas das colunas
+- **Estilo Padronizado:** Visual idêntico ao módulo de clientes
+- **Responsividade:** Colunas se ocultam adequadamente em telas menores
+
+#### Melhorias Técnicas
+- **Performance:** Thead invisível preserva estrutura sem impacto visual
+- **Consistência:** Mesmo padrão de cores e tipografia dos clientes
+- **UX Otimizada:** Referência constante das colunas durante scroll
+- **Alinhamento Centralizado:** Colunas TAREFA, INÍCIO, LIMITE, HORAS e AÇÕES centralizadas
+- **Padrão Estabelecido:** Estrutura definida para futuros módulos
+
+#### Especificações Visuais
+- **Container:** Background #FFFFFF, border 1px #E4E7E4, border-radius 8px
+- **Células:** Background #F8F9FA, font-weight 900, font-size 12px
+- **Tipografia:** Color #334155, letter-spacing 0.2px, padding 12px 10px
+- **Sombra:** Box-shadow 0 2px 4px rgba(0,0,0,0.1)
+
 ## [v5.2] - 2025-01-20
 ### 🏢 Módulo de Clientes - Implementação Completa
 **Novo módulo completo para gestão de clientes**

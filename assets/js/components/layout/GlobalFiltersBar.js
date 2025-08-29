@@ -31,13 +31,56 @@ function injectStylesOnce() {
       --tgf-radius: 10px;
       --tgf-gap: 8px;
     }
-    .tgf-wrap{ background:${BRAND.offwhite}; border-bottom:1px solid #E6E3DF; padding:8px 12px; }
-    .tgf-form{ display:flex; flex-wrap:nowrap; align-items:flex-end; gap: var(--tgf-gap); min-width:0; }
+    .tgf-wrap{ 
+      background: var(--bg-secondary, ${BRAND.offwhite}); 
+      border-bottom: 1px solid var(--border-color, #E6E3DF); 
+      padding: 12px 20px; 
+      position: sticky; 
+      top: 65px; 
+      z-index: 15; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tgf-form{ 
+      display: flex; 
+      flex-wrap: wrap; 
+      align-items: flex-end; 
+      gap: var(--tgf-gap); 
+      min-width: 0; 
+      justify-content: space-between;
+    }
+    .tgf-filters-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: var(--tgf-gap);
+      flex: 1;
+    }
+    
     .tgf-field{ display:flex; flex-direction:column; gap:4px; min-width:0; }
-    .tgf-label{ font-size:11px; font-weight:800; color:#2F3B2F; letter-spacing:.2px; line-height:1; }
+    .tgf-label{ 
+      font-size: 11px; 
+      font-weight: 800; 
+      color: var(--text-secondary, #2F3B2F); 
+      letter-spacing: .2px; 
+      line-height: 1; 
+      text-transform: uppercase;
+    }
     .tgf-input, .tgf-select{
-      height:var(--tgf-h); padding:0 var(--tgf-pad-x); border:1px solid #E4E7E4;
-      border-radius:var(--tgf-radius); font:inherit; background:#fff; font-size:var(--tgf-fs); min-width:0;
+      height: var(--tgf-h); 
+      padding: 0 var(--tgf-pad-x); 
+      border: 1px solid var(--border-color, #E4E7E4);
+      border-radius: var(--tgf-radius); 
+      font: inherit; 
+      background: var(--bg-primary, #fff); 
+      color: var(--text-primary, #333);
+      font-size: var(--tgf-fs); 
+      min-width: 0;
+      transition: all 0.2s ease;
+    }
+    .tgf-input:focus, .tgf-select:focus {
+      outline: none;
+      border-color: var(--brand-green, #014029);
+      box-shadow: 0 0 0 2px rgba(1, 64, 41, 0.1);
     }
     .tgf-w-status { width: clamp(110px, 10vw, 140px); }
     .tgf-w-client { width: clamp(140px, 12vw, 180px); }
@@ -56,9 +99,38 @@ function injectStylesOnce() {
     .tgf-btn:focus-visible{ outline:2px solid #153; outline-offset:2px }
     .tgf-btn:hover{ filter:brightness(1.05) }
     .tgf-btn:active{ transform:translateY(1px) }
-    .tgf-btn--clear{ background:${BRAND.green};     border-color:${BRAND.green};     color:#fff; }
-    .tgf-btn--csv  { background:${BRAND.terracota}; border-color:${BRAND.terracota}; color:#fff; }
-    .tgf-btn--pdf  { background:${BRAND.green};     border-color:${BRAND.green};     color:#fff; }
+    .tgf-btn--clear{
+        height: var(--tgf-h);
+        padding: 0 var(--tgf-pad-x);
+        border: 1px solid ${BRAND.terracota};
+        border-radius: var(--tgf-radius);
+        font: inherit;
+        background: ${BRAND.terracota};
+        color: #fff;
+        font-size: var(--tgf-fs);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-width: 0;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .tgf-btn--clear:hover{
+        background: #7a2d06;
+        border-color: #7a2d06;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(153, 57, 8, 0.3);
+      }
+      .tgf-btn--clear:focus {
+        outline: none;
+        border-color: var(--brand-green, #014029);
+        box-shadow: 0 0 0 2px rgba(1, 64, 41, 0.1);
+      }
+    
     .tgf-btn .ico{ width:var(--tgf-ico); height:var(--tgf-ico); display:inline-flex; }
     .tgf-btn .ico svg{ width:100%; height:100%; display:block; }
 
@@ -107,79 +179,65 @@ export function GlobalFiltersBar(rootEl) {
   wrap.className = "tgf-wrap";
   wrap.innerHTML = `
     <form class="tgf-form" id="taskora-global-filters" autocomplete="off">
-      <div class="tgf-field">
-        <label class="tgf-label" for="f-status">Status</label>
-        <select id="f-status" class="tgf-select tgf-input tgf-w-status">
-          <option value="all">Todos</option>
-          <option value="iniciada">Iniciada</option>
-          <option value="em progresso">Em progresso</option>
-          <option value="concluída">Concluída</option>
-          <option value="não realizada">Não realizada</option>
-        </select>
-      </div>
+      <div class="tgf-filters-group">
+        <div class="tgf-field">
+          <label class="tgf-label" for="f-status">Status</label>
+          <select id="f-status" class="tgf-select tgf-input tgf-w-status">
+            <option value="all">Todos</option>
+            <option value="iniciada">Iniciada</option>
+            <option value="em progresso">Em progresso</option>
+            <option value="concluída">Concluída</option>
+            <option value="não realizada">Não realizada</option>
+          </select>
+        </div>
 
-      <div class="tgf-field">
-        <label class="tgf-label" for="f-client">Cliente</label>
-        <select id="f-client" class="tgf-select tgf-input tgf-w-client">
-          <option value="all">Todos</option>
-        </select>
-      </div>
+        <div class="tgf-field">
+          <label class="tgf-label" for="f-client">Cliente</label>
+          <select id="f-client" class="tgf-select tgf-input tgf-w-client">
+            <option value="all">Todos</option>
+          </select>
+        </div>
 
-      <div class="tgf-field">
-        <label class="tgf-label" for="f-owner">Responsável</label>
-        <select id="f-owner" class="tgf-select tgf-input tgf-w-owner">
-          <option value="all">Todos</option>
-        </select>
-      </div>
+        <div class="tgf-field">
+          <label class="tgf-label" for="f-owner">Responsável</label>
+          <select id="f-owner" class="tgf-select tgf-input tgf-w-owner">
+            <option value="all">Todos</option>
+          </select>
+        </div>
 
-      <div class="tgf-field">
-        <label class="tgf-label" for="f-date-from">Data inicial</label>
-        <input id="f-date-from" type="date" class="tgf-input tgf-w-date" inputmode="numeric" pattern="\\d{4}-\\d{2}-\\d{2}" />
-      </div>
+        <div class="tgf-field">
+          <label class="tgf-label" for="f-date-from">Data inicial</label>
+          <input id="f-date-from" type="date" class="tgf-input tgf-w-date" inputmode="numeric" pattern="\\d{4}-\\d{2}-\\d{2}" />
+        </div>
 
-      <div class="tgf-field">
-        <label class="tgf-label" for="f-date-to">Data final</label>
-        <input id="f-date-to" type="date" class="tgf-input tgf-w-date" inputmode="numeric" pattern="\\d{4}-\\d{2}-\\d{2}" />
-      </div>
+        <div class="tgf-field">
+          <label class="tgf-label" for="f-date-to">Data final</label>
+          <input id="f-date-to" type="date" class="tgf-input tgf-w-date" inputmode="numeric" pattern="\\d{4}-\\d{2}-\\d{2}" />
+        </div>
 
-      <div class="tgf-field">
-        <label class="tgf-label" for="f-quick">Intervalo rápido</label>
-        <select id="f-quick" class="tgf-select tgf-input tgf-w-quick">
-          <option value="custom">Personalizado</option>
-          <option value="today">Hoje</option>
-          <option value="yesterday">Ontem</option>
-          <option value="last7">Últimos 7 dias</option>
-          <option value="last30" selected>Últimos 30 dias</option>
-          <option value="thisMonth">Este mês</option>
-          <option value="prevMonth">Mês anterior</option>
-        </select>
-      </div>
+        <div class="tgf-field">
+           <label class="tgf-label" for="f-quick">Intervalo rápido</label>
+           <select id="f-quick" class="tgf-select tgf-input tgf-w-quick">
+             <option value="custom">Personalizado</option>
+             <option value="today">Hoje</option>
+             <option value="yesterday">Ontem</option>
+             <option value="last7">Últimos 7 dias</option>
+             <option value="last30" selected>Últimos 30 dias</option>
+             <option value="thisMonth">Este mês</option>
+             <option value="prevMonth">Mês anterior</option>
+           </select>
+         </div>
 
-      <div class="tgf-actions" style="display:flex; gap:var(--tgf-gap); margin-left:auto;">
-        <button type="button" class="tgf-btn tgf-btn--clear" id="f-clear" aria-label="Limpar filtros" title="Limpar filtros">
-          <span class="ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </span>
-          <span class="lbl">Limpar</span>
-        </button>
-
-        <button type="button" class="tgf-btn tgf-btn--csv" id="f-export-csv" aria-label="Exportar CSV" title="Exportar CSV">
-          <span class="ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </span>
-          <span class="lbl">CSV</span>
-        </button>
-
-        <button type="button" class="tgf-btn tgf-btn--pdf" id="f-export-pdf" aria-label="Exportar PDF" title="Exportar PDF">
-          <span class="ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M6 4h9l3 3v13H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M9 12h6M9 15h6M9 9h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <span class="lbl">PDF</span>
-        </button>
-      </div>
+         <div class="tgf-field">
+           <label class="tgf-label" style="opacity: 0;">Ações</label>
+           <button type="button" class="tgf-btn tgf-btn--clear" id="f-clear" aria-label="Limpar filtros" title="Limpar filtros">
+             <span class="ico" aria-hidden="true">
+               <svg viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+             </span>
+             <span class="lbl">Limpar</span>
+           </button>
+         </div>
+       </div>
     </form>
   `;
   rootEl.innerHTML = "";
@@ -447,15 +505,7 @@ export function GlobalFiltersBar(rootEl) {
     w.document.close();
   }
 
-  // Bind dos botões de exportação
-  $("#f-export-csv").addEventListener("click", async ()=>{
-    try{ await exportCSV(); }
-    catch(e){ console.error("[Taskora] Export CSV error:", e); alert("Falha ao exportar CSV. Veja o console para detalhes."); }
-  });
-  $("#f-export-pdf").addEventListener("click", async ()=>{
-    try{ await exportPDF(); }
-    catch(e){ console.error("[Taskora] Export PDF error:", e); alert("Falha ao exportar PDF. Veja o console para detalhes."); }
-  });
+  // Botões de exportação foram movidos para o header da página
 
   // Estado inicial
   setFromState(TaskoraFilters.get());

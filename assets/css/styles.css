@@ -13,8 +13,12 @@ body{
 
 /* ===== LAYOUT ===== */
 .app-shell{
-  display:grid;
-  grid-template-columns:220px 1fr;
+  min-height:100vh;
+}
+
+/* Compensar sidebar fixa */
+.content-area{
+  margin-left:220px;
   min-height:100vh;
 }
 
@@ -26,6 +30,13 @@ body{
   display:flex;
   flex-direction:column;
   gap:5px;
+  position:fixed;
+  top:0;
+  left:0;
+  width:220px;
+  height:100vh;
+  z-index:100;
+  overflow-y:auto;
 }
 
 /* Título do menu (JavaScript) */

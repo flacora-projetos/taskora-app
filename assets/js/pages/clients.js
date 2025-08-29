@@ -64,8 +64,31 @@ import {
     root.className = "clients-page";
     root.innerHTML = `
       <style>
-        .clients-page { padding: 32px; background: #F8F9FA; min-height: 100vh; font-size: 13px; color: #2F3B2F }
-        .cl-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 2px solid #E4E7E4 }
+        .clients-page { background: #F8F9FA; min-height: 100vh; font-size: 13px; color: #2F3B2F; display: flex; flex-direction: column; }
+        
+        /* Campo sticky com título, cards e filtros */
+        .cl-sticky-section {
+          position: sticky;
+          top: 65px;
+          z-index: 10;
+          background: #F8F9FA;
+          padding: 32px 32px 20px 32px;
+          border-bottom: 2px solid #E4E7E4;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .cl-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+        
+        .cl-stats-grid { margin-bottom: 20px; }
+        
+        .cl-toolbar { margin-bottom: 0; }
+        
+        /* Campo da listagem separado */
+        .cl-content-section {
+          flex: 1;
+          padding: 0 32px 32px 32px;
+          overflow: auto;
+        }
          .cl-header h2 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #014029; text-transform: uppercase; font-family: system-ui, -apple-system, sans-serif }
          .cl-header-actions { display: flex; gap: 8px; align-items: center }
          .cl-header .btn { padding: 10px 20px; font-size: 13px; font-weight: 600; border-radius: 8px; background: #014029; color: #fff; border: none; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px }
@@ -82,7 +105,7 @@ import {
         @media (max-width: 768px) { .cl-stats-grid { grid-template-columns: repeat(2, 1fr) } }
         @media (max-width: 480px) { .cl-stats-grid { grid-template-columns: 1fr } }
         
-        .cl-card { background: #FAFAF8; border: 1px solid #ECEDEA; border-radius: 12px; padding: 12px }
+        .cl-card { background: transparent; border: none; border-radius: 0; padding: 0; }
         .cl-toolbar { display: flex; align-items: center; gap: 12px; margin: 0 0 16px 0; flex-wrap: wrap }
         .cl-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center }
         .cl-filter-group { display: flex; gap: 4px; align-items: center }
@@ -93,11 +116,49 @@ import {
         .cl-budget-range { display: flex; gap: 4px; align-items: center }
         .cl-budget-input { width: 80px; padding: 4px 6px; border: 1px solid #E4E7E4; border-radius: 4px; font-size: 11px }
         .cl-search { flex: 1; min-width: 200px; max-width: 300px; padding: 8px 12px; border: 1px solid #E4E7E4; border-radius: 8px; font-size: 13px }
-        .cl-clear-filters { background: #fff; border: 1px solid #E4E7E4; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer; color: #6B7280; transition: all 0.2s ease }
-        .cl-clear-filters:hover { background: #FEE2E2; color: #DC2626; border-color: #FCA5A5 }
+        .cl-clear-filters { 
+          background: #993908; 
+          border: 1px solid #993908; 
+          border-radius: 6px; 
+          padding: 4px 8px; 
+          font-size: 11px; 
+          cursor: pointer; 
+          color: #fff; 
+          transition: all 0.2s ease;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .cl-clear-filters:hover { 
+          background: #7a2d06; 
+          border-color: #7a2d06;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(153, 57, 8, 0.3);
+        }
         
         .cl-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed }
-        .cl-thead th { text-align: left; font-weight: 900; font-size: 12px; color: #334155; padding: 6px 10px; letter-spacing: 0.2px }
+        .cl-content-section { position: relative; overflow: auto; padding: 0 32px 32px 32px; }
+        
+        /* Cabeçalho da tabela dentro do sticky */
+        .cl-table-header { 
+          background: #FFFFFF; 
+          border: 1px solid #E4E7E4;
+          border-radius: 8px;
+          padding: 0;
+          margin: 16px 0 0 0;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .cl-header-row { display: flex; width: 100%; }
+        .cl-header-cell { text-align: left; font-weight: 900; font-size: 12px; color: #334155; padding: 12px 10px; letter-spacing: 0.2px; background: #F8F9FA; }
+        .cl-header-cell:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .cl-header-cell:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+        .cl-header-cell.col-name { width: 25%; }
+        .cl-header-cell.col-tier { width: 12%; }
+        .cl-header-cell.col-status { width: 10%; }
+        .cl-header-cell.col-responsible { width: 15%; }
+        .cl-header-cell.col-budget { width: 12%; }
+        .cl-header-cell.col-platforms { width: 16%; }
+        .cl-header-cell.col-actions { width: 10%; text-align: right; }
         .cl-row { box-shadow: 0 1px 1px rgba(0,0,0,0.03), 0 6px 16px rgba(0,0,0,0.03) }
         .cl-cell { background: #fff; border: 1px solid #EEE; padding: 10px 12px; vertical-align: middle; overflow: hidden }
         .cl-cell:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px }
@@ -139,110 +200,129 @@ import {
         }
       </style>
       
-      <div class="cl-header">
-         <h2>Clientes</h2>
-         <div class="cl-header-actions">
-           <button id="exportCsvBtn" class="btn btn-secondary" type="button">
-             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-               <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-             </svg>
-             CSV
-           </button>
-           <button id="exportPdfBtn" class="btn btn-secondary" type="button">
-             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-               <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
-             </svg>
-             PDF
-           </button>
-           <button id="newClientBtn" class="btn" type="button">Novo Cliente</button>
-         </div>
-       </div>
-      
-      <div class="cl-stats-grid" id="stats-grid">
-        <div class="cl-stat-card">
-          <div class="cl-stat-number" id="stat-total">0</div>
-          <div class="cl-stat-label">Total de Clientes</div>
+      <!-- Campo Sticky: Título + Cards + Filtros -->
+      <div class="cl-sticky-section">
+        <div class="cl-header">
+          <h2>Clientes</h2>
+          <div class="cl-header-actions">
+            <button id="exportCsvBtn" class="btn btn-secondary" type="button">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+              CSV
+            </button>
+            <button id="exportPdfBtn" class="btn btn-secondary" type="button">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
+              </svg>
+              PDF
+            </button>
+            <button id="newClientBtn" class="btn" type="button">Novo Cliente</button>
+          </div>
         </div>
-        <div class="cl-stat-card">
-          <div class="cl-stat-number" id="stat-budget">R$ 0</div>
-          <div class="cl-stat-label">Orçamento Total</div>
-        </div>
-        <div class="cl-stat-card">
-          <div class="cl-stat-number" id="stat-key-accounts">0</div>
-          <div class="cl-stat-label">Key Accounts</div>
-        </div>
-        <div class="cl-stat-card">
-          <div class="cl-stat-number" id="stat-active">0</div>
-          <div class="cl-stat-label">Ativos</div>
-        </div>
-      </div>
-      
-      <div class="cl-card">
-         <div class="cl-toolbar">
-           <div class="cl-filters">
-             <div class="cl-filter-group">
-               <span class="cl-filter-label">Status:</span>
-               <select class="cl-filter-select" id="statusFilter">
-                 <option value="all">Todos</option>
-                 <option value="ATIVO">Ativos</option>
-                 <option value="INATIVO">Inativos</option>
-                 <option value="PROSPECT">Prospects</option>
-               </select>
-             </div>
-             
-             <div class="cl-filter-group">
-               <span class="cl-filter-label">Tier:</span>
-               <select class="cl-filter-select" id="tierFilter">
-                 <option value="all">Todos</option>
-                 <option value="KEY_ACCOUNT">Key Account</option>
-                 <option value="MID_TIER">Mid Tier</option>
-                 <option value="LOW_TIER">Low Tier</option>
-               </select>
-             </div>
-             
-             <div class="cl-filter-group">
-               <span class="cl-filter-label">Responsável:</span>
-               <select class="cl-filter-select" id="responsibleFilter">
-                 <option value="all">Todos</option>
-               </select>
-             </div>
-             
-             <div class="cl-filter-group">
-                <span class="cl-filter-label">Orçamento:</span>
-                <div class="cl-budget-range">
-                  <input type="number" class="cl-budget-input" id="budgetMin" placeholder="Min" min="0">
-                  <span style="color: #6B7280; font-size: 11px;">até</span>
-                  <input type="number" class="cl-budget-input" id="budgetMax" placeholder="Max" min="0">
-                </div>
-              </div>
-              
-              <div class="cl-filter-group">
-                <span class="cl-filter-label">Plataformas:</span>
-                <select class="cl-filter-select" id="platformCountFilter">
-                  <option value="all">Todas</option>
-                  <option value="none">Nenhuma</option>
-                  <option value="1-2">1-2 plataformas</option>
-                  <option value="3-5">3-5 plataformas</option>
-                  <option value="6+">6+ plataformas</option>
-                </select>
-              </div>
-              
-              <div class="cl-filter-group">
-                <span class="cl-filter-label">Presença Digital:</span>
-                <select class="cl-filter-select" id="digitalPresenceFilter">
-                  <option value="all">Todos</option>
-                  <option value="website">Com Website</option>
-                  <option value="instagram">Com Instagram</option>
-                  <option value="both">Website + Instagram</option>
-                  <option value="none">Sem presença</option>
-                </select>
-              </div>
-              
-              <button class="cl-clear-filters" id="clearFilters">Limpar</button>
-           </div>
-           <input type="text" class="cl-search" id="searchInput" placeholder="Buscar clientes...">
-         </div>
         
+        <div class="cl-stats-grid" id="stats-grid">
+          <div class="cl-stat-card">
+            <div class="cl-stat-number" id="stat-total">0</div>
+            <div class="cl-stat-label">Total de Clientes</div>
+          </div>
+          <div class="cl-stat-card">
+            <div class="cl-stat-number" id="stat-budget">R$ 0</div>
+            <div class="cl-stat-label">Orçamento Total</div>
+          </div>
+          <div class="cl-stat-card">
+            <div class="cl-stat-number" id="stat-key-accounts">0</div>
+            <div class="cl-stat-label">Key Accounts</div>
+          </div>
+          <div class="cl-stat-card">
+            <div class="cl-stat-number" id="stat-active">0</div>
+            <div class="cl-stat-label">Ativos</div>
+          </div>
+        </div>
+        
+        <div class="cl-card">
+           <div class="cl-toolbar">
+             <div class="cl-filters">
+               <div class="cl-filter-group">
+                 <span class="cl-filter-label">Status:</span>
+                 <select class="cl-filter-select" id="statusFilter">
+                   <option value="all">Todos</option>
+                   <option value="ATIVO">Ativos</option>
+                   <option value="INATIVO">Inativos</option>
+                   <option value="PROSPECT">Prospects</option>
+                 </select>
+               </div>
+               
+               <div class="cl-filter-group">
+                 <span class="cl-filter-label">Tier:</span>
+                 <select class="cl-filter-select" id="tierFilter">
+                   <option value="all">Todos</option>
+                   <option value="KEY_ACCOUNT">Key Account</option>
+                   <option value="MID_TIER">Mid Tier</option>
+                   <option value="LOW_TIER">Low Tier</option>
+                 </select>
+               </div>
+               
+               <div class="cl-filter-group">
+                 <span class="cl-filter-label">Responsável:</span>
+                 <select class="cl-filter-select" id="responsibleFilter">
+                   <option value="all">Todos</option>
+                 </select>
+               </div>
+               
+               <div class="cl-filter-group">
+                  <span class="cl-filter-label">Orçamento:</span>
+                  <div class="cl-budget-range">
+                    <input type="number" class="cl-budget-input" id="budgetMin" placeholder="Min" min="0">
+                    <span style="color: #6B7280; font-size: 11px;">até</span>
+                    <input type="number" class="cl-budget-input" id="budgetMax" placeholder="Max" min="0">
+                  </div>
+                </div>
+                
+                <div class="cl-filter-group">
+                  <span class="cl-filter-label">Plataformas:</span>
+                  <select class="cl-filter-select" id="platformCountFilter">
+                    <option value="all">Todas</option>
+                    <option value="none">Nenhuma</option>
+                    <option value="1-2">1-2 plataformas</option>
+                    <option value="3-5">3-5 plataformas</option>
+                    <option value="6+">6+ plataformas</option>
+                  </select>
+                </div>
+                
+                <div class="cl-filter-group">
+                  <span class="cl-filter-label">Presença Digital:</span>
+                  <select class="cl-filter-select" id="digitalPresenceFilter">
+                    <option value="all">Todos</option>
+                    <option value="website">Com Website</option>
+                    <option value="instagram">Com Instagram</option>
+                    <option value="both">Website + Instagram</option>
+                    <option value="none">Sem presença</option>
+                  </select>
+                </div>
+                
+                <button class="cl-clear-filters" id="clearFilters">Limpar</button>
+             </div>
+             <input type="text" class="cl-search" id="searchInput" placeholder="Buscar clientes...">
+           </div>
+         </div>
+         
+         <!-- Cabeçalho da Tabela dentro do Sticky -->
+         <div class="cl-table-header">
+           <div class="cl-header-row">
+             <div class="cl-header-cell col-name">Cliente</div>
+             <div class="cl-header-cell col-tier">Tier</div>
+             <div class="cl-header-cell col-status">Status</div>
+             <div class="cl-header-cell col-responsible cl-hide-sm">Responsável</div>
+             <div class="cl-header-cell col-budget">Orçamento</div>
+             <div class="cl-header-cell col-platforms cl-hide-sm">Plataformas</div>
+             <div class="cl-header-cell col-actions">Ações</div>
+           </div>
+         </div>
+        </div>
+      
+      <!-- Campo da Listagem Separado -->
+      <div class="cl-content-section">
         <div id="table-wrap">
           <div class="cl-loading">Carregando clientes...</div>
         </div>
@@ -347,17 +427,6 @@ import {
       
       elTableWrap.innerHTML = `
         <table class="cl-table">
-          <thead class="cl-thead">
-            <tr>
-              <th class="col-name">Cliente</th>
-              <th class="col-tier">Tier</th>
-              <th class="col-status">Status</th>
-              <th class="col-responsible cl-hide-sm">Responsável</th>
-              <th class="col-budget">Orçamento</th>
-              <th class="col-platforms cl-hide-sm">Plataformas</th>
-              <th class="col-actions">Ações</th>
-            </tr>
-          </thead>
           <tbody>
             ${rows}
           </tbody>

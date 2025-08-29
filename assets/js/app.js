@@ -38,12 +38,9 @@ function renderRoute() {
   const hash = window.location.hash || "#/tasks";
   const page = routes[hash] || routes["#/tasks"];
   
-  // Ocultar filtro global nas páginas que têm filtros próprios
-  if (hash === "#/clients" || hash === "#/history") {
-    elFilters.style.display = "none";
-  } else {
-    elFilters.style.display = "block";
-  }
+  // hide/show global filters based on page
+  const hideGlobalFilters = ["#/clients", "#/history", "#/tasks"].includes(hash);
+  elFilters.style.display = hideGlobalFilters ? "none" : "block";
   
   // atualiza active do menu
   SidebarNav.setActive(hash);
@@ -51,6 +48,15 @@ function renderRoute() {
   elPageRoot.innerHTML = "";
   const node = page.render();
   elPageRoot.appendChild(node);
+  
+  // render integrated filters for tasks page
+  if (hash === "#/tasks") {
+    const tasksFiltersContainer = node.querySelector("#global-filters-container");
+    if (tasksFiltersContainer) {
+      GlobalFiltersBar.mount(tasksFiltersContainer);
+    }
+  }
+  
   if (page.afterRender) page.afterRender();
 }
 

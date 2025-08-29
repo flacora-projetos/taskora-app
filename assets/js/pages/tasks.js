@@ -8,6 +8,7 @@ import {
   addDoc, updateDoc, deleteDoc, doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
+import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 
 /* global TaskoraFilters */
 
@@ -126,11 +127,59 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
     root.className="tasks-page";
     root.innerHTML=`
       <style>
-        .tasks-page{ padding:32px; background:#F8F9FA; min-height:100vh; font-size:13px; color:#2F3B2F }
-        .tk-header{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; padding-bottom:16px; border-bottom:2px solid #E4E7E4 }
+        .tasks-page{ background:#F8F9FA; min-height:100vh; font-size:13px; color:#2F3B2F; display:flex; flex-direction:column; }
+        
+        /* Campo sticky com título, cards e filtros */
+        .tk-sticky-section {
+          position: sticky;
+          top: 65px;
+          z-index: 10;
+          background: #F8F9FA;
+          padding: 32px 32px 20px 32px;
+          border-bottom: 2px solid #E4E7E4;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .tk-header{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; }
+        .tk-header h2 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #014029; text-transform: uppercase; font-family: system-ui, -apple-system, sans-serif }
+        .tk-header-actions{ display:flex; gap:8px; align-items:center }
+        .tk-header .tk-btn { padding: 10px 20px; font-size: 13px; font-weight: 600; border-radius: 8px; background: #014029; color: #fff; border: none; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px }
+        .tk-header .tk-btn:hover { background: #025a35; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(1,64,41,0.3) }
+        .tk-header .tk-btn--secondary { background: #993908; color: #fff; border: 1px solid #993908 }
+        .tk-header .tk-btn--secondary:hover { background: #7a2d06; box-shadow: 0 4px 12px rgba(153,57,8,0.3) }
+        .tk-header .tk-btn svg { width: 14px; height: 14px; flex-shrink: 0 }
+        
+        .tk-stats-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px }
+        .tk-stat-card{ background:#fff; border:1px solid #E4E7E4; border-radius:12px; padding:20px; text-align:center; transition:all 0.2s ease }
+        .tk-stat-card:hover{ transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,0,0,0.1) }
+        .tk-stat-number{ font-size:24px; font-weight:800; color:#014029; margin-bottom:4px; letter-spacing:-0.5px }
+        .tk-stat-label{ font-size:11px; color:#6B7280; text-transform:uppercase; letter-spacing:0.5px; font-weight:600 }
+        
+        .tk-filters-section .tgf-wrap{ 
+          background: #FAFAF8; 
+          border: 1px solid #ECEDEA; 
+          border-radius: 12px; 
+          padding: 16px; 
+          box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        
+        /* Campo da listagem separado */
+        .tk-content-section {
+          flex: 1;
+          padding: 0;
+          overflow: auto;
+        }
+        .tk-card { background: #fff; border: none; border-radius: 0; box-shadow: none; }
+        .tk-toolbar { padding: 0; border-bottom: none; display: flex; justify-content: space-between; align-items: center; }
+        .tk-left, .tk-right { display: flex; gap: 8px; align-items: center; }
+        }
         .tk-header h2{ margin:0; font-size:28px; font-weight:800; letter-spacing:-0.5px; color:#014029; text-transform:uppercase; font-family:system-ui, -apple-system, sans-serif }
-        .tk-header .btn{ padding:10px 20px; font-size:13px; font-weight:600; border-radius:8px; background:#014029; color:#fff; border:none; cursor:pointer; transition:all 0.2s ease; text-transform:uppercase; letter-spacing:0.5px }
-        .tk-header .btn:hover{ background:#025a35; transform:translateY(-1px); box-shadow:0 4px 12px rgba(1,64,41,0.3) }
+        .tk-header .tk-btn{ padding:10px 20px; font-size:13px; font-weight:600; border-radius:8px; border:none; cursor:pointer; transition:all 0.2s ease; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px }
+        .tk-header .tk-btn--primary{ background:#014029; color:#fff; }
+        .tk-header .tk-btn--primary:hover{ background:#025a35; transform:translateY(-1px); box-shadow:0 4px 12px rgba(1,64,41,0.3) }
+        .tk-header .tk-btn--secondary{ background:#993908; color:#fff; border:1px solid #993908; }
+        .tk-header .tk-btn--secondary:hover{ background:#7a2d06; box-shadow:0 4px 12px rgba(153,57,8,0.3); transform:translateY(-1px); }
+        .tk-header .tk-btn svg{ width:14px; height:14px; flex-shrink:0; }
         .tk-stats-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px }
         .tk-stat-card{ background:#fff; border:1px solid #E4E7E4; border-radius:10px; padding:18px 16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.04); transition:all 0.2s ease }
         .tk-stat-card:hover{ box-shadow:0 3px 8px rgba(0,0,0,0.08); transform:translateY(-1px) }
@@ -146,8 +195,25 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
         .tk-btn--primary{ background:#014029; border-color:#014029; color:#fff }
         .tk-btn:hover{ background:#F7F9F7 }
         .tk-btn.tk-btn--primary:hover{ background:#013522; border-color:#013522; color:#fff }
-        .tk-table{ width:100%; border-collapse:separate; border-spacing:0 8px; table-layout:fixed }
-        .tk-thead th{ text-align:left; font-weight:900; font-size:12px; color:#334155; padding:6px 10px; letter-spacing:.2px }
+        .tk-table{ width:100%; border-collapse:separate; border-spacing:0; table-layout:fixed }
+        .tk-content-section{ position:relative; overflow:auto; }
+        
+        /* Cabeçalho da tabela dentro do sticky */
+        .tk-table-header { 
+          background: #FFFFFF; 
+          border: 1px solid #E4E7E4;
+          border-radius: 8px;
+          padding: 0;
+          margin: 16px 0 0 0;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tk-table-header table { border-collapse: separate; border-spacing: 0; }
+        .tk-table-header th { text-align: left; font-weight: 900; font-size: 12px; color: #334155; padding: 12px 10px; letter-spacing: 0.2px; background: #F8F9FA; border: none; }
+        .tk-table-header th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .tk-table-header th:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+        
+
+
         .tk-row{ box-shadow:0 1px 1px rgba(0,0,0,.03), 0 6px 16px rgba(0,0,0,.03) }
         .tk-cell{ background:#fff; border:1px solid #EEE; padding:10px 12px; vertical-align:middle; overflow:hidden; }
         .tk-cell:first-child{ border-top-left-radius:10px; border-bottom-left-radius:10px }
@@ -162,9 +228,9 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
         .col-client{ width:200px }
         .col-desc{ width: min(44vw, 520px) }
         .col-owner{ width:160px }
-        .col-date{ width:110px }
-        .col-hours{ width:80px; text-align:right }
-        .col-actions{ width:100px; text-align:right }
+        .col-date{ width:110px; text-align:center }
+        .col-hours{ width:80px; text-align:center }
+        .col-actions{ width:100px; text-align:center }
         /* Botões de ação por linha */
         .tk-actions{ display:inline-flex; gap:6px; justify-content:flex-end; width:100% }
         .tk-iconbtn{
@@ -180,38 +246,83 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
         @media (max-width: 900px){ .tk-hide-sm{ display:none } .tk-desc{ display:block; max-width:420px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap } }
       </style>
 
-      <div class="tk-header">
-        <h2>Tasks</h2>
-        <button id="newTaskBtn" class="tk-btn tk-btn--primary" data-new-task type="button">Nova Tarefa</button>
-      </div>
-      
-      <div class="tk-stats-grid" id="stats-grid">
-        <div class="tk-stat-card">
-          <div class="tk-stat-number" id="stat-total">0</div>
-          <div class="tk-stat-label">Tarefas (total)</div>
-        </div>
-        <div class="tk-stat-card">
-          <div class="tk-stat-number" id="stat-hours">0</div>
-          <div class="tk-stat-label">Horas (total)</div>
-        </div>
-        <div class="tk-stat-card">
-          <div class="tk-stat-number" id="stat-pending">0</div>
-          <div class="tk-stat-label">Pendentes</div>
-        </div>
-        <div class="tk-stat-card">
-          <div class="tk-stat-number" id="stat-completed">0</div>
-          <div class="tk-stat-label">Concluídas</div>
-        </div>
-      </div>
-      
-      <div class="tk-card">
-        <div class="tk-toolbar">
-          <div class="tk-left"></div>
-          <div class="tk-right">
-            <button id="more" class="tk-btn" hidden type="button">Carregar mais</button>
+      <!-- Campo Sticky: Título + Cards + Filtros -->
+      <div class="tk-sticky-section">
+        <div class="tk-header">
+           <h2>Tasks</h2>
+           <div class="tk-header-actions">
+             <button id="exportCsvBtn" class="tk-btn tk-btn--secondary" type="button">
+               <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                 <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+               </svg>
+               CSV
+             </button>
+             <button id="exportPdfBtn" class="tk-btn tk-btn--secondary" type="button">
+               <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                 <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
+               </svg>
+               PDF
+             </button>
+             <button id="newTaskBtn" class="tk-btn tk-btn--primary" data-new-task type="button">Nova Tarefa</button>
+           </div>
+         </div>
+        
+        <div class="tk-stats-grid" id="stats-grid">
+          <div class="tk-stat-card">
+            <div class="tk-stat-number" id="stat-total">0</div>
+            <div class="tk-stat-label">Tarefas (total)</div>
+          </div>
+          <div class="tk-stat-card">
+            <div class="tk-stat-number" id="stat-hours">0</div>
+            <div class="tk-stat-label">Horas (total)</div>
+          </div>
+          <div class="tk-stat-card">
+            <div class="tk-stat-number" id="stat-pending">0</div>
+            <div class="tk-stat-label">Pendentes</div>
+          </div>
+          <div class="tk-stat-card">
+            <div class="tk-stat-number" id="stat-completed">0</div>
+            <div class="tk-stat-label">Concluídas</div>
           </div>
         </div>
-        <div id="table-wrap"></div>
+        
+        <!-- Filtros Globais Integrados -->
+        <div class="tk-filters-section" id="global-filters-container">
+          <!-- Os filtros globais serão inseridos aqui -->
+        </div>
+        
+        <!-- Cabeçalho da Tabela -->
+        <div class="tk-table-header">
+          <table class="tk-table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th class="col-status">STATUS</th>
+                <th class="col-client">CLIENTE</th>
+                <th class="col-desc" style="text-align: center;">TAREFA</th>
+                <th class="col-owner">RESPONSÁVEL</th>
+                <th class="col-date tk-hide-sm" style="text-align: center;">INÍCIO</th>
+                <th class="col-date tk-hide-sm" style="text-align: center;">LIMITE</th>
+                <th class="col-hours" style="text-align: center;">HORAS</th>
+                <th class="col-actions" style="text-align: center;">AÇÕES</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+      </div>
+      
+      <!-- Campo da Listagem Separado -->
+      <div class="tk-content-section">
+        <div class="tk-card">
+          <div class="tk-toolbar">
+            <div class="tk-left"></div>
+            <div class="tk-right">
+              <button id="more" class="tk-btn" hidden type="button">Carregar mais</button>
+            </div>
+          </div>
+
+          <div id="table-wrap"></div>
+        </div>
       </div>
     `;
 
@@ -265,23 +376,23 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
       const slice=allRows.slice(start,start+PAGE_SIZE);
 
       if(page===0){
-        elTableWrap.innerHTML=`
-          <table class="tk-table">
-            <thead class="tk-thead">
-              <tr>
-                <th class="col-status">STATUS</th>
-                <th class="col-client">CLIENTE</th>
-                <th class="col-desc">TAREFA</th>
-                <th class="col-owner">RESPONSÁVEL</th>
-                <th class="tk-hide-sm col-date">INÍCIO</th>
-                <th class="tk-hide-sm col-date">LIMITE</th>
-                <th class="col-hours">HORAS</th>
-                <th class="col-actions">AÇÕES</th>
-              </tr>
-            </thead>
-            <tbody class="tk-tbody"></tbody>
-          </table>`;
-      }
+            elTableWrap.innerHTML=`
+              <table class="tk-table">
+                <thead style="visibility: hidden; height: 0; line-height: 0;">
+                  <tr>
+                    <th class="col-status" style="padding: 0; border: none;">STATUS</th>
+                    <th class="col-client" style="padding: 0; border: none;">CLIENTE</th>
+                    <th class="col-desc" style="padding: 0; border: none;">TAREFA</th>
+                    <th class="col-owner" style="padding: 0; border: none;">RESPONSÁVEL</th>
+                    <th class="col-date tk-hide-sm" style="padding: 0; border: none;">INÍCIO</th>
+                    <th class="col-date tk-hide-sm" style="padding: 0; border: none;">LIMITE</th>
+                    <th class="col-hours" style="padding: 0; border: none;">HORAS</th>
+                    <th class="col-actions" style="padding: 0; border: none;">AÇÕES</th>
+                  </tr>
+                </thead>
+                <tbody class="tk-tbody"></tbody>
+              </table>`;
+          }
 
       const tbody=elTableWrap.querySelector(".tk-tbody");
       if(slice.length===0 && page===0){
@@ -291,7 +402,7 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
           const dStart = formatToBrazilian(r.date || r.createdAt);
           const dDue   = formatToBrazilian(r.dueDate);
           return `
-            <tr class="tk-row" data-row-id="${r.id}">
+            <tr class="tk-row" data-row-id="${r.id}" data-task-row="true" style="cursor: grab;" title="Arraste para alterar o status">
               <td class="tk-cell">${statusView(r.status)}</td>
               <td class="tk-cell">${clientView(r.client)}</td>
               <td class="tk-cell tk-desc" title="${escapeHtml(r.description || "")}">${escapeHtml(r.description || "—")}</td>
@@ -303,6 +414,11 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
             </tr>`;
         }).join("");
         tbody.insertAdjacentHTML("beforeend", rowsHtml);
+        
+        // Inicializar drag & drop após renderizar
+        setTimeout(() => {
+          initDragDrop();
+        }, 100);
       }
 
       const total=allRows.length, shown=Math.min((page+1)*PAGE_SIZE,total);
@@ -728,6 +844,33 @@ import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../util
 
     elNew.addEventListener("click", openNewTaskModal);
 
+    // Inicializar drag & drop para tarefas
+    let tasksDragDrop = null;
+    
+    function initDragDrop() {
+      if (!tasksDragDrop) {
+        tasksDragDrop = initTasksDragDrop();
+        
+        // Escutar mudanças de status via drag & drop
+        tasksDragDrop.onStatusChange((event) => {
+          const { taskId, oldStatus, newStatus } = event.detail;
+          console.log(`[Tasks] Status alterado via drag & drop: ${taskId} (${oldStatus} → ${newStatus})`);
+          
+          // Atualizar estatísticas
+          updateStats();
+          
+          // Opcional: recarregar dados para garantir sincronização
+          // fetchAndFilter(TaskoraFilters.get());
+        });
+      }
+      
+      // Habilitar drag & drop na tabela atual
+      const tableContainer = elTableWrap.querySelector('.tk-table');
+      if (tableContainer) {
+        tasksDragDrop.enableForTasksTable(tableContainer);
+      }
+    }
+    
     // Primeira carga + filtros globais (mantido)
     fetchAndFilter(TaskoraFilters.get());
     TaskoraFilters.on((state, evt)=>{ if(evt?.type==="change") return; fetchAndFilter(state); });
