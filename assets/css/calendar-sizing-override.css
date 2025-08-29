@@ -1,0 +1,78 @@
+/* === Calendar overrides (spacing e padding) ===
+   Este arquivo deve vir DEPOIS do styles.css no <head>.
+   Ajuste os valores abaixo conforme preferência.
+*/
+
+:root {
+  --cal-gap: 8px;          /* espaço entre as células */
+  --cal-cell-pad: 6px;     /* padding interno da célula */
+  --cal-day-label-gap: 4px; /* espaço entre o número do dia e as pílulas */
+}
+
+/* Container do grid mensal — cobrir os nomes de classe mais comuns do app */
+.cal-grid,
+.calendar-grid,
+.tk-grid,
+.grid.calendar-grid,
+.page-calendar .grid,
+main .content-area .grid {
+  gap: var(--cal-gap) !important;
+}
+
+/* Cada célula do calendário (dia) — cobrir variações */
+.cal-cell,
+.calendar-cell,
+.tk-cell,
+.grid.calendar-grid > div,
+.page-calendar .grid > div,
+main .content-area .grid > div {
+  box-sizing: border-box !important;
+  padding: var(--cal-cell-pad) !important;
+  border-radius: 10px;            /* opcional, só pra ficar mais bonito */
+  background-clip: padding-box;   /* respeita o padding na borda */
+}
+
+/* Rótulo do dia (número) — dá um respiro das pílulas */
+.cal-cell .day,
+.calendar-cell .day,
+.grid.calendar-grid > div .day,
+.page-calendar .grid > div .day,
+main .content-area .grid > div .day {
+  display: block;
+  margin-bottom: var(--cal-day-label-gap);
+  line-height: 1;
+}
+
+/* Pílulas de tarefa: evita colar uma na outra */
+.cal-cell .task-pill,
+.calendar-cell .task-pill,
+.grid.calendar-grid > div .task-pill {
+  margin-top: 4px;
+}
+
+/* Se existir um contêiner de lista dentro da célula, evita “empurrar” layout */
+.cal-cell .tasks,
+.calendar-cell .tasks,
+.grid.calendar-grid > div .tasks {
+  overflow: hidden; /* as pílulas que excederem ficam escondidas; “mostrar mais” cuida do resto */
+}
+
+/* Em telas muito pequenas, reduz um pouco o gap/padding */
+@media (max-width: 1200px) {
+  :root {
+    --cal-gap: 6px;
+    --cal-cell-pad: 4px;
+  }
+}
+@media (max-width: 992px) {
+  :root {
+    --cal-gap: 4px;
+    --cal-cell-pad: 3px;
+  }
+}
+@media (max-width: 768px) {
+  :root {
+    --cal-gap: 3px;
+    --cal-cell-pad: 2px;
+  }
+}

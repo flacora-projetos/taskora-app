@@ -1,0 +1,20 @@
+<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg p-6 w-96">
+    <h2 id="modal-title" class="text-lg font-bold mb-2">Modal</h2>
+    <div id="modal-body">Conteúdo...</div>
+    <div class="mt-4 text-right">
+      <button id="modal-close" class="px-3 py-1" style="background:#993908;color:#fff;border-radius:.5rem">Fechar</button>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.getElementById("modal-close");
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      const modal = document.getElementById("modal");
+      if (modal) modal.classList.add("hidden");
+    };
+  }
+});
+</script>

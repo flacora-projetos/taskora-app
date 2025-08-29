@@ -1,0 +1,153 @@
+/* ========== Taskora Calendar – CSS base (fix layout) ========== */
+
+/* grid do calendário */
+.tk-cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  /* Altura por linha será definida via JS (gridAutoRows).
+     Aqui mantemos 1fr apenas como fallback. */
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  
+}
+
+/* cabeçalho dos dias (Seg, Ter, ...) */
+.tk-cal-head {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: inherit;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tk-cal-head .tk-head-cell {
+  font: 600 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: #475569;
+  padding: 8px 6px;
+  text-align: center;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+}
+
+/* célula (dia) */
+.tk-day {
+  position: relative;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+
+  /* 🔧 Essencial para o ajuste rígido via JS: não travar altura mínima */
+  min-height: 0;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* número do dia (canto superior esquerdo) */
+.tk-day .tk-day-num {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font: 600 12px/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: #334155;
+  pointer-events: none;
+}
+
+/* lista de tarefas dentro do dia */
+.tk-day .tk-task-list {
+  margin-top: 26px;     /* espaço pro número do dia */
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  /* 🔧 mantém 2 itens visíveis + "mostrar mais" */
+  max-height: calc(100% - 32px);
+  overflow: visible;
+}
+
+/* pílulas de tarefas */
+.tk-task-pill {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  font: 500 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+/* cores por status (ajuste conforme o seu mapeamento real) */
+.tk-task-pill.status-iniciada       { background: #E0F2FE; border-color: #BAE6FD; }
+.tk-task-pill.status-em-progresso   { background: #ECFDF5; border-color: #D1FAE5; }
+.tk-task-pill.status-concluída      { background: #F0FDF4; border-color: #DCFCE7; }
+.tk-task-pill.status-não-realizada  { background: #FEF2F2; border-color: #FEE2E2; }
+
+/* link "+X mostrar mais" */
+.tk-more-link {
+  margin-top: 4px;
+  font: 600 10px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: #B45309;
+  cursor: pointer;
+  user-select: none;
+  display: block;
+  padding: 1px 3px;
+  background: rgba(180, 83, 9, 0.1);
+  border-radius: 3px;
+  text-align: center;
+}
+
+/* modal de dia */
+.tk-cal-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.tk-cal-modal.open { display: flex; }
+
+.tk-cal-modal .tk-dialog {
+  width: min(920px, 92vw);
+  max-height: 88vh;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(2, 6, 23, 0.25);
+  overflow: auto;
+  padding: 16px;
+}
+
+/* cada item no modal */
+.tk-cal-item {
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  min-height: 0; /* não restrinja a altura do item */
+  margin-bottom: 10px;
+}
+
+/* barra de ações no modal */
+.tk-item-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.tk-item-actions .btn {
+  height: 28px;
+  width: 28px;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+.tk-item-actions .btn:hover { background: #F1F5F9; }
+
