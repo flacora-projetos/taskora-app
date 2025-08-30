@@ -140,13 +140,57 @@ O Taskora organiza informações em módulos principais:
 **Arquivo:** `assets/js/pages/insights.js`  
 **Status:** Apenas placeholder com mensagem "Em breve"
 
-### 6. **Team** ⏳ PLACEHOLDER
+### 6. **Team** ✅ IMPLEMENTADO (v5.5)
 **Arquivo:** `assets/js/pages/team.js`  
-**Status:** Apenas placeholder com mensagem "Em breve"
+**Status:** Módulo completo de gestão de equipe
+
+**Funcionalidades implementadas:**
+- **CRUD Completo:** Criar, editar, visualizar e excluir membros
+- **Filtros Avançados:** Por especialidade, nível e status
+- **Integração Tasks:** Responsáveis sincronizados com Tasks e Clientes
+- **Validações:** Email único, campos obrigatórios
+- **Interface Moderna:** Cards responsivos com estatísticas
+- **Real-time:** Atualizações automáticas via Firebase
+
+**Integração Team ↔ Tasks:**
+- `metaRepo.js`: Função `listTeamMembers()` para buscar membros ativos
+- Modal de Tasks: Select de responsáveis do Team
+- Filtros de Clientes: Responsáveis do Team
+- Fallback robusto para `listOwners()` se necessário
 
 ### 7. **Ajustes** ⏳ PLACEHOLDER
 **Arquivo:** `assets/js/pages/settings.js`  
 **Status:** Apenas placeholder com mensagem "Preferências locais do app aparecerão aqui"
+
+---
+
+## 🔧 Soluções Técnicas Importantes
+
+### **Controle de Overflow em Containers Sticky**
+**Problema:** Containers com `position: sticky` sendo "empurrados" agressivamente por conteúdo overflow
+
+**Solução Testada e Aprovada:**
+```css
+.sticky-container {
+  position: sticky;
+  top: 40px; /* Buffer zone - CHAVE DO SUCESSO */
+  z-index: 10;
+  /* outros estilos... */
+}
+```
+
+**Valores Testados:**
+- `top: 0` - Problema original (muito grudado)
+- `top: -20px` - Piorou (comportamento errático)
+- `top: 20px` - Melhorou (mas ainda insuficiente)
+- `top: 40px` - **PERFEITO** ✅
+
+**Quando Aplicar:**
+- Containers sticky que sofrem "empurrão" de tabelas/listas dinâmicas
+- Situações onde sticky gruda demais no topo da viewport
+- Overflow de conteúdo que causa movimento agressivo
+
+**Princípio:** Buffer zone positivo resolve overflow agressivo em sticky containers
 
 ---
 

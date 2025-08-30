@@ -370,6 +370,33 @@ export async function searchTeamMembers(filters = {}) {
 }
 
 /**
+ * Calcula horas trabalhadas de um membro baseado nas tarefas
+ */
+export async function calculateMemberHours(memberName) {
+  try {
+    const tasksQuery = query(
+      collection(db, 'tasks'),
+      where('owner', '==', memberName)
+    );
+    
+    const tasksSnapshot = await getDocs(tasksQuery);
+    let totalHours = 0;
+    
+    tasksSnapshot.forEach(doc => {
+      const task = doc.data();
+      if (task.hours && typeof task.hours === 'number') {
+        totalHours += task.hours;
+      }
+    });
+    
+    return totalHours;
+  } catch (error) {
+    console.error('Erro ao calcular horas do membro:', error);
+    return 0;
+  }
+}
+
+/**
  * Atualiza estatísticas de um membro (horas, tarefas, etc.)
  */
 export async function updateMemberStats(memberId, stats) {
@@ -384,6 +411,26 @@ export async function updateMemberStats(memberId, stats) {
     return true;
   } catch (error) {
     console.error('Erro ao atualizar estatísticas do membro:', error);
+    throw error;
+  }
+}
+
+/**
+ * Atualiza horas trabalhadas de todos os membros
+ */
+export async function updateAllMembersHours() {
+  try {
+    const members = await listTeamMembers();
+    
+    for (const member of members) {
+      const totalHours = await calculateMemberHours(member.name);
+      await updateMemberStats(member.id, { totalHours });
+    }
+    
+    console.log('Horas de todos os membros atualizadas');
+    return true;
+  } catch (error) {
+    console.error('Erro ao atualizar horas dos membros:', error);
     throw error;
   }
 }

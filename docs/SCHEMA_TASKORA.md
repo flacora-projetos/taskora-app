@@ -1,13 +1,14 @@
 # SCHEMA_TASKORA.md
 
 ## 📌 Visão Geral
-Este documento define a **estrutura de dados oficial do Taskora v5.3**, baseada na implementação real do código.  
+Este documento define a **estrutura de dados oficial do Taskora v5.5**, baseada na implementação real do código.  
 Ele organiza coleções, campos e tipos utilizados pelo aplicativo, garantindo consistência, segurança e escalabilidade.  
 
 ⚠️ Importante:  
 - O front-end permanece com a identidade **Dácora**, exibindo "powered by Taskora".  
 - Esta definição reflete o **back-end (Firestore) realmente implementado**.
-- **Versão atual:** `taskora_v5.3_history_module.html`
+- **Versão atual:** `taskora_v5.5_team_integration.html`
+- **Nova integração:** Team ↔ Tasks com responsáveis dinâmicos
 
 ---
 
@@ -94,6 +95,7 @@ Representa as tarefas atribuídas a clientes e usuários.
 - `description` *(string, opcional)*  
 - `status` *(string)* → implementado como: `não realizada|em progresso|concluída|cancelada`
 - `assigneeRef` *(DocumentReference→orgUsers, obrigatório)*  
+- `owner` *(string)* → **INTEGRAÇÃO TEAM v5.5** - nome do responsável do Team
 - `priority` *(string)* → implementado como: `low|medium|high|urgent`
 - `startAt` *(Timestamp|null)*  
 - `dueAt` *(Timestamp|null)*  
@@ -105,7 +107,13 @@ Representa as tarefas atribuídas a clientes e usuários.
 - `createdBy` *(DocumentReference→orgUsers)*  
 - `createdAt` *(Timestamp)*  
 - `updatedAt` *(Timestamp)*  
-- `deletedAt` *(Timestamp|null)*  
+- `deletedAt` *(Timestamp|null)*
+
+**🔗 Integração Team ↔ Tasks (v5.5):**
+- Campo `owner` sincronizado com membros ativos da coleção `team`
+- Modal de tarefas usa select com `listTeamMembers()` do metaRepo.js
+- Fallback automático para `listOwners()` se Team não disponível
+- Filtros globais integrados com dados do Team em tempo real  
 
 **Sistema de horas implementado:**
 - **Entrada:** HH:MM (interface do usuário)
@@ -210,6 +218,38 @@ getResponsibles() // Lista de responsáveis únicos
 // Agrupa por mês com estatísticas calculadas
 // Timeline visual com dots coloridos por status
 ```
+
+---
+
+### 3. `team/{memberId}` ✅ IMPLEMENTADO (v5.5)
+Representa os membros da equipe para integração com Tasks.
+
+**Campos implementados:**
+- `name` *(string, obrigatório)* → nome completo do membro
+- `email` *(string, obrigatório)* → email único do membro
+- `phone` *(string, opcional)* → telefone de contato
+- `specialty` *(array[string])* → especialidades do membro
+- `level` *(string)* → nível profissional (Júnior, Pleno, Sênior, Lead, Manager, Diretor)
+- `status` *(string)* → status atual (Ativo, Inativo, Férias, Afastado)
+- `notes` *(string, opcional)* → observações sobre o membro
+- `createdAt` *(Timestamp)*
+- `updatedAt` *(Timestamp)*
+
+**Especialidades disponíveis:**
+- Desenvolvimento, Marketing, Copywriting, Social Media
+- SEO/SEM, Gestão de Projetos, Gestor de Tráfego, Estratégia
+
+**Integração com Tasks:**
+- Função `listTeamMembers()` em metaRepo.js
+- Filtra apenas membros com status 'Ativo'
+- Usado em selects de responsável em Tasks e Clientes
+- Fallback para `listOwners()` se Team não disponível
+
+**Validações implementadas:**
+- Email único obrigatório
+- Nome obrigatório
+- Specialty como array (múltiplas especialidades)
+- Status padrão: 'Ativo'
 
 ---
 

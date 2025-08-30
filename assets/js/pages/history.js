@@ -91,9 +91,12 @@ import { listTasks } from '../data/tasksRepo.js';
     root.className = 'history-page';
     root.innerHTML = `
       <style>
-        .history-page { padding: 32px; background: #F8F9FA; min-height: 100vh; font-size: 13px; color: #2F3B2F }
+        .history-page { min-height: 100vh; font-size: 13px; color: #2F3B2F }
+         
+         .hs-sticky-container { position: sticky; top: 40px; z-index: 10; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 32px; border-radius: 12px; }
+          .hs-content { padding: 24px 32px 32px 32px; }
         
-        .hs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 2px solid #E4E7E4 }
+        .hs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding-bottom: 8px; }
         .hs-header h2 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #014029; text-transform: uppercase; font-family: system-ui, -apple-system, sans-serif }
         .hs-header-actions { display: flex; gap: 12px; align-items: center }
         .hs-client-selector { min-width: 300px; padding: 8px 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 14px; background: #fff }
@@ -101,13 +104,13 @@ import { listTasks } from '../data/tasksRepo.js';
         .hs-client-name { font-weight: 600; color: #014029 }
         .hs-client-tier { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; text-transform: uppercase }
         
-        .hs-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px }
+        .hs-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px }
         .hs-stat-card { background: #fff; border: 1px solid #E4E7E4; border-radius: 12px; padding: 18px 16px; transition: all 0.2s ease }
         .hs-stat-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1) }
         .hs-stat-number { font-size: 24px; font-weight: 800; color: #014029; margin-bottom: 4px }
         .hs-stat-label { font-size: 10px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600 }
         
-        .hs-filters { background: #fff; border: 1px solid #E4E7E4; border-radius: 12px; padding: 16px; margin-bottom: 24px }
+        .hs-filters { background: #fff; border: 1px solid #E4E7E4; border-radius: 12px; padding: 16px; margin-bottom: 8px }
         .hs-filters-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap }
         .hs-filter-group { display: flex; gap: 4px; align-items: center }
         .hs-filter-label { font-size: 11px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px }
@@ -154,94 +157,98 @@ import { listTasks } from '../data/tasksRepo.js';
         }
       </style>
       
-      <div class="hs-header">
-        <h2 id="pageTitle">Histórico de Tarefas</h2>
-        <div class="hs-header-actions">
-          <select class="hs-client-selector" id="clientSelector">
-            <option value="">Selecione um cliente...</option>
-          </select>
-          <div class="hs-client-info" id="clientInfo" style="display: none;">
-            <span class="hs-client-name" id="clientName"></span>
-            <span class="hs-client-tier" id="clientTier"></span>
+      <div class="hs-sticky-container">
+         <div class="hs-header">
+           <h2 id="pageTitle">Histórico de Tarefas</h2>
+           <div class="hs-header-actions">
+             <select class="hs-client-selector" id="clientSelector">
+               <option value="">Selecione um cliente...</option>
+             </select>
+             <div class="hs-client-info" id="clientInfo" style="display: none;">
+               <span class="hs-client-name" id="clientName"></span>
+               <span class="hs-client-tier" id="clientTier"></span>
+             </div>
+           </div>
+         </div>
+        
+        <div class="hs-stats-grid" id="statsGrid" style="display: none;">
+          <div class="hs-stat-card">
+            <div class="hs-stat-number" id="totalTasks">0</div>
+            <div class="hs-stat-label">Total de Tarefas</div>
+          </div>
+          <div class="hs-stat-card">
+            <div class="hs-stat-number" id="completedTasks">0</div>
+            <div class="hs-stat-label">Concluídas</div>
+          </div>
+          <div class="hs-stat-card">
+            <div class="hs-stat-number" id="totalHours">0h</div>
+            <div class="hs-stat-label">Horas Trabalhadas</div>
+          </div>
+          <div class="hs-stat-card">
+            <div class="hs-stat-number" id="completionRate">0%</div>
+            <div class="hs-stat-label">Taxa de Conclusão</div>
+          </div>
+        </div>
+        
+        <div class="hs-filters" id="filtersPanel" style="display: none;">
+          <div class="hs-filters-row">
+            <div class="hs-filter-group">
+              <span class="hs-filter-label">Status:</span>
+              <select class="hs-filter-select" id="statusFilter">
+                <option value="all">Todos</option>
+                <option value="iniciada">Iniciada</option>
+                <option value="em progresso">Em progresso</option>
+                <option value="concluída">Concluída</option>
+                <option value="não realizada">Não realizada</option>
+              </select>
+            </div>
+            
+            <div class="hs-filter-group">
+              <span class="hs-filter-label">Cliente:</span>
+              <select class="hs-filter-select" id="clientFilter">
+                <option value="all">Todos</option>
+              </select>
+            </div>
+            
+            <div class="hs-filter-group">
+              <span class="hs-filter-label">Responsável:</span>
+              <select class="hs-filter-select" id="ownerFilter">
+                <option value="all">Todos</option>
+              </select>
+            </div>
+            
+            <div class="hs-filter-group">
+              <span class="hs-filter-label">Data inicial:</span>
+              <input type="date" class="hs-filter-input" id="dateFromFilter">
+            </div>
+            
+            <div class="hs-filter-group">
+              <span class="hs-filter-label">Data final:</span>
+              <input type="date" class="hs-filter-input" id="dateToFilter">
+            </div>
+            
+            <div class="hs-filter-group">
+              <span class="hs-filter-label">Intervalo rápido:</span>
+              <select class="hs-filter-select" id="quickFilter">
+                <option value="custom">Personalizado</option>
+                <option value="today">Hoje</option>
+                <option value="yesterday">Ontem</option>
+                <option value="last7">Últimos 7 dias</option>
+                <option value="last30" selected>Últimos 30 dias</option>
+                <option value="thisMonth">Este mês</option>
+                <option value="prevMonth">Mês anterior</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
       
-      <div class="hs-stats-grid" id="statsGrid" style="display: none;">
-        <div class="hs-stat-card">
-          <div class="hs-stat-number" id="totalTasks">0</div>
-          <div class="hs-stat-label">Total de Tarefas</div>
-        </div>
-        <div class="hs-stat-card">
-          <div class="hs-stat-number" id="completedTasks">0</div>
-          <div class="hs-stat-label">Concluídas</div>
-        </div>
-        <div class="hs-stat-card">
-          <div class="hs-stat-number" id="totalHours">0h</div>
-          <div class="hs-stat-label">Horas Trabalhadas</div>
-        </div>
-        <div class="hs-stat-card">
-          <div class="hs-stat-number" id="completionRate">0%</div>
-          <div class="hs-stat-label">Taxa de Conclusão</div>
-        </div>
-      </div>
-      
-      <div class="hs-filters" id="filtersPanel" style="display: none;">
-        <div class="hs-filters-row">
-          <div class="hs-filter-group">
-            <span class="hs-filter-label">Status:</span>
-            <select class="hs-filter-select" id="statusFilter">
-              <option value="all">Todos</option>
-              <option value="iniciada">Iniciada</option>
-              <option value="em progresso">Em progresso</option>
-              <option value="concluída">Concluída</option>
-              <option value="não realizada">Não realizada</option>
-            </select>
+      <div class="hs-content">
+        <div class="hs-timeline" id="timeline">
+          <div class="hs-no-client">
+            <h3>Selecione um cliente</h3>
+            <p>Escolha um cliente no seletor acima para visualizar seu histórico de tarefas.</p>
           </div>
-          
-          <div class="hs-filter-group">
-            <span class="hs-filter-label">Cliente:</span>
-            <select class="hs-filter-select" id="clientFilter">
-              <option value="all">Todos</option>
-            </select>
-          </div>
-          
-          <div class="hs-filter-group">
-            <span class="hs-filter-label">Responsável:</span>
-            <select class="hs-filter-select" id="ownerFilter">
-              <option value="all">Todos</option>
-            </select>
-          </div>
-          
-          <div class="hs-filter-group">
-            <span class="hs-filter-label">Data inicial:</span>
-            <input type="date" class="hs-filter-input" id="dateFromFilter">
-          </div>
-          
-          <div class="hs-filter-group">
-            <span class="hs-filter-label">Data final:</span>
-            <input type="date" class="hs-filter-input" id="dateToFilter">
-          </div>
-          
-          <div class="hs-filter-group">
-            <span class="hs-filter-label">Intervalo rápido:</span>
-            <select class="hs-filter-select" id="quickFilter">
-              <option value="custom">Personalizado</option>
-              <option value="today">Hoje</option>
-              <option value="yesterday">Ontem</option>
-              <option value="last7">Últimos 7 dias</option>
-              <option value="last30" selected>Últimos 30 dias</option>
-              <option value="thisMonth">Este mês</option>
-              <option value="prevMonth">Mês anterior</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      
-      <div class="hs-timeline" id="timeline">
-        <div class="hs-no-client">
-          <h3>Selecione um cliente</h3>
-          <p>Escolha um cliente no seletor acima para visualizar seu histórico de tarefas.</p>
         </div>
       </div>
     `;

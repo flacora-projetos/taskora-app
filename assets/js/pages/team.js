@@ -8,6 +8,8 @@ import {
   deleteTeamMember, 
   getTeamStats,
   searchTeamMembers,
+  calculateMemberHours,
+  updateAllMembersHours,
   TEAM_SPECIALTIES,
   TEAM_LEVELS,
   TEAM_STATUS
@@ -45,7 +47,7 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
       <style>
         /* Estilos específicos do módulo Team */
         .tm-container { max-width: 1400px; margin: 0 auto; padding: 0; }
-        .tm-sticky { position: sticky; top: 0; z-index: 10; background: transparent; padding: 32px 32px 0 32px; }
+        .tm-sticky { position: sticky; top: 40px; z-index: 10; background: transparent; padding: 32px 32px 0 32px; }
         .tm-content-section { position: relative; overflow: auto; padding: 0 32px 32px 32px; }
         
         /* Tabela unificada */
@@ -98,6 +100,10 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
         .tm-btn { padding: 8px 16px; font-size: 12px; font-weight: 600; border-radius: 6px; background: #F3F4F6; color: #374151; border: none; cursor: pointer; transition: all 0.2s ease; }
         .tm-btn:hover { background: #E5E7EB; }
         
+        /* Título */
+        .tm-header { margin-bottom: 24px; }
+        .tm-header h2 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #014029; text-transform: uppercase; font-family: system-ui, -apple-system, sans-serif; }
+        
         /* Filtros exclusivos do Team */
         .tm-filters-bar { background: #F8F9FA; border: 1px solid #E4E7E4; padding: 16px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .tm-filters-form { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
@@ -135,6 +141,10 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
         .tm-level.lead { background: #F3E8FF; color: #7C3AED; }
         .tm-level.manager { background: #FEE2E2; color: #991B1B; }
         .tm-level.director { background: #1F2937; color: #FFFFFF; }
+        /* Aliases para níveis com acentos */
+        .tm-level.senor { background: #DCFCE7; color: #166534; }
+        .tm-level.snior { background: #DCFCE7; color: #166534; }
+        .tm-level.diretor { background: #1F2937; color: #FFFFFF; }
         
         /* Botões de ação */
         .tm-actions { display: inline-flex; gap: 6px; justify-content: flex-end; width: 100%; }
@@ -177,6 +187,11 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
       <div class="tm-container">
         <!-- Área Sticky -->
         <div class="tm-sticky">
+          <!-- Título -->
+          <div class="tm-header">
+            <h2>TEAM DÁCORA</h2>
+          </div>
+          
           <!-- Filtros Exclusivos do Team -->
           <div class="tm-filters-bar">
             <div class="tm-filters-form">
@@ -368,6 +383,14 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
       
       console.log(`[Team] ${allMembers.length} membros carregados:`, allMembers.map(m => m.name));
       
+      // Calcular horas trabalhadas para cada membro
+      console.log('[Team] Calculando horas trabalhadas...');
+      for (let i = 0; i < allMembers.length; i++) {
+        const member = allMembers[i];
+        const totalHours = await calculateMemberHours(member.name);
+        allMembers[i] = { ...member, totalHours };
+      }
+      
       filteredMembers = [...allMembers];
       
       await Promise.all([
@@ -456,7 +479,7 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
     // Nível
     const levelCell = document.createElement('td');
     levelCell.className = 'tm-cell col-level';
-    const levelClass = (member.level || '').toLowerCase().replace(/[^a-z]/g, '');
+    const levelClass = (member.level || '').toLowerCase().replace(/[^a-z]/g, '').replace('ê', 'e').replace('ú', 'u');
     levelCell.innerHTML = `<span class="tm-level ${levelClass}">${member.level || 'Não definido'}</span>`;
 
     // Status
