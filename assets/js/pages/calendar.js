@@ -488,10 +488,34 @@ import { formatToBrazilian, formatToAmerican } from "../utils/dateFormat.js";
         .cal-cell{ background:#fff; border:1px solid #ECEDEA; border-radius:10px; padding:8px; overflow:hidden; min-height:112px; }
         .cal-week-hd{ display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin-bottom:12px }
         .cal-week-hd > div{ background:${COLORS.off}; border:1px solid #E6E3DF; border-radius:8px; padding:10px 12px; font-weight:900; color:#334155; font-size:12px; text-align:center }
+        .cal-nav{ display:flex; align-items:center; gap:12px; margin-top:4px; }
+        .cal-nav select{ padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:14px; color:#374151; background:#fff; cursor:pointer; }
+        .cal-nav select:focus{ outline:none; border-color:#014029; box-shadow:0 0 0 3px rgba(1,64,41,0.1); }
         @media (max-width: 900px){ .cal-cell{ min-height:130px } }
       </style>
-      <div class="cal-header" style="margin:0 0 28px 0; padding-bottom:16px; border-bottom:2px solid #E4E7E4">
-        <h2 style="margin:0; font-size:28px; font-weight:800; letter-spacing:-0.5px; color:#014029; text-transform:uppercase; font-family:system-ui, -apple-system, sans-serif">CALENDÁRIO</h2>
+      <div class="cal-header" style="margin:0 0 20px 0; padding-bottom:12px; border-bottom:2px solid #E4E7E4">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="margin:0; font-size:28px; font-weight:800; letter-spacing:-0.5px; color:#014029; text-transform:uppercase; font-family:system-ui, -apple-system, sans-serif">CALENDÁRIO</h2>
+          <div class="cal-nav">
+            <select id="cal-month-select">
+              <option value="0">Janeiro</option>
+              <option value="1">Fevereiro</option>
+              <option value="2">Março</option>
+              <option value="3">Abril</option>
+              <option value="4">Maio</option>
+              <option value="5">Junho</option>
+              <option value="6">Julho</option>
+              <option value="7">Agosto</option>
+              <option value="8">Setembro</option>
+              <option value="9">Outubro</option>
+              <option value="10">Novembro</option>
+              <option value="11">Dezembro</option>
+            </select>
+            <select id="cal-year-select">
+              <!-- Anos serão populados via JavaScript -->
+            </select>
+          </div>
+        </div>
       </div>
       <div class="cal-week-hd">
         <div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div><div>Dom</div>
@@ -500,16 +524,43 @@ import { formatToBrazilian, formatToAmerican } from "../utils/dateFormat.js";
     `;
 
     const grid = root.querySelector("#cal-grid");
-
-    (async ()=>{
-      const today = new Date();
-      const { start, end, first } = monthWindow(today);
+    const monthSelect = root.querySelector("#cal-month-select");
+    const yearSelect = root.querySelector("#cal-year-select");
+    
+    // Popular select de anos (atual ±5 anos)
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      if (year === currentYear) option.selected = true;
+      yearSelect.appendChild(option);
+    }
+    
+    // Variáveis de estado para navegação
+    let selectedMonth = new Date().getMonth();
+    let selectedYear = new Date().getFullYear();
+    
+    // Definir valores iniciais dos selects
+    monthSelect.value = selectedMonth;
+    yearSelect.value = selectedYear;
+    
+    // Função para renderizar calendário com mês/ano específicos
+    async function renderCalendar(month, year) {
+      const targetDate = new Date(year, month, 1);
+      const { start, end, first } = monthWindow(targetDate);
       const currentMonth = first.getUTCMonth();
-
+      
       const filters = (global.TaskoraFilters && typeof TaskoraFilters.get === "function") ? TaskoraFilters.get() : {};
       const rows = await listTasksByDateRange({ from: toISO(start), to: toISO(end), filters });
       const tasks = Array.isArray(rows) ? rows : [];
       let bucket = bucketizeByDay(tasks, start, end);
+      
+      return { start, end, first, currentMonth, bucket };
+    }
+
+    (async ()=>{
+      let { start, end, first, currentMonth, bucket } = await renderCalendar(selectedMonth, selectedYear);
 
       /* === Calendar grid sizing (encaixe por viewport, 6 linhas) === */
 const fitCalendarGrid = (gridEl) => {
@@ -645,6 +696,47 @@ window.addEventListener('resize', () => fitCalendarGrid(grid), { passive: true }
           }
         });
       });
+
+      // Event listeners para navegação por mês/ano
+      monthSelect.addEventListener('change', async (e) => {
+        selectedMonth = parseInt(e.target.value);
+        await updateCalendarView();
+      });
+      
+      yearSelect.addEventListener('change', async (e) => {
+        selectedYear = parseInt(e.target.value);
+        await updateCalendarView();
+      });
+      
+      // Função para atualizar a visualização do calendário
+      async function updateCalendarView() {
+        const result = await renderCalendar(selectedMonth, selectedYear);
+        start = result.start;
+        end = result.end;
+        first = result.first;
+        currentMonth = result.currentMonth;
+        bucket = result.bucket;
+        
+        // Limpar grid atual
+        grid.innerHTML = '';
+        
+        // Renderizar novo calendário
+        for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+          const iso = toISO(d);
+          const list = bucket.get(iso) || [];
+          const top = list.slice(0, MAX_PER_CELL);
+          const hidden = list.length - top.length;
+          
+          const cell = document.createElement('div');
+          cell.className = 'cal-cell';
+          cell.setAttribute('data-iso', iso);
+          cell.innerHTML = `${cellHeader(new Date(d), currentMonth)}${top.map(taskChip).join('')}${hidden > 0 ? moreLink(hidden, iso) : ''}`;
+          grid.appendChild(cell);
+        }
+        
+        // Reajustar grid
+        fitCalendarGrid(grid);
+      }
 
       // Reagir a alterações dos filtros globais (re-render da página)
       if (global.TaskoraFilters && typeof TaskoraFilters.on === "function") {

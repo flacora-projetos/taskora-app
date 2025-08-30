@@ -777,9 +777,10 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
     async function handleEdit(row){
       let clients=[], owners=[];
       try{
-        const { listClients, listOwners } = await import("../data/metaRepo.js");
+        const { listClients, listTeamMembers } = await import("../data/metaRepo.js");
         clients = await listClients();
-        owners  = await listOwners();
+        const teamMembers = await listTeamMembers();
+        owners = teamMembers.map(member => member.name);
       }catch{}
       NewTaskModal.open({
         clients, owners, isEdit:true, initial: row,
@@ -805,9 +806,10 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
       if(e) e.preventDefault();
       let clients=[], owners=[];
       try{
-        const { listClients, listOwners } = await import("../data/metaRepo.js");
+        const { listClients, listTeamMembers } = await import("../data/metaRepo.js");
         clients = await listClients();
-        owners  = await listOwners();
+        const teamMembers = await listTeamMembers();
+        owners = teamMembers.map(member => member.name);
       }catch{}
       NewTaskModal.open({
         clients, owners,

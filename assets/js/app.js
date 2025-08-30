@@ -39,7 +39,7 @@ function renderRoute() {
   const page = routes[hash] || routes["#/tasks"];
   
   // hide/show global filters based on page
-  const hideGlobalFilters = ["#/clients", "#/history", "#/tasks"].includes(hash);
+  const hideGlobalFilters = ["#/clients", "#/history", "#/tasks", "#/team"].includes(hash);
   elFilters.style.display = hideGlobalFilters ? "none" : "block";
   
   // atualiza active do menu

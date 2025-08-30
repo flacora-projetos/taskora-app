@@ -524,32 +524,55 @@ import {
      }
     
     // ============================ Eventos ============================
-     function populateResponsibleFilter() {
-       const responsibles = [...new Set(allClients.map(c => c.responsible).filter(r => r))].sort();
-       
-       // Limpar opções existentes (exceto "Todos")
-       elResponsibleFilter.innerHTML = '<option value="all">Todos</option>';
-       
-       // Adicionar responsáveis únicos
-       responsibles.forEach(responsible => {
-         const option = document.createElement('option');
-         option.value = responsible;
-         option.textContent = responsible;
-         elResponsibleFilter.appendChild(option);
-       });
-     }
+     async function populateResponsibleFilter() {
+       try {
+         // Importar função para buscar membros do Team
+         const { listTeamMembers } = await import('../data/metaRepo.js');
+         const teamMembers = await listTeamMembers();
+         const responsibles = teamMembers.map(member => member.name).sort();
+         
+         // Limpar opções existentes (exceto "Todos")
+         elResponsibleFilter.innerHTML = '<option value="all">Todos</option>';
+         
+         // Adicionar membros do Team
+         responsibles.forEach(responsible => {
+           const option = document.createElement('option');
+           option.value = responsible;
+           option.textContent = responsible;
+           elResponsibleFilter.appendChild(option);
+         });
+         
+         console.log(`[Clients] ${responsibles.length} responsáveis carregados do Team:`, responsibles);
+         
+       } catch (error) {
+         console.error('[Clients] Erro ao carregar responsáveis do Team:', error);
+         
+         // Fallback: usar responsáveis dos clientes existentes
+         const responsibles = [...new Set(allClients.map(c => c.responsible).filter(r => r))].sort();
+         
+         elResponsibleFilter.innerHTML = '<option value="all">Todos</option>';
+         responsibles.forEach(responsible => {
+           const option = document.createElement('option');
+           option.value = responsible;
+           option.textContent = responsible;
+           elResponsibleFilter.appendChild(option);
+         });
+         
+         console.warn('[Clients] Usando fallback - responsáveis dos clientes existentes');
+       }
+      }
      
      async function loadClients() {
        try {
          elTableWrap.innerHTML = '<div class="cl-loading">Carregando clientes...</div>';
          allClients = await listClients();
-         populateResponsibleFilter();
+         await populateResponsibleFilter();
          filterClients();
        } catch (error) {
          console.error('Erro ao carregar clientes:', error);
          elTableWrap.innerHTML = '<div class="cl-empty">Erro ao carregar clientes. Tente novamente.</div>';
        }
-     }
+      }
     
     // Event listeners para filtros
      elStatusFilter.addEventListener('change', (e) => {
@@ -627,7 +650,7 @@ import {
          const clientId = nameClick.getAttribute('data-client-id');
          const client = allClients.find(c => c.id === clientId);
          if (client) {
-           openClientDetailModal(client);
+           await openClientDetailModal(client);
          }
          return;
        }
@@ -642,7 +665,7 @@ import {
        if (action === 'edit') {
          const client = allClients.find(c => c.id === clientId);
          if (client) {
-           openClientModal(client);
+           await openClientModal(client);
          }
        } else if (action === 'delete') {
          if (confirm('Tem certeza que deseja excluir este cliente?')) {
@@ -657,8 +680,8 @@ import {
      });
     
     // Novo cliente
-     elNewBtn.addEventListener('click', () => {
-       openClientModal();
+     elNewBtn.addEventListener('click', async () => {
+       await openClientModal();
      });
      
      // Exportação CSV
@@ -906,7 +929,7 @@ import {
      }
     
     // ============================ Modal de Detalhes ============================
-     function openClientDetailModal(client) {
+     async function openClientDetailModal(client) {
        const modalId = 'client-detail-modal-' + Date.now();
        
        // Criar backdrop do modal
@@ -1069,11 +1092,14 @@ import {
        // Adicionar ao DOM
        document.body.appendChild(backdrop);
        
+       // Popular select de responsáveis com membros do Team
+       await populateClientResponsibleSelect();
+       
        // Event listener para editar
         const editBtn = backdrop.querySelector('#edit-client-btn');
-        editBtn.addEventListener('click', () => {
+        editBtn.addEventListener('click', async () => {
           backdrop.remove();
-          openClientModal(client);
+          await openClientModal(client);
         });
         
         // Event listener para histórico
@@ -1104,7 +1130,34 @@ import {
      }
      
      // ============================ Modal ============================
-     function openClientModal(client = null) {
+     async function populateClientResponsibleSelect() {
+       try {
+         const { listTeamMembers } = await import('../data/metaRepo.js');
+         const teamMembers = await listTeamMembers();
+         const responsibles = teamMembers.map(member => member.name).sort();
+         
+         const selectElement = document.getElementById('client-responsible-select');
+         if (selectElement) {
+           // Limpar opções existentes (exceto a primeira)
+           selectElement.innerHTML = '<option value="">Selecione um responsável...</option>';
+           
+           // Adicionar membros do Team
+           responsibles.forEach(responsible => {
+             const option = document.createElement('option');
+             option.value = responsible;
+             option.textContent = responsible;
+             selectElement.appendChild(option);
+           });
+           
+           console.log(`[Client Modal] ${responsibles.length} responsáveis carregados do Team`);
+         }
+         
+       } catch (error) {
+         console.error('[Client Modal] Erro ao carregar responsáveis do Team:', error);
+       }
+     }
+
+     async function openClientModal(client = null) {
        const isEdit = !!client;
        const modalId = 'client-modal-' + Date.now();
        
@@ -1207,7 +1260,9 @@ import {
                
                <div class="cl-form-group col-span-12">
                  <label class="cl-form-label">Responsável *</label>
-                 <input type="text" class="cl-form-input" name="responsible" required>
+                 <select class="cl-form-select" name="responsible" id="client-responsible-select" required>
+                   <option value="">Selecione um responsável...</option>
+                 </select>
                </div>
                
                <!-- Orçamentos por Plataforma -->
@@ -1319,6 +1374,9 @@ import {
        
        // Adicionar ao DOM
        document.body.appendChild(backdrop);
+       
+       // Popular select de responsáveis com membros do Team
+       await populateClientResponsibleSelect();
        
        // Preencher dados se for edição
        if (isEdit && client) {

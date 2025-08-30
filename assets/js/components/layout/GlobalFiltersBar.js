@@ -2,7 +2,7 @@
 // Paleta Dácora: terracota #993908, verde #014029, off-white #F2EFEB
 // Mantém contrato com TaskoraFilters (auto-aplicar; sem botão Aplicar)
 
-import { listClients, listOwners } from "../../data/metaRepo.js";
+import { listClients, listTeamMembers } from "../../data/metaRepo.js";
 import { db } from "../../firebase.js";
 import {
   collection, query, orderBy, limit, getDocs
@@ -249,7 +249,8 @@ export function GlobalFiltersBar(rootEl) {
   (async () => {
     try{
       const clients = await listClients();
-      const owners  = await listOwners();
+      const teamMembers = await listTeamMembers();
+      const owners = teamMembers.map(member => member.name);
       const clientEl = $("#f-client");
       const ownerEl  = $("#f-owner");
       for(const c of clients){

@@ -65,3 +65,60 @@ export async function listOwners() {
   }
   return owners.sort((a,b)=>a.localeCompare(b));
 }
+
+/**
+ * Lista membros ativos da equipe para usar como responsáveis
+ */
+export async function listTeamMembers() {
+  try {
+    console.log('[Team Integration] Buscando membros do Firebase...');
+    
+    const db = await getDb();
+    const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+    const { collection, getDocs, where, query } = fs;
+
+    // Buscar membros ativos do Team
+    const q = query(
+      collection(db, 'team'), 
+      where('status', '==', 'Ativo')
+    );
+    const snap = await getDocs(q);
+    const members = [];
+    
+    snap.forEach(d => {
+      const member = d.data();
+      if (member?.name) {
+        members.push({
+          id: d.id,
+          name: member.name,
+          email: member.email,
+          specialty: member.specialty
+        });
+      }
+    });
+
+    console.log(`[Team Integration] ${members.length} membros ativos encontrados:`, members.map(m => m.name));
+
+    // Fallback: se não houver membros ativos, usar listOwners como backup
+    if (members.length === 0) {
+      console.warn('[Team Integration] Nenhum membro ativo encontrado, usando fallback para owners');
+      const owners = await listOwners();
+      return owners.map(name => ({ id: null, name, email: null, specialty: null }));
+    }
+
+    return members.sort((a, b) => a.name.localeCompare(b.name));
+    
+  } catch (error) {
+    console.error('Erro ao buscar membros da equipe:', error);
+    
+    // Fallback final para owners
+    try {
+      console.warn('[Team Integration] Usando fallback para owners devido ao erro');
+      const owners = await listOwners();
+      return owners.map(name => ({ id: null, name, email: null, specialty: null }));
+    } catch (fallbackError) {
+      console.error('Erro no fallback para owners:', fallbackError);
+      return [];
+    }
+  }
+}

@@ -4,6 +4,44 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5] - 2025-01-21
+### 🔗 Integração Team ↔ Tasks + Navegação de Calendário
+**Integração completa entre módulos Team e Tasks com navegação aprimorada no calendário**
+
+#### Integração Team ↔ Tasks
+- **metaRepo.js:** Nova função `listTeamMembers()` para buscar membros ativos do Team
+- **Modal de Tarefas:** Campo responsável transformado de input texto para select com membros do Team
+- **Filtros de Clientes:** Filtro de responsável agora usa dados do Team em tempo real
+- **Modal de Clientes:** Campo responsável com select de membros do Team
+- **Fallback Robusto:** Sistema de fallback para `listOwners()` se Team não estiver disponível
+- **Logs Informativos:** Console logs para debug e monitoramento da integração
+
+#### Navegação de Calendário
+- **Seletores Mês/Ano:** Novos seletores no cabeçalho do calendário para navegação rápida
+- **Design Consistente:** Seletores seguem padrão visual dos filtros existentes
+- **Posicionamento:** Título "CALENDÁRIO" à esquerda, seletores à direita
+- **Funcionalidade:** Navegação instantânea entre meses e anos (±5 anos do atual)
+- **Integração:** Mantém compatibilidade com filtros globais existentes
+- **Layout Otimizado:** Espaçamento ajustado para não cortar última linha do calendário
+
+#### Correções e Melhorias
+- **Funções Assíncronas:** Correção de erros TypeScript com await em funções não-async
+- **Alinhamento Visual:** Ajuste fino no posicionamento dos seletores para melhor alinhamento
+- **Backup Automático:** Sistema de backup antes de modificações críticas
+- **Validações:** Remoção de validação de `hourlyRate` em `teamRepo.js`
+- **Imports Corrigidos:** Padronização de caminhos de importação do Firebase
+
+#### Ferramentas de Migração
+- **migrate-calendar-to-tasks.html:** Script para migrar dados de calendarEvents → tasks
+- **cleanup-legacy-collections.html:** Ferramenta segura para limpeza de coleções legadas
+- **populate-team.html:** Script para popular coleção Team com dados de exemplo
+
+#### Especificações Técnicas
+- **Seletores:** Padding 8px 12px, border #D1D5DB, border-radius 8px
+- **Focus State:** Border #014029 com box-shadow rgba(1,64,41,0.1)
+- **Responsividade:** Layout adaptável mantido em todas as telas
+- **Performance:** Renderização otimizada com funções assíncronas
+
 ## [v5.4] - 2025-01-21
 ### 🎯 Módulo de Tarefas - Cabeçalho Congelado
 **Implementação de cabeçalho sticky para melhor UX**
