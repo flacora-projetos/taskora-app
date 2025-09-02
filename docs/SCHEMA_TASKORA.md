@@ -56,6 +56,24 @@ Representa cada cliente atendido pela organização.
 - `platformSnapchatAds` *(boolean)*
 - `platformOther` *(boolean)*
 
+**Campos de Performance (implementados v5.5+):**
+- `realBilling` *(number)* → Faturamento Real mensal
+- `realLeads` *(number)* → Número Real de Leads mensais
+- `billingGoal` *(number)* → Meta de Faturamento Mensal
+- `leadsGoal` *(number)* → Meta de Leads Mensais
+- `roi` *(number, calculado automaticamente)* → ROI = Faturamento Real ÷ Soma dos Orçamentos das Plataformas
+
+**Controle de Saldo por Plataforma (implementado v5.5+):**
+- `balanceControl` *(object)* → Controle de saldo das plataformas de anúncios
+  - `metaAds` *(object)*:
+    - `lastDeposit` *(number)* → Último valor depositado
+    - `depositDate` *(string, YYYY-MM-DD)* → Data do último depósito
+    - `dailyBudget` *(number)* → Orçamento diário configurado
+    - `realBalance` *(number)* → Saldo real atual (opcional)
+  - `googleAds` *(object)* → Mesma estrutura do metaAds
+  - `tiktokAds` *(object)* → Mesma estrutura do metaAds
+  - `pinterestAds` *(object)* → Mesma estrutura do metaAds
+
 **Constantes implementadas:**
 ```javascript
 MARKETING_PLATFORMS = {
@@ -81,6 +99,45 @@ CLIENT_STATUS = {
   INATIVO: 'Inativo',
   PROSPECT: 'Prospect'
 }
+```
+
+**Cálculo Automático de ROI (v5.5+):**
+```javascript
+// Fórmula: ROI = Receita ÷ Despesa
+// Receita = Faturamento Real (realBilling)
+// Despesa = Soma dos orçamentos de todas as plataformas ativas
+
+function calculateROI(realBilling, budgets) {
+  const totalExpense = Object.values(budgets).reduce((sum, budget) => sum + (budget || 0), 0);
+  return totalExpense > 0 ? (realBilling || 0) / totalExpense : 0;
+}
+
+// Atualização automática:
+// - Recalculado quando realBilling é alterado
+// - Recalculado quando qualquer orçamento de plataforma é alterado
+// - Precisão: 2 casas decimais
+// - Retorna 0 se faturamento ou despesa total for zero
+```
+
+**Cálculo Automático de Saldo Estimado (v5.5+):**
+```javascript
+// Fórmula: Saldo Estimado = Último Depósito - (Dias Corridos × Orçamento Diário)
+// Status automático baseado no saldo estimado:
+// - 🟢 OK: Saldo > 3 dias de orçamento
+// - 🟡 Baixo: Saldo entre 0 e 3 dias de orçamento  
+// - 🔴 Esgotado: Saldo ≤ 0
+
+function calculateEstimatedBalance(lastDeposit, depositDate, dailyBudget) {
+  const today = new Date();
+  const deposit = new Date(depositDate);
+  const daysDiff = Math.floor((today - deposit) / (1000 * 3600 * 24));
+  return Math.max(0, lastDeposit - (daysDiff * dailyBudget));
+}
+
+// Atualização automática:
+// - Recalculado em tempo real ao alterar depósito, data ou orçamento diário
+// - Status visual atualizado automaticamente
+// - Suporte a saldo real manual (opcional)
 ```
 
 ---

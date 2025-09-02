@@ -1,5 +1,31 @@
 # TASKORA_GUIDE.md
 
+## 🚨 DIRETRIZES CRÍTICAS DE DESENVOLVIMENTO
+
+### ⚠️ **REGRA FUNDAMENTAL - CONFIRMAÇÃO OBRIGATÓRIA**
+
+**NUNCA INFORMAR AS MUDANÇAS FEITAS ANTES DA CONFIRMAÇÃO DO USUÁRIO QUE FORAM FEITAS DE VERDADE**
+
+#### 📋 **FLUXO OBRIGATÓRIO:**
+1. **Implementar mudanças** no código
+2. **AGUARDAR confirmação** do usuário que testou
+3. **SÓ ENTÃO** declarar sucesso ou conclusão
+4. **NUNCA assumir** que funcionou sem teste real
+
+#### ❌ **PROIBIDO:**
+- Declarar "funcionando perfeitamente" sem confirmação
+- Assumir que mudanças foram aplicadas com sucesso
+- Celebrar implementações não testadas
+- Marcar tarefas como concluídas sem validação
+
+#### ✅ **CORRETO:**
+- Implementar mudanças
+- Pedir para o usuário testar
+- Aguardar feedback real
+- Só então confirmar sucesso
+
+---
+
 ## 📌 Visão Geral
 
 O **Taskora** é a base tecnológica do aplicativo utilizado pela **Dácora**.  

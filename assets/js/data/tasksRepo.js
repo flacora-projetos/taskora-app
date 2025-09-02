@@ -224,6 +224,35 @@ function emitTasksChanged(op, id){
   } catch(_) {}
 }
 
+// Função para atualizar horas do membro no Team com retry
+async function updateTeamMemberHours(ownerName) {
+  const maxRetries = 5;
+  const retryDelay = 1000; // 1 segundo
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      if (window.TeamRepo && typeof window.TeamRepo.updateMemberHours === 'function') {
+        await window.TeamRepo.updateMemberHours(ownerName);
+        console.log(`[TasksRepo] ✅ Trigger: Horas atualizadas para ${ownerName} (tentativa ${attempt})`);
+        return true;
+      } else {
+        console.warn(`[TasksRepo] ⏳ TeamRepo não disponível (tentativa ${attempt}/${maxRetries})`);
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
+        }
+      }
+    } catch(err) {
+      console.error(`[TasksRepo] ❌ Erro na tentativa ${attempt}:`, err);
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+      }
+    }
+  }
+  
+  console.error(`[TasksRepo] 🚨 FALHA: Não foi possível atualizar horas para ${ownerName} após ${maxRetries} tentativas`);
+  return false;
+}
+
 // ==== API ============================================================
 export async function listTasks(max = 500) {
   const db = await getDb();
@@ -378,6 +407,12 @@ export async function createTask(uiPayload) {
   const toSave = await mapUiToDb(uiPayload);
   const ref = await addDoc(collection(db, 'tasks'), toSave);
   emitTasksChanged('create', ref.id);
+  
+  // Atualizar horas do membro no Team se houver owner
+  if (uiPayload.owner) {
+    await updateTeamMemberHours(uiPayload.owner);
+  }
+  
   return ref.id;
 }
 
@@ -390,6 +425,11 @@ export async function updateTask(taskId, uiPayload) {
   toSave.updatedAt = serverTimestamp();
   await updateDoc(doc(db, 'tasks', taskId), toSave);
   emitTasksChanged('update', taskId);
+  
+  // Atualizar horas do membro no Team se houver owner
+  if (uiPayload.owner) {
+    await updateTeamMemberHours(uiPayload.owner);
+  }
 }
 
 export async function deleteTask(taskId) {

@@ -4,6 +4,58 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.2] - 2025-01-31
+
+### ✅ ADICIONADO
+- **Campos de Performance:** Novos campos "Faturamento Real" e "Número Real de Leads" na seção Metas & Performance
+- **Cálculo Automático de ROI:** Implementação da fórmula ROI = Receita ÷ Despesa (Faturamento Real ÷ Soma dos Orçamentos das Plataformas)
+- **Controle de Saldo Avançado:** Sistema completo de controle de saldo por plataforma (Meta Ads, Google Ads, TikTok Ads, Pinterest Ads)
+- **Saldo Estimado Automático:** Cálculo em tempo real baseado em depósito, data e orçamento diário
+- **Status Visual de Saldo:** Indicadores automáticos (🟢 OK, 🟡 Baixo, 🔴 Esgotado) baseados no saldo estimado
+- **Atualização em Tempo Real:** ROI e saldos recalculados automaticamente ao alterar valores
+- **Validação de Dados:** ROI retorna 0 quando faturamento ou despesa total for zero
+- **Precisão Decimal:** ROI exibido com 2 casas decimais para maior precisão
+- **Persistência Firebase:** Todos os campos de performance e controle de saldo salvos automaticamente no Firestore
+- **Interface Responsiva:** Layout reorganizado para acomodar novos campos mantendo usabilidade
+
+### 🔧 CORRIGIDO
+- **Fórmula ROI:** Correção da lógica de cálculo para usar orçamentos das plataformas como despesa
+- **Sincronização de Dados:** Garantia de atualização em tempo real entre interface e banco de dados
+- **Validação de Campos:** Tratamento adequado de valores nulos e zero nos cálculos
+
+### 📚 DOCUMENTADO
+- **Schema Atualizado:** Documentação dos novos campos de performance em SCHEMA_TASKORA.md
+- **Lógica de Cálculo:** Documentação detalhada da fórmula e comportamento do ROI automático
+- **Changelog:** Registro completo das funcionalidades implementadas
+
+## [v5.5.1] - 2025-01-30
+
+### ✅ ADICIONADO
+- **Team Integration Completa:** Integração total entre módulos Team e Tasks
+- **Trigger Automático:** Atualização automática de horas no Firebase Team ao criar/editar tarefas
+- **Retry Mechanism:** Sistema de retry inteligente para garantir sincronização
+- **Sticky Headers:** Implementação de cabeçalhos fixos com buffer zone (40px)
+- **Título Team:** Adicionado título "TEAM DÁCORA" na página Team
+- **Pílulas de Nível:** Corrigidas pílulas para todos os níveis (Sênior, Diretor, etc.)
+- **Campo Horas:** Implementação de cálculo automático de horas trabalhadas por membro
+- **Select de Membros:** Substituição de input texto por select no modal de tarefas
+- **Validações:** Garantia de responsável válido nas tarefas
+
+### 🔧 CORRIGIDO
+- **Overflow Sticky:** Solução para containers sticky com buffer zone positivo
+- **Acentos em Níveis:** Normalização de acentos para classes CSS
+- **Timing de Carregamento:** Correção de problemas de timing entre módulos
+- **Persistência de Dados:** Garantia de salvamento no Firebase
+- **Interface Responsiva:** Melhorias em espaçamentos e layouts
+
+### 🗑️ REMOVIDO
+- **Tema Escuro:** Remoção completa do sistema de tema escuro
+- **Arquivos Órfãos:** Limpeza de referências e comentários desnecessários
+
+### 📚 DOCUMENTADO
+- **Soluções Técnicas:** Documentação de buffer zone em TASKORA_GUIDE.md
+- **Padrões:** Estabelecimento de padrões para sticky containers
+
 ## [v5.5] - 2025-01-21
 ### 🔗 Integração Team ↔ Tasks + Navegação de Calendário
 **Integração completa entre módulos Team e Tasks com navegação aprimorada no calendário**

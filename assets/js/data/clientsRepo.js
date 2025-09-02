@@ -103,6 +103,40 @@ async function mapUiToDb(uiPayload) {
     documentLinks: uiPayload.documentLinks || '',
     notes: uiPayload.notes || '',
     tags: Array.isArray(uiPayload.tags) ? uiPayload.tags : [],
+    // Metas e Performance
+    billingGoal: uiPayload.billingGoal || null,
+    realBilling: uiPayload.realBilling || null,
+    monthlyLeads: uiPayload.monthlyLeads || null,
+    realLeads: uiPayload.realLeads || null,
+    conversionRate: uiPayload.conversionRate || null,
+    currentROI: uiPayload.currentROI || null,
+    // Controle de Saldo
+    balanceControl: {
+      metaAds: {
+        lastDeposit: parseFloat(uiPayload.balanceControl?.metaAds?.lastDeposit) || 0,
+        depositDate: uiPayload.balanceControl?.metaAds?.depositDate || null,
+        dailyBudget: parseFloat(uiPayload.balanceControl?.metaAds?.dailyBudget) || 0,
+        realBalance: parseFloat(uiPayload.balanceControl?.metaAds?.realBalance) || 0
+      },
+      googleAds: {
+        lastDeposit: parseFloat(uiPayload.balanceControl?.googleAds?.lastDeposit) || 0,
+        depositDate: uiPayload.balanceControl?.googleAds?.depositDate || null,
+        dailyBudget: parseFloat(uiPayload.balanceControl?.googleAds?.dailyBudget) || 0,
+        realBalance: parseFloat(uiPayload.balanceControl?.googleAds?.realBalance) || 0
+      },
+      tiktokAds: {
+        lastDeposit: parseFloat(uiPayload.balanceControl?.tiktokAds?.lastDeposit) || 0,
+        depositDate: uiPayload.balanceControl?.tiktokAds?.depositDate || null,
+        dailyBudget: parseFloat(uiPayload.balanceControl?.tiktokAds?.dailyBudget) || 0,
+        realBalance: parseFloat(uiPayload.balanceControl?.tiktokAds?.realBalance) || 0
+      },
+      pinterestAds: {
+        lastDeposit: parseFloat(uiPayload.balanceControl?.pinterestAds?.lastDeposit) || 0,
+        depositDate: uiPayload.balanceControl?.pinterestAds?.depositDate || null,
+        dailyBudget: parseFloat(uiPayload.balanceControl?.pinterestAds?.dailyBudget) || 0,
+        realBalance: parseFloat(uiPayload.balanceControl?.pinterestAds?.realBalance) || 0
+      }
+    },
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   };
@@ -150,6 +184,40 @@ async function mapDbToUi(docSnap) {
     documentLinks: data.documentLinks || '',
     notes: data.notes || '',
     tags: data.tags || [],
+    // Metas e Performance
+    billingGoal: data.billingGoal || null,
+    realBilling: data.realBilling || null,
+    monthlyLeads: data.monthlyLeads || null,
+    realLeads: data.realLeads || null,
+    conversionRate: data.conversionRate || null,
+    currentROI: data.currentROI || null,
+    // Controle de Saldo
+    balanceControl: {
+      metaAds: {
+        lastDeposit: data.balanceControl?.metaAds?.lastDeposit || 0,
+        depositDate: data.balanceControl?.metaAds?.depositDate || null,
+        dailyBudget: data.balanceControl?.metaAds?.dailyBudget || 0,
+        realBalance: data.balanceControl?.metaAds?.realBalance || 0
+      },
+      googleAds: {
+        lastDeposit: data.balanceControl?.googleAds?.lastDeposit || 0,
+        depositDate: data.balanceControl?.googleAds?.depositDate || null,
+        dailyBudget: data.balanceControl?.googleAds?.dailyBudget || 0,
+        realBalance: data.balanceControl?.googleAds?.realBalance || 0
+      },
+      tiktokAds: {
+        lastDeposit: data.balanceControl?.tiktokAds?.lastDeposit || 0,
+        depositDate: data.balanceControl?.tiktokAds?.depositDate || null,
+        dailyBudget: data.balanceControl?.tiktokAds?.dailyBudget || 0,
+        realBalance: data.balanceControl?.tiktokAds?.realBalance || 0
+      },
+      pinterestAds: {
+        lastDeposit: data.balanceControl?.pinterestAds?.lastDeposit || 0,
+        depositDate: data.balanceControl?.pinterestAds?.depositDate || null,
+        dailyBudget: data.balanceControl?.pinterestAds?.dailyBudget || 0,
+        realBalance: data.balanceControl?.pinterestAds?.realBalance || 0
+      }
+    },
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     orgId: data.orgId || null

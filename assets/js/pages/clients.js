@@ -966,6 +966,78 @@ import {
             .cl-btn-history { background: #0EA5E9; color: #fff; }
              .cl-btn-history:hover { background: #0284C7; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(14,165,233,0.3); }
            .cl-single-column { grid-column: span 2; }
+           
+           /* Estilos para Controle de Saldo */
+           .cl-balance-platforms { display: flex; flex-direction: column; gap: 12px; }
+           .cl-balance-platform { background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; padding: 12px; }
+           .cl-balance-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+           .cl-balance-platform-name { font-size: 13px; font-weight: 600; color: #374151; }
+           .cl-balance-status { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+           .cl-balance-status.good { background: #D1FAE5; color: #065F46; }
+           .cl-balance-status.low { background: #FEF3C7; color: #92400E; }
+           .cl-balance-status.depleted { background: #FEE2E2; color: #991B1B; }
+           .cl-balance-details { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+           .cl-balance-item { display: flex; flex-direction: column; }
+           .cl-balance-label { font-size: 10px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+           .cl-balance-value { font-size: 12px; color: #374151; font-weight: 500; }
+           .cl-balance-value.negative { color: #DC2626; font-weight: 600; }
+           
+           /* Estilos para formulário de controle de saldo */
+           .cl-balance-form-grid {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+             gap: 20px;
+             margin-top: 12px;
+           }
+           
+           .cl-balance-form-platform {
+             background: #f8fafc;
+             border: 1px solid #e2e8f0;
+             border-radius: 8px;
+             padding: 16px;
+           }
+           
+           .cl-balance-form-platform-title {
+             font-size: 13px;
+             font-weight: 600;
+             color: #374151;
+             margin: 0 0 12px 0;
+             padding-bottom: 8px;
+             border-bottom: 1px solid #e2e8f0;
+           }
+           
+           .cl-balance-form-fields {
+             display: grid;
+             grid-template-columns: 1fr 1fr;
+             gap: 12px;
+           }
+           
+           .cl-balance-form-fields .cl-form-group {
+             margin: 0;
+           }
+           
+           .cl-balance-form-fields .cl-form-label {
+             font-size: 11px;
+             font-weight: 500;
+             color: #6b7280;
+             margin-bottom: 4px;
+             display: block;
+           }
+           
+           .cl-balance-form-fields .cl-form-input {
+             width: 100%;
+             padding: 6px 8px;
+             border: 1px solid #d1d5db;
+             border-radius: 4px;
+             font-size: 12px;
+             background: white;
+           }
+           
+           .cl-balance-form-fields .cl-form-input:focus {
+             outline: none;
+             border-color: #3b82f6;
+             box-shadow: 0 0 0 1px #3b82f6;
+           }
          </style>
          
          <div class="cl-detail-modal" id="${modalId}">
@@ -983,6 +1055,110 @@ import {
            
            <div class="cl-detail-body">
              <div class="cl-detail-grid">
+               <!-- Metas e Performance -->
+               <div class="cl-detail-section">
+                 <h4 class="cl-detail-section-title">📊 Metas & Performance</h4>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">Meta de Faturamento Mensal</div>
+                   <div class="cl-detail-value ${!client.billingGoal ? 'empty' : ''}">
+                     ${client.billingGoal ? `R$ ${parseFloat(client.billingGoal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'Não definida'}
+                   </div>
+                 </div>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">Faturamento Real</div>
+                   <div class="cl-detail-value ${!client.realBilling ? 'empty' : ''}">
+                     ${client.realBilling ? `R$ ${parseFloat(client.realBilling).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'Não informado'}
+                   </div>
+                 </div>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">Meta de Leads</div>
+                   <div class="cl-detail-value ${!client.monthlyLeads ? 'empty' : ''}">${client.monthlyLeads || 'Não informado'}</div>
+                 </div>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">Número Real de Leads</div>
+                   <div class="cl-detail-value ${!client.realLeads ? 'empty' : ''}">${client.realLeads || 'Não informado'}</div>
+                 </div>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">Taxa de Conversão</div>
+                   <div class="cl-detail-value ${!client.conversionRate ? 'empty' : ''}">
+                     ${client.conversionRate ? `${client.conversionRate}%` : 'Não informada'}
+                   </div>
+                 </div>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">ROI Calculado</div>
+                   <div class="cl-detail-value ${!client.realBilling || !client.budgets ? 'empty' : ''}">
+                     ${(() => {
+                       if (!client.realBilling || !client.budgets) return 'Não calculado';
+                       const roi = calculateROI(client.realBilling, client.budgets);
+                       return roi > 0 ? `${roi.toFixed(2)}` : 'Não calculado';
+                     })()}
+                   </div>
+                 </div>
+               </div>
+               
+               <!-- Controle de Saldo -->
+               <div class="cl-detail-section">
+                 <h4 class="cl-detail-section-title">💰 Controle de Saldo</h4>
+                 ${client.balanceControl ? `
+                   <div class="cl-balance-platforms">
+                     ${['metaAds', 'googleAds', 'tiktokAds', 'pinterestAds'].map(platform => {
+                       const balance = client.balanceControl[platform];
+                       if (!balance || (!balance.lastDeposit && !balance.dailyBudget)) return '';
+                       
+                       const daysSinceDeposit = balance.depositDate ? 
+                         Math.floor((new Date() - new Date(balance.depositDate)) / (1000 * 60 * 60 * 24)) : 0;
+                       const estimatedBalance = balance.lastDeposit - (daysSinceDeposit * balance.dailyBudget);
+                       
+                       const platformNames = {
+                         metaAds: 'Meta Ads (Facebook/Instagram)',
+                         googleAds: 'Google Ads',
+                         tiktokAds: 'TikTok Ads',
+                         pinterestAds: 'Pinterest Ads'
+                       };
+                       
+                       return `
+                           <div class="cl-balance-platform">
+                             <div class="cl-balance-header">
+                               <span class="cl-balance-platform-name">${platformNames[platform]}</span>
+                               <span class="cl-balance-status ${estimatedBalance <= 0 ? 'depleted' : estimatedBalance < balance.dailyBudget * 3 ? 'low' : 'good'}">
+                                 ${estimatedBalance <= 0 ? '🔴 Esgotado' : estimatedBalance < balance.dailyBudget * 3 ? '🟡 Baixo' : '🟢 OK'}
+                               </span>
+                             </div>
+                             <div class="cl-balance-details">
+                               <div class="cl-balance-item">
+                                 <span class="cl-balance-label">Último Depósito:</span>
+                                 <span class="cl-balance-value">${formatCurrency(balance.lastDeposit)} em ${formatDate(balance.depositDate)}</span>
+                               </div>
+                               <div class="cl-balance-item">
+                                 <span class="cl-balance-label">Orçamento Diário:</span>
+                                 <span class="cl-balance-value">${formatCurrency(balance.dailyBudget)}</span>
+                               </div>
+                               <div class="cl-balance-item">
+                                 <span class="cl-balance-label">Dias Corridos:</span>
+                                 <span class="cl-balance-value">${daysSinceDeposit} dias</span>
+                               </div>
+                               <div class="cl-balance-item">
+                                 <span class="cl-balance-label">Saldo Estimado:</span>
+                                 <span class="cl-balance-value ${estimatedBalance <= 0 ? 'negative' : ''}">${formatCurrency(Math.max(0, estimatedBalance))}</span>
+                               </div>
+                               ${balance.realBalance !== undefined ? `
+                                 <div class="cl-balance-item">
+                                   <span class="cl-balance-label">Saldo Real:</span>
+                                   <span class="cl-balance-value ${balance.realBalance <= 0 ? 'negative' : ''}">${formatCurrency(Math.max(0, balance.realBalance))}</span>
+                                 </div>
+                               ` : ''}
+                           </div>
+                         </div>
+                       `;
+                     }).filter(Boolean).join('')}
+                   </div>
+                 ` : `
+                   <div class="cl-detail-item">
+                     <div class="cl-detail-value empty">Nenhum controle de saldo configurado</div>
+                   </div>
+                 `}
+               </div>
+               
                <!-- Informações Básicas -->
                <div class="cl-detail-section">
                  <h4 class="cl-detail-section-title">Informações Básicas</h4>
@@ -1265,6 +1441,134 @@ import {
                  </select>
                </div>
                
+               <!-- Metas e Performance -->
+               <div class="col-span-12">
+                 <h4 style="margin: 16px 0 12px 0; font-size: 14px; font-weight: 600; color: #374151;">📊 Metas & Performance</h4>
+                 
+                 <div class="cl-form-group col-span-3">
+                   <label class="cl-form-label">Meta Faturamento Mensal</label>
+                   <input type="number" class="cl-form-input" name="billingGoal" placeholder="0.00" step="0.01" min="0">
+                 </div>
+                 <div class="cl-form-group col-span-3">
+                   <label class="cl-form-label">Faturamento Real</label>
+                   <input type="number" class="cl-form-input" name="realBilling" placeholder="0.00" step="0.01" min="0">
+                 </div>
+                 <div class="cl-form-group col-span-3">
+                   <label class="cl-form-label">Meta de Leads</label>
+                   <input type="number" class="cl-form-input" name="monthlyLeads" placeholder="0" min="0">
+                 </div>
+                 <div class="cl-form-group col-span-3">
+                   <label class="cl-form-label">Número Real de Leads</label>
+                   <input type="number" class="cl-form-input" name="realLeads" placeholder="0" min="0">
+                 </div>
+                 <div class="cl-form-group col-span-6">
+                   <label class="cl-form-label">Taxa Conversão (%)</label>
+                   <input type="number" class="cl-form-input" name="conversionRate" placeholder="0.00" step="0.01" min="0" max="100">
+                 </div>
+                 <div class="cl-form-group col-span-6">
+                   <label class="cl-form-label">ROI - Calculado Automaticamente</label>
+                   <input type="number" class="cl-form-input" name="currentROI" placeholder="0.00" step="0.01" readonly style="background-color: #f9fafb; cursor: not-allowed;">
+                 </div>
+               </div>
+               
+               <!-- Controle de Saldo -->
+               <div class="col-span-12">
+                 <h4 style="margin: 16px 0 12px 0; font-size: 14px; font-weight: 600; color: #374151;">💰 Controle de Saldo</h4>
+                 <div class="cl-balance-form-grid">
+                   <!-- Meta Ads -->
+                   <div class="cl-balance-form-platform">
+                     <h5 class="cl-balance-form-platform-title">Meta Ads</h5>
+                     <div class="cl-balance-form-fields">
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Último Depósito (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_metaAds_lastDeposit" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Data do Depósito</label>
+                         <input type="date" class="cl-form-input" name="balance_metaAds_depositDate">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Orçamento Diário (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_metaAds_dailyBudget" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Saldo Real (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_metaAds_realBalance" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                     </div>
+                   </div>
+                   
+                   <!-- Google Ads -->
+                   <div class="cl-balance-form-platform">
+                     <h5 class="cl-balance-form-platform-title">Google Ads</h5>
+                     <div class="cl-balance-form-fields">
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Último Depósito (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_googleAds_lastDeposit" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Data do Depósito</label>
+                         <input type="date" class="cl-form-input" name="balance_googleAds_depositDate">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Orçamento Diário (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_googleAds_dailyBudget" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Saldo Real (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_googleAds_realBalance" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                     </div>
+                   </div>
+                   
+                   <!-- TikTok Ads -->
+                   <div class="cl-balance-form-platform">
+                     <h5 class="cl-balance-form-platform-title">TikTok Ads</h5>
+                     <div class="cl-balance-form-fields">
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Último Depósito (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_tiktokAds_lastDeposit" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Data do Depósito</label>
+                         <input type="date" class="cl-form-input" name="balance_tiktokAds_depositDate">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Orçamento Diário (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_tiktokAds_dailyBudget" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Saldo Real (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_tiktokAds_realBalance" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                     </div>
+                   </div>
+                   
+                   <!-- Pinterest Ads -->
+                   <div class="cl-balance-form-platform">
+                     <h5 class="cl-balance-form-platform-title">Pinterest Ads</h5>
+                     <div class="cl-balance-form-fields">
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Último Depósito (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_pinterestAds_lastDeposit" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Data do Depósito</label>
+                         <input type="date" class="cl-form-input" name="balance_pinterestAds_depositDate">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Orçamento Diário (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_pinterestAds_dailyBudget" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                       <div class="cl-form-group">
+                         <label class="cl-form-label">Saldo Real (R$)</label>
+                         <input type="number" class="cl-form-input" name="balance_pinterestAds_realBalance" placeholder="0.00" step="0.01" min="0">
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               
                <!-- Orçamentos por Plataforma -->
                <div class="col-span-12">
                  <h4 style="margin: 16px 0 12px 0; font-size: 14px; font-weight: 600; color: #374151;">Orçamentos Mensais (BRL)</h4>
@@ -1393,6 +1697,32 @@ import {
          form.documentLinks.value = client.documentLinks || '';
          form.notes.value = client.notes || '';
          
+         // Preencher campos de metas e performance
+         form.billingGoal.value = client.billingGoal || '';
+         form.realBilling.value = client.realBilling || '';
+         form.monthlyLeads.value = client.monthlyLeads || '';
+         form.realLeads.value = client.realLeads || '';
+         form.conversionRate.value = client.conversionRate || '';
+         form.currentROI.value = client.currentROI || '';
+         
+         // Preencher campos de controle de saldo
+         if (client.balanceControl) {
+           Object.keys(client.balanceControl).forEach(platformKey => {
+             const balance = client.balanceControl[platformKey];
+             if (balance) {
+               const depositInput = form.querySelector(`[name="balance_${platformKey}_lastDeposit"]`);
+               const dateInput = form.querySelector(`[name="balance_${platformKey}_depositDate"]`);
+               const dailyInput = form.querySelector(`[name="balance_${platformKey}_dailyBudget"]`);
+               const realInput = form.querySelector(`[name="balance_${platformKey}_realBalance"]`);
+               
+               if (depositInput) depositInput.value = balance.lastDeposit || '';
+               if (dateInput) dateInput.value = balance.depositDate || '';
+               if (dailyInput) dailyInput.value = balance.dailyBudget || '';
+               if (realInput) realInput.value = balance.realBalance || '';
+             }
+           });
+         }
+         
          // Preencher orçamentos
          if (client.budgets) {
            Object.keys(client.budgets).forEach(platform => {
@@ -1439,6 +1769,24 @@ import {
            // Coletar plataformas ativas
            const activePlatforms = formData.getAll('activePlatforms');
            
+           // Coletar dados de controle de saldo
+           const balanceControl = {};
+           ['metaAds', 'googleAds', 'tiktokAds', 'pinterestAds'].forEach(platform => {
+             const deposit = formData.get(`balance_${platform}_lastDeposit`);
+             const date = formData.get(`balance_${platform}_depositDate`);
+             const daily = formData.get(`balance_${platform}_dailyBudget`);
+             const actual = formData.get(`balance_${platform}_realBalance`);
+             
+             if (deposit || date || daily || actual) {
+               balanceControl[platform] = {
+                 lastDeposit: deposit ? parseFloat(deposit) : 0,
+                 depositDate: date || null,
+                 dailyBudget: daily ? parseFloat(daily) : 0,
+                 realBalance: actual ? parseFloat(actual) : null
+               };
+             }
+           });
+           
            // Preparar payload
            const payload = {
              name: formData.get('name'),
@@ -1453,7 +1801,16 @@ import {
              budgets: budgets,
              activePlatforms: activePlatforms,
              documentLinks: formData.get('documentLinks'),
-             notes: formData.get('notes')
+             notes: formData.get('notes'),
+             // Metas e Performance
+             billingGoal: formData.get('billingGoal') ? parseFloat(formData.get('billingGoal')) : null,
+             realBilling: formData.get('realBilling') ? parseFloat(formData.get('realBilling')) : null,
+             monthlyLeads: formData.get('monthlyLeads') ? parseInt(formData.get('monthlyLeads')) : null,
+             realLeads: formData.get('realLeads') ? parseInt(formData.get('realLeads')) : null,
+             conversionRate: formData.get('conversionRate') ? parseFloat(formData.get('conversionRate')) : null,
+             currentROI: formData.get('currentROI') ? parseFloat(formData.get('currentROI')) : null,
+             // Controle de Saldo
+             balanceControl: Object.keys(balanceControl).length > 0 ? balanceControl : null
            };
            
            // Salvar
@@ -1480,6 +1837,126 @@ import {
          }
        });
      }
+    
+    // Função para calcular saldo estimado automaticamente
+    function calculateEstimatedBalance(lastDeposit, depositDate, dailyBudget) {
+      if (!lastDeposit || !depositDate || !dailyBudget) {
+        return 0;
+      }
+      
+      const today = new Date();
+      const deposit = new Date(depositDate);
+      
+      // Calcular diferença em dias
+      const timeDiff = today.getTime() - deposit.getTime();
+      const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+      
+      // Calcular saldo estimado
+      const estimatedBalance = lastDeposit - (daysDiff * dailyBudget);
+      
+      return Math.max(0, estimatedBalance);
+    }
+    
+    // Função para calcular ROI automaticamente
+    function calculateROI(realBilling, budgets) {
+      if (!realBilling || realBilling <= 0) {
+        return 0;
+      }
+      
+      // Calcular despesa total dos orçamentos das plataformas
+      let totalBudget = 0;
+      if (budgets && typeof budgets === 'object') {
+        Object.values(budgets).forEach(budget => {
+          totalBudget += parseFloat(budget) || 0;
+        });
+      }
+      
+      if (totalBudget <= 0) {
+        return 0;
+      }
+      
+      // Calcular ROI: Receita / Despesa
+      const roi = realBilling / totalBudget;
+      return Math.round(roi * 100) / 100; // Arredondar para 2 casas decimais
+    }
+    
+    // Função para atualizar ROI em tempo real
+    function updateROI() {
+      const form = document.querySelector('#clientModal form');
+      if (!form) return;
+      
+      const realBillingInput = form.querySelector('[name="realBilling"]');
+      const roiInput = form.querySelector('[name="currentROI"]');
+      
+      if (!realBillingInput || !roiInput) return;
+      
+      const realBilling = parseFloat(realBillingInput.value) || 0;
+      
+      // Coletar orçamentos das plataformas
+      const budgets = {};
+      const platforms = ['metaAds', 'googleAds', 'tiktokAds', 'pinterestAds'];
+      
+      platforms.forEach(platform => {
+        const budgetInput = form.querySelector(`[name="budgets[${platform}]"]`);
+        if (budgetInput && budgetInput.value) {
+          budgets[platform] = parseFloat(budgetInput.value) || 0;
+        }
+      });
+      
+      const roi = calculateROI(realBilling, budgets);
+      roiInput.value = roi.toFixed(2);
+    }
+    
+    // Função para atualizar saldos estimados em tempo real
+    function updateEstimatedBalances() {
+      const balanceItems = document.querySelectorAll('.cl-balance-platform');
+      
+      balanceItems.forEach(item => {
+        const depositInput = item.querySelector('[name*="_deposit"]');
+        const dateInput = item.querySelector('[name*="_date"]');
+        const dailyInput = item.querySelector('[name*="_daily"]');
+        const estimatedDisplay = item.querySelector('.estimated-balance');
+        
+        if (depositInput && dateInput && dailyInput && estimatedDisplay) {
+          const lastDeposit = parseFloat(depositInput.value) || 0;
+          const depositDate = dateInput.value;
+          const dailyBudget = parseFloat(dailyInput.value) || 0;
+          
+          const estimatedBalance = calculateEstimatedBalance(lastDeposit, depositDate, dailyBudget);
+          estimatedDisplay.textContent = formatCurrency(estimatedBalance);
+          
+          // Atualizar status visual
+          const statusElement = item.querySelector('.cl-balance-status');
+          if (statusElement) {
+            statusElement.className = 'cl-balance-status';
+            if (estimatedBalance <= 0) {
+              statusElement.classList.add('depleted');
+              statusElement.textContent = '🔴 Esgotado';
+            } else if (estimatedBalance < dailyBudget * 3) {
+              statusElement.classList.add('low');
+              statusElement.textContent = '🟡 Baixo';
+            } else {
+              statusElement.classList.add('good');
+              statusElement.textContent = '🟢 OK';
+            }
+          }
+        }
+      });
+      
+
+    }
+    
+    // Adicionar listeners para atualização automática nos formulários
+    document.addEventListener('input', (e) => {
+      if (e.target.matches('[name*="balance_"][name*="_deposit"], [name*="balance_"][name*="_date"], [name*="balance_"][name*="_daily"]')) {
+        setTimeout(updateEstimatedBalances, 100); // Pequeno delay para garantir que o valor foi atualizado
+      }
+      
+      // Atualizar ROI quando faturamento real ou orçamentos das plataformas forem alterados
+      if (e.target.matches('[name="realBilling"], [name*="budgets["]')) {
+        setTimeout(updateROI, 100);
+      }
+    });
     
     // Carregar dados iniciais
     loadClients();

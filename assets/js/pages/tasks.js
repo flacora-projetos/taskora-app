@@ -7,6 +7,7 @@ import {
   collection, query, orderBy, limit, getDocs,
   addDoc, updateDoc, deleteDoc, doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { createTask, updateTask } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
 import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 
@@ -815,12 +816,20 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
         clients, owners,
         async onOk(payload){
           try{
-            const clean = noUndef({ ...payload, createdAt: serverTimestamp() }); // 🔧
-            const docRef = await addDoc(collection(db,"tasks"), clean);
+            console.log('[Tasks] 🚀 Criando tarefa:', payload);
+            const taskId = await createTask(payload);
             showCenterToast("Tarefa criada com sucesso");
-            // insere no topo visual
-            allRows.unshift({ id: docRef.id, ...clean, createdAt: {seconds: Math.floor(Date.now()/1000)} });
-            page = 0; renderTableSlice();
+            console.log('[Tasks] ✅ Tarefa criada com ID:', taskId);
+            
+            // Adicionar tarefa localmente para exibição imediata
+            const newTask = { 
+              id: taskId, 
+              ...payload, 
+              createdAt: { seconds: Math.floor(Date.now() / 1000) } 
+            };
+            allRows.unshift(newTask);
+            page = 0; 
+            renderTableSlice();
           }catch(err){
             console.error("[Tasks] Erro ao criar tarefa:", err);
             alert("Falha ao criar tarefa. Veja o console para detalhes.");

@@ -435,7 +435,36 @@ export async function updateAllMembersHours() {
   }
 }
 
+/**
+ * Atualiza horas de um membro específico
+ */
+export async function updateMemberHours(memberName) {
+  try {
+    const members = await listTeamMembers();
+    const member = members.find(m => m.name === memberName);
+    
+    if (member) {
+      const totalHours = await calculateMemberHours(member.name);
+      await updateMemberStats(member.id, { totalHours });
+      console.log(`[TeamRepo] Horas atualizadas para ${member.name}: ${totalHours}h`);
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('Erro ao atualizar horas do membro:', error);
+    throw error;
+  }
+}
+
 // Inicializa o listener automaticamente
 if (typeof window !== 'undefined') {
   initTeamListener();
+  
+  // Expor funções globalmente para integração com outros módulos
+  window.TeamRepo = {
+    updateMemberHours,
+    calculateMemberHours,
+    updateMemberStats
+  };
 }

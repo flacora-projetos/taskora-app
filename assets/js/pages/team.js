@@ -9,6 +9,7 @@ import {
   getTeamStats,
   searchTeamMembers,
   calculateMemberHours,
+  updateMemberStats,
   updateAllMembersHours,
   TEAM_SPECIALTIES,
   TEAM_LEVELS,
@@ -383,11 +384,18 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
       
       console.log(`[Team] ${allMembers.length} membros carregados:`, allMembers.map(m => m.name));
       
-      // Calcular horas trabalhadas para cada membro
-      console.log('[Team] Calculando horas trabalhadas...');
+      // Calcular e persistir horas trabalhadas para cada membro
+      console.log('[Team] Calculando e salvando horas trabalhadas...');
       for (let i = 0; i < allMembers.length; i++) {
         const member = allMembers[i];
         const totalHours = await calculateMemberHours(member.name);
+        
+        // Persistir no Firebase se as horas mudaram
+        if (member.totalHours !== totalHours) {
+          await updateMemberStats(member.id, { totalHours });
+          console.log(`[Team] Horas atualizadas para ${member.name}: ${totalHours}h`);
+        }
+        
         allMembers[i] = { ...member, totalHours };
       }
       
