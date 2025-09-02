@@ -57,6 +57,13 @@ export const CLIENT_STATUS = {
   PROSPECT: 'Prospect'
 };
 
+// Formas de pagamento
+export const PAYMENT_METHODS = {
+  BOLETO: 'Boleto',
+  PIX: 'PIX',
+  CREDIT_CARD: 'Cartão de Crédito'
+};
+
 // Mapear dados da UI para o banco
 async function mapUiToDb(uiPayload) {
   const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
@@ -110,6 +117,8 @@ async function mapUiToDb(uiPayload) {
     realLeads: uiPayload.realLeads || null,
     conversionRate: uiPayload.conversionRate || null,
     currentROI: uiPayload.currentROI || null,
+    // Forma de Pagamento
+    paymentMethod: uiPayload.paymentMethod || 'BOLETO',
     // Controle de Saldo
     balanceControl: {
       metaAds: {
@@ -191,6 +200,8 @@ async function mapDbToUi(docSnap) {
     realLeads: data.realLeads || null,
     conversionRate: data.conversionRate || null,
     currentROI: data.currentROI || null,
+    // Forma de Pagamento
+    paymentMethod: data.paymentMethod || 'BOLETO',
     // Controle de Saldo
     balanceControl: {
       metaAds: {

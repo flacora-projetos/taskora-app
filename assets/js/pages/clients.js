@@ -11,7 +11,8 @@ import {
   getResponsibles,
   MARKETING_PLATFORMS,
   CLIENT_TIERS,
-  CLIENT_STATUS
+  CLIENT_STATUS,
+  PAYMENT_METHODS
 } from "../data/clientsRepo.js";
 
 (function (global) {
@@ -172,6 +173,37 @@ import {
         .cl-platforms { display: flex; flex-wrap: wrap; gap: 2px }
         .cl-platform-tag { background: #F3F4F6; color: #374151; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 500 }
         
+        /* Flags de Status do Saldo */
+        .balance-flag { 
+          display: inline-flex; 
+          align-items: center; 
+          justify-content: center; 
+          width: 16px; 
+          height: 16px; 
+          border-radius: 50%; 
+          margin-left: 6px; 
+          font-size: 10px; 
+          font-weight: 700; 
+          cursor: help; 
+          transition: all 0.2s ease;
+        }
+        .balance-flag:hover { 
+          transform: scale(1.1); 
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .balance-flag.status-ok { 
+          background: #10B981; 
+          color: #fff; 
+        }
+        .balance-flag.status-low { 
+          background: #F59E0B; 
+          color: #fff; 
+        }
+        .balance-flag.status-depleted { 
+          background: #EF4444; 
+          color: #fff; 
+        }
+        
         .col-name { width: 25% }
         .col-tier { width: 12% }
         .col-status { width: 10% }
@@ -280,13 +312,12 @@ import {
                 </div>
                 
                 <div class="cl-filter-group">
-                  <span class="cl-filter-label">Plataformas:</span>
-                  <select class="cl-filter-select" id="platformCountFilter">
+                  <span class="cl-filter-label">Forma de Pagamento:</span>
+                  <select class="cl-filter-select" id="paymentMethodFilter">
                     <option value="all">Todas</option>
-                    <option value="none">Nenhuma</option>
-                    <option value="1-2">1-2 plataformas</option>
-                    <option value="3-5">3-5 plataformas</option>
-                    <option value="6+">6+ plataformas</option>
+                    <option value="BOLETO">Boleto</option>
+                    <option value="PIX">PIX</option>
+                    <option value="CREDIT_CARD">Cartão de Crédito</option>
                   </select>
                 </div>
                 
@@ -345,7 +376,7 @@ import {
       const elResponsibleFilter = root.querySelector("#responsibleFilter");
       const elBudgetMin = root.querySelector("#budgetMin");
       const elBudgetMax = root.querySelector("#budgetMax");
-      const elPlatformCountFilter = root.querySelector("#platformCountFilter");
+      const elPaymentMethodFilter = root.querySelector("#paymentMethodFilter");
       const elDigitalPresenceFilter = root.querySelector("#digitalPresenceFilter");
       const elClearFilters = root.querySelector("#clearFilters");
       
@@ -356,7 +387,7 @@ import {
         responsible: 'all', 
         budgetMin: '', 
         budgetMax: '', 
-        platformCount: 'all',
+        paymentMethod: 'all',
         digitalPresence: 'all',
         search: '' 
       };
@@ -377,6 +408,10 @@ import {
         const tierStyle = getTierColor(client.tier);
         const statusStyle = getStatusColor(client.status);
         
+        // Calcular status geral do saldo
+        const balanceStatus = getOverallBalanceStatus(client);
+        const balanceFlag = balanceStatus ? `<span class="cl-balance-flag ${balanceStatus.class}" title="${balanceStatus.tooltip}">${balanceStatus.icon}</span>` : '';
+        
         const platformTags = (client.activePlatforms || []).slice(0, 3).map(platform => 
           `<span class="cl-platform-tag">${MARKETING_PLATFORMS[platform] || platform}</span>`
         ).join('');
@@ -387,8 +422,10 @@ import {
         return `
           <tr class="cl-row">
             <td class="cl-cell col-name">
-               <div class="cl-name cl-name-clickable" data-client-id="${client.id}" title="Clique para ver detalhes">${escapeHtml(client.name)}</div>
-               <div class="cl-email">${escapeHtml(client.email)}</div>
+               <div class="cl-name-wrapper">
+                 <div class="cl-name cl-name-clickable" data-client-id="${client.id}" title="Clique para ver detalhes">${escapeHtml(client.name)} ${balanceFlag}</div>
+                 <div class="cl-email">${escapeHtml(client.email)}</div>
+               </div>
              </td>
             <td class="cl-cell col-tier">
               <span class="cl-chip" style="--bg:${tierStyle.bg}; --fg:${tierStyle.fg}; --bd:${tierStyle.bd}">
@@ -477,17 +514,10 @@ import {
           });
         }
         
-        // Filtro por número de plataformas
-        if (currentFilters.platformCount !== 'all') {
+        // Filtro por forma de pagamento
+        if (currentFilters.paymentMethod !== 'all') {
           filtered = filtered.filter(c => {
-            const platformCount = (c.activePlatforms || []).length;
-            switch (currentFilters.platformCount) {
-              case 'none': return platformCount === 0;
-              case '1-2': return platformCount >= 1 && platformCount <= 2;
-              case '3-5': return platformCount >= 3 && platformCount <= 5;
-              case '6+': return platformCount >= 6;
-              default: return true;
-            }
+            return c.paymentMethod === currentFilters.paymentMethod;
           });
         }
         
@@ -600,8 +630,8 @@ import {
         filterClients();
       });
       
-      elPlatformCountFilter.addEventListener('change', (e) => {
-        currentFilters.platformCount = e.target.value;
+      elPaymentMethodFilter.addEventListener('change', (e) => {
+        currentFilters.paymentMethod = e.target.value;
         filterClients();
       });
       
@@ -618,7 +648,7 @@ import {
           responsible: 'all', 
           budgetMin: '', 
           budgetMax: '', 
-          platformCount: 'all',
+          paymentMethod: 'all',
           digitalPresence: 'all',
           search: '' 
         };
@@ -629,7 +659,7 @@ import {
         elResponsibleFilter.value = 'all';
         elBudgetMin.value = '';
         elBudgetMax.value = '';
-        elPlatformCountFilter.value = 'all';
+        elPaymentMethodFilter.value = 'all';
         elDigitalPresenceFilter.value = 'all';
         elSearchInput.value = '';
         
@@ -721,16 +751,9 @@ import {
            return budget >= minBudget && budget <= maxBudget;
          });
        }
-       if (currentFilters.platformCount !== 'all') {
+       if (currentFilters.paymentMethod !== 'all') {
          filtered = filtered.filter(c => {
-           const platformCount = (c.activePlatforms || []).length;
-           switch (currentFilters.platformCount) {
-             case 'none': return platformCount === 0;
-             case '1-2': return platformCount >= 1 && platformCount <= 2;
-             case '3-5': return platformCount >= 3 && platformCount <= 5;
-             case '6+': return platformCount >= 6;
-             default: return true;
-           }
+           return c.paymentMethod === currentFilters.paymentMethod;
          });
        }
        if (currentFilters.digitalPresence !== 'all') {
@@ -1120,8 +1143,8 @@ import {
                            <div class="cl-balance-platform">
                              <div class="cl-balance-header">
                                <span class="cl-balance-platform-name">${platformNames[platform]}</span>
-                               <span class="cl-balance-status ${estimatedBalance <= 0 ? 'depleted' : estimatedBalance < balance.dailyBudget * 3 ? 'low' : 'good'}">
-                                 ${estimatedBalance <= 0 ? '🔴 Esgotado' : estimatedBalance < balance.dailyBudget * 3 ? '🟡 Baixo' : '🟢 OK'}
+                               <span class="cl-balance-status ${estimatedBalance <= 0 ? 'depleted' : estimatedBalance < 15.00 ? 'low' : 'good'}">
+                                 ${estimatedBalance <= 0 ? '🔴 Esgotado' : estimatedBalance < 15.00 ? '🟡 Baixo' : '🟢 OK'}
                                </span>
                              </div>
                              <div class="cl-balance-details">
@@ -1190,6 +1213,10 @@ import {
                  <div class="cl-detail-item">
                    <div class="cl-detail-label">Responsável</div>
                    <div class="cl-detail-value">${escapeHtml(client.responsible)}</div>
+                 </div>
+                 <div class="cl-detail-item">
+                   <div class="cl-detail-label">Forma de Pagamento</div>
+                   <div class="cl-detail-value">${PAYMENT_METHODS[client.paymentMethod] || 'Boleto'}</div>
                  </div>
                  <div class="cl-detail-item">
                    <div class="cl-detail-label">Data de Entrada</div>
@@ -1438,6 +1465,15 @@ import {
                  <label class="cl-form-label">Responsável *</label>
                  <select class="cl-form-select" name="responsible" id="client-responsible-select" required>
                    <option value="">Selecione um responsável...</option>
+                 </select>
+               </div>
+               
+               <div class="cl-form-group col-span-4">
+                 <label class="cl-form-label">Forma de Pagamento</label>
+                 <select class="cl-form-select" name="paymentMethod">
+                   <option value="BOLETO">Boleto</option>
+                   <option value="PIX">PIX</option>
+                   <option value="CREDIT_CARD">Cartão de Crédito</option>
                  </select>
                </div>
                
@@ -1694,6 +1730,7 @@ import {
          form.status.value = client.status || '';
          form.entryDate.value = client.entryDate || '';
          form.responsible.value = client.responsible || '';
+         form.paymentMethod.value = client.paymentMethod || 'BOLETO';
          form.documentLinks.value = client.documentLinks || '';
          form.notes.value = client.notes || '';
          
@@ -1798,6 +1835,7 @@ import {
              status: formData.get('status'),
              entryDate: formData.get('entryDate'),
              responsible: formData.get('responsible'),
+             paymentMethod: formData.get('paymentMethod') || 'BOLETO',
              budgets: budgets,
              activePlatforms: activePlatforms,
              documentLinks: formData.get('documentLinks'),
@@ -1855,6 +1893,59 @@ import {
       const estimatedBalance = lastDeposit - (daysDiff * dailyBudget);
       
       return Math.max(0, estimatedBalance);
+    }
+    
+    // Função para calcular status geral do saldo do cliente
+    function getOverallBalanceStatus(client) {
+      if (!client.balanceControl) return null;
+      
+      // Não exibir flags de saldo para clientes com Cartão de Crédito
+      if (client.paymentMethod === 'CREDIT_CARD') return null;
+      
+      const platforms = ['metaAds', 'googleAds', 'tiktokAds', 'pinterestAds'];
+      let hasAnyBalance = false;
+      let hasLowBalance = false;
+      let hasDepletedBalance = false;
+      
+      platforms.forEach(platform => {
+        const balance = client.balanceControl[platform];
+        if (balance && balance.lastDeposit && balance.depositDate && balance.dailyBudget) {
+          hasAnyBalance = true;
+          
+          const daysSinceDeposit = Math.floor((new Date() - new Date(balance.depositDate)) / (1000 * 60 * 60 * 24));
+          const estimatedBalance = balance.lastDeposit - (daysSinceDeposit * balance.dailyBudget);
+          
+          if (estimatedBalance <= 0) {
+            hasDepletedBalance = true;
+          } else if (estimatedBalance < 15.00) {
+            hasLowBalance = true;
+          }
+        }
+      });
+      
+      if (!hasAnyBalance) return null;
+      
+      if (hasDepletedBalance) {
+        return {
+          icon: '🔴',
+          class: 'depleted',
+          tooltip: 'Cliente com saldo esgotado em uma ou mais plataformas'
+        };
+      }
+      
+      if (hasLowBalance) {
+        return {
+          icon: '🟡',
+          class: 'low',
+          tooltip: 'Cliente com saldo baixo (< R$ 15,00) em uma ou mais plataformas'
+        };
+      }
+      
+      return {
+        icon: '🟢',
+        class: 'good',
+        tooltip: 'Cliente com saldo OK (≥ R$ 15,00) em todas as plataformas'
+      };
     }
     
     // Função para calcular ROI automaticamente
@@ -1932,7 +2023,7 @@ import {
             if (estimatedBalance <= 0) {
               statusElement.classList.add('depleted');
               statusElement.textContent = '🔴 Esgotado';
-            } else if (estimatedBalance < dailyBudget * 3) {
+            } else if (estimatedBalance < 15.00) {
               statusElement.classList.add('low');
               statusElement.textContent = '🟡 Baixo';
             } else {

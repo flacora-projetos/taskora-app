@@ -29,6 +29,7 @@ Representa cada cliente atendido pela organização.
 - `defaultAssigneeRef` *(DocumentReference→orgUsers)* → responsável padrão  
 - `entryDate` *(string, formato YYYY-MM-DD)* → data de entrada
 - `responsible` *(string)* → nome do responsável
+- `paymentMethod` *(enum: `BOLETO|PIX|CREDIT_CARD`)* → forma de pagamento do cliente
 - `documents` *(string)* → links de documentos
 - `notes` *(string)* → observações
 - `createdAt` *(Timestamp)*  
@@ -99,6 +100,12 @@ CLIENT_STATUS = {
   INATIVO: 'Inativo',
   PROSPECT: 'Prospect'
 }
+
+PAYMENT_METHODS = {
+  BOLETO: 'Boleto',
+  PIX: 'PIX',
+  CREDIT_CARD: 'Cartão de Crédito'
+}
 ```
 
 **Cálculo Automático de ROI (v5.5+):**
@@ -123,9 +130,9 @@ function calculateROI(realBilling, budgets) {
 ```javascript
 // Fórmula: Saldo Estimado = Último Depósito - (Dias Corridos × Orçamento Diário)
 // Status automático baseado no saldo estimado:
-// - 🟢 OK: Saldo > 3 dias de orçamento
-// - 🟡 Baixo: Saldo entre 0 e 3 dias de orçamento  
-// - 🔴 Esgotado: Saldo ≤ 0
+// - 🟢 OK: Saldo ≥ R$ 15,00
+// - 🟡 Baixo: Saldo < R$ 15,00 e > R$ 0,00
+// - 🔴 Esgotado: Saldo ≤ R$ 0,00
 
 function calculateEstimatedBalance(lastDeposit, depositDate, dailyBudget) {
   const today = new Date();

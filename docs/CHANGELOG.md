@@ -4,6 +4,37 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.4] - 2025-01-31
+
+### 🔧 CORRIGIDO
+- **Lógica de Controle de Saldo:** Atualização dos critérios de status das flags de saldo
+  - 🟢 **Status OK:** Saldo ≥ R$ 15,00 (anteriormente baseado em dias de orçamento)
+  - 🟡 **Status Baixo:** Saldo < R$ 15,00 e > R$ 0,00
+  - 🔴 **Status Esgotado:** Saldo ≤ R$ 0,00 (mantido)
+- **Consistência Visual:** Aplicação dos novos critérios em todas as interfaces (tabela, modal de detalhes, atualização em tempo real)
+- **Tooltips Atualizados:** Mensagens explicativas das flags ajustadas para refletir os novos valores
+
+### 📚 DOCUMENTADO
+- **Schema Atualizado:** Documentação dos novos critérios de status de saldo em SCHEMA_TASKORA.md
+
+## [v5.5.3] - 2025-01-31
+
+### ✅ ADICIONADO
+- **Campo Forma de Pagamento:** Novo campo para identificar método de pagamento do cliente (Boleto, PIX, Cartão de Crédito)
+- **Lógica de Saldo Inteligente:** Clientes com Cartão de Crédito não exibem flags de controle de saldo
+- **Interface Atualizada:** Campo Forma de Pagamento adicionado nos modais de edição e detalhes do cliente
+- **Constantes PAYMENT_METHODS:** Implementação de constantes para padronização dos métodos de pagamento
+- **Mapeamento de Dados:** Integração completa UI ↔ Database para o campo paymentMethod
+- **Valor Padrão:** Boleto definido como forma de pagamento padrão para novos clientes
+
+### 🔧 CORRIGIDO
+- **Controle de Saldo:** Otimização da lógica para ignorar validações desnecessárias em pagamentos via cartão
+- **Experiência do Usuário:** Melhoria na organização dos campos no modal de cliente
+
+### 📚 DOCUMENTADO
+- **Schema Atualizado:** Documentação do campo paymentMethod em SCHEMA_TASKORA.md
+- **Constantes:** Adição das constantes PAYMENT_METHODS na documentação oficial
+
 ## [v5.5.2] - 2025-01-31
 
 ### ✅ ADICIONADO
