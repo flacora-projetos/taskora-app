@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Coleções do Taskora no Banco da Dácora</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        .status.info { background: #dbeafe; color: #1e40af; }
+        .status.success { background: #dcfce7; color: #166534; }
+        .status.error { background: #fee2e2; color: #dc2626; }
+        .status.warning { background: #fef3c7; color: #92400e; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover { background: #2563eb; }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
+        .progress {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .collection-item {
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin: 10px 0;
+            background: #fafafa;
+        }
+        .collection-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .collection-desc {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Criar Coleções do Taskora</h1>
+        <p class="subtitle">Inicializar as coleções necessárias do Taskora v5.5 no banco da Dácora</p>
+        
+        <div id="status" class="status info">
+            ⏳ Aguardando conexão com Firebase...
+        </div>
+        
+        <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        
+        <div id="collections">
+            <div class="collection-item">
+                <div class="collection-name">clients</div>
+                <div class="collection-desc">Clientes da organização com orçamentos e plataformas</div>
+            </div>
+            <div class="collection-item">
+                <div class="collection-name">tasks</div>
+                <div class="collection-desc">Tarefas atribuídas a clientes e responsáveis</div>
+            </div>
+            <div class="collection-item">
+                <div class="collection-name">team</div>
+                <div class="collection-desc">Membros da equipe para integração com tasks</div>
+            </div>
+        </div>
+        
+        <button id="createBtn" onclick="createCollections()" disabled>
+            Criar Coleções do Taskora
+        </button>
+        
+        <button id="testBtn" onclick="testCollections()" disabled>
+            Testar Coleções
+        </button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Configuração do Firebase da Dácora
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
+            authDomain: "dacora---tarefas.firebaseapp.com",
+            projectId: "dacora---tarefas",
+            storageBucket: "dacora---tarefas.firebasestorage.app",
+            messagingSenderId: "406318974539",
+            appId: "1:406318974539:web:d842997c1b064c0ba56fce"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Disponibilizar globalmente
+        window.db = db;
+        window.auth = auth;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.serverTimestamp = serverTimestamp;
+
+        // Tentar autenticação anônima, se falhar, continuar sem autenticação
+        signInAnonymously(auth)
+            .then(() => {
+                updateStatus('✅ Conectado ao Firebase da Dácora com autenticação', 'success');
+                document.getElementById('createBtn').disabled = false;
+                document.getElementById('testBtn').disabled = false;
+            })
+            .catch((error) => {
+                console.warn('Autenticação anônima não disponível:', error.message);
+                updateStatus('⚠️ Conectado ao Firebase da Dácora (sem autenticação)', 'warning');
+                document.getElementById('createBtn').disabled = false;
+                document.getElementById('testBtn').disabled = false;
+            });
+    </script>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        async function createCollections() {
+            const btn = document.getElementById('createBtn');
+            btn.disabled = true;
+            btn.textContent = 'Criando...';
+            
+            try {
+                updateStatus('🔄 Criando coleções do Taskora...', 'info');
+                updateProgress(10);
+
+                // 1. Criar coleção team com membros exemplo
+                updateStatus('📝 Criando coleção team...', 'info');
+                const teamMembers = [
+                    {
+                        name: 'João Silva',
+                        email: 'joao@empresa.com',
+                        phone: '(11) 99999-9999',
+                        specialty: ['Desenvolvimento', 'Gestão de Projetos'],
+                        level: 'Sênior',
+                        status: 'Ativo',
+                        notes: 'Desenvolvedor Full Stack com experiência em React e Node.js',
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    },
+                    {
+                        name: 'Maria Santos',
+                        email: 'maria@empresa.com',
+                        phone: '(11) 88888-8888',
+                        specialty: ['Marketing', 'Social Media', 'Copywriting'],
+                        level: 'Pleno',
+                        status: 'Ativo',
+                        notes: 'Especialista em marketing digital e redes sociais',
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    },
+                    {
+                        name: 'Pedro Costa',
+                        email: 'pedro@empresa.com',
+                        phone: '(11) 77777-7777',
+                        specialty: ['Gestor de Tráfego', 'SEO/SEM'],
+                        level: 'Sênior',
+                        status: 'Ativo',
+                        notes: 'Gestor de tráfego pago com foco em Google Ads e Meta Ads',
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    }
+                ];
+
+                for (const member of teamMembers) {
+                    await addDoc(collection(db, 'team'), member);
+                }
+                updateProgress(40);
+
+                // 2. Criar coleção clients com clientes exemplo
+                updateStatus('👥 Criando coleção clients...', 'info');
+                const clients = [
+                    {
+                        orgId: 'dacora-org',
+                        displayName: 'Empresa Exemplo Ltda',
+                        email: 'contato@empresaexemplo.com',
+                        phone: '(11) 3333-3333',
+                        website: 'https://empresaexemplo.com',
+                        instagram: '@empresaexemplo',
+                        status: 'Ativo',
+                        tier: 'Key Account',
+                        entryDate: '2024-01-15',
+                        responsible: 'João Silva',
+                        paymentMethod: 'PIX',
+                        documents: 'https://drive.google.com/folder/exemplo',
+                        notes: 'Cliente estratégico com alto potencial de crescimento',
+                        budgetMetaAds: 5000,
+                        budgetGoogleAds: 3000,
+                        budgetTikTokAds: 2000,
+                        budgetLinkedInAds: 1000,
+                        platformMetaAds: true,
+                        platformGoogleAds: true,
+                        platformTikTokAds: true,
+                        platformLinkedInAds: false,
+                        realBilling: 25000,
+                        realLeads: 150,
+                        billingGoal: 30000,
+                        leadsGoal: 200,
+                        roi: 2.27,
+                        balanceControl: {
+                            metaAds: {
+                                lastDeposit: 5000,
+                                depositDate: '2024-01-01',
+                                dailyBudget: 166.67,
+                                realBalance: 3500
+                            },
+                            googleAds: {
+                                lastDeposit: 3000,
+                                depositDate: '2024-01-01',
+                                dailyBudget: 100,
+                                realBalance: 2100
+                            }
+                        },
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    },
+                    {
+                        orgId: 'dacora-org',
+                        displayName: 'Startup Inovadora',
+                        email: 'hello@startupinovadora.com',
+                        phone: '(11) 4444-4444',
+                        website: 'https://startupinovadora.com',
+                        instagram: '@startupinovadora',
+                        status: 'Ativo',
+                        tier: 'Mid Tier',
+                        entryDate: '2024-02-01',
+                        responsible: 'Maria Santos',
+                        paymentMethod: 'Cartão de Crédito',
+                        documents: 'https://drive.google.com/folder/startup',
+                        notes: 'Startup em crescimento, foco em performance',
+                        budgetMetaAds: 2000,
+                        budgetGoogleAds: 1500,
+                        budgetTikTokAds: 1000,
+                        platformMetaAds: true,
+                        platformGoogleAds: true,
+                        platformTikTokAds: true,
+                        realBilling: 12000,
+                        realLeads: 80,
+                        billingGoal: 15000,
+                        leadsGoal: 100,
+                        roi: 2.67,
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    }
+                ];
+
+                for (const client of clients) {
+                    await addDoc(collection(db, 'clients'), client);
+                }
+                updateProgress(70);
+
+                // 3. Criar coleção tasks com tarefas exemplo
+                updateStatus('📋 Criando coleção tasks...', 'info');
+                const tasks = [
+                    {
+                        orgId: 'dacora-org',
+                        title: 'Configurar campanhas Meta Ads',
+                        description: 'Criar e configurar campanhas de conversão no Meta Ads para o cliente',
+                        status: 'em progresso',
+                        owner: 'Pedro Costa',
+                        priority: 'high',
+                        hours: 2.5,
+                        estimatedMinutes: 150,
+                        spentMinutes: 90,
+                        date: '2024-01-15',
+                        startAt: new Date('2024-01-15T09:00:00'),
+                        dueAt: new Date('2024-01-15T17:00:00'),
+                        reminderAt: new Date('2024-01-15T08:00:00'),
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    },
+                    {
+                        orgId: 'dacora-org',
+                        title: 'Análise de performance mensal',
+                        description: 'Relatório completo de performance das campanhas do mês anterior',
+                        status: 'não realizada',
+                        owner: 'Maria Santos',
+                        priority: 'medium',
+                        hours: 4.0,
+                        estimatedMinutes: 240,
+                        spentMinutes: 0,
+                        date: '2024-01-16',
+                        startAt: new Date('2024-01-16T10:00:00'),
+                        dueAt: new Date('2024-01-16T18:00:00'),
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    },
+                    {
+                        orgId: 'dacora-org',
+                        title: 'Reunião de alinhamento com cliente',
+                        description: 'Apresentar resultados e definir estratégias para o próximo mês',
+                        status: 'concluída',
+                        owner: 'João Silva',
+                        priority: 'high',
+                        hours: 1.0,
+                        estimatedMinutes: 60,
+                        spentMinutes: 60,
+                        date: '2024-01-14',
+                        startAt: new Date('2024-01-14T14:00:00'),
+                        dueAt: new Date('2024-01-14T15:00:00'),
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    }
+                ];
+
+                for (const task of tasks) {
+                    await addDoc(collection(db, 'tasks'), task);
+                }
+                updateProgress(100);
+
+                updateStatus('✅ Coleções do Taskora criadas com sucesso!', 'success');
+                btn.textContent = 'Coleções Criadas!';
+                
+            } catch (error) {
+                console.error('Erro ao criar coleções:', error);
+                updateStatus(`❌ Erro: ${error.message}`, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Tentar Novamente';
+            }
+        }
+
+        async function testCollections() {
+            const btn = document.getElementById('testBtn');
+            btn.disabled = true;
+            btn.textContent = 'Testando...';
+            
+            try {
+                updateStatus('🔍 Testando coleções criadas...', 'info');
+                
+                // Testar cada coleção
+                const collections = ['team', 'clients', 'tasks'];
+                const results = {};
+                
+                for (const collectionName of collections) {
+                    const snapshot = await getDocs(collection(db, collectionName));
+                    results[collectionName] = snapshot.size;
+                }
+                
+                const summary = Object.entries(results)
+                    .map(([name, count]) => `${name}: ${count} documentos`)
+                    .join(', ');
+                
+                updateStatus(`✅ Teste concluído! ${summary}`, 'success');
+                btn.textContent = 'Testado!';
+                
+            } catch (error) {
+                console.error('Erro ao testar coleções:', error);
+                updateStatus(`❌ Erro no teste: ${error.message}`, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Testar Novamente';
+            }
+        }
+    </script>
+</body>
+</html>

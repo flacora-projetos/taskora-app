@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕒 Correção do Histórico de Tarefas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .problem-analysis {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .problem-analysis h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .problem-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .problem-list li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .solution-mapping {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .solution-mapping h3 {
+            color: #0c5460;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .mapping-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .mapping-item strong {
+            color: #0c5460;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #56ab2f 0%, #a8e6cf 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .log-entry.info {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .log-entry.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .log-entry.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .log-entry.warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🕒 Correção do Histórico de Tarefas</h1>
+            <p>Ferramenta especializada para corrigir problemas de exibição no módulo de histórico</p>
+        </div>
+        
+        <div class="content">
+            <div class="problem-analysis">
+                <h3>🔍 Problemas Identificados no Histórico</h3>
+                <ul class="problem-list">
+                    <li><strong>Campos incompatíveis:</strong> O módulo de histórico espera campos como <code>description</code>, <code>owner</code>, <code>client</code>, mas as tarefas importadas têm <code>title</code>, <code>assignedTo</code>, <code>clientId</code></li>
+                    <li><strong>Datas em formato incorreto:</strong> O histórico precisa de <code>createdAt</code>, <code>dueDate</code> como Timestamps, mas estão como strings</li>
+                    <li><strong>Status não mapeados:</strong> Status <code>done</code>, <code>todo</code>, <code>in-progress</code> não correspondem aos esperados pelo histórico</li>
+                    <li><strong>Horas em formato incorreto:</strong> Campo <code>estimatedHours</code> precisa ser convertido para <code>hours</code> em minutos</li>
+                    <li><strong>Campos obrigatórios ausentes:</strong> Faltam <code>orgId</code>, referências corretas e estrutura adequada</li>
+                </ul>
+            </div>
+
+            <div class="solution-mapping">
+                <h3>🔧 Mapeamento de Correções</h3>
+                <div class="mapping-grid">
+                    <div class="mapping-item">
+                        <strong>Campo description:</strong><br>
+                        <code>title</code> → <code>description</code><br>
+                        <small>Usar o título como descrição principal</small>
+                    </div>
+                    <div class="mapping-item">
+                        <strong>Campo owner:</strong><br>
+                        <code>assignedTo</code> → <code>owner</code><br>
+                        <small>Mapear ID do responsável para nome</small>
+                    </div>
+                    <div class="mapping-item">
+                        <strong>Campo client:</strong><br>
+                        <code>clientId</code> → <code>client</code><br>
+                        <small>Converter ID para nome do cliente</small>
+                    </div>
+                    <div class="mapping-item">
+                        <strong>Status mapping:</strong><br>
+                        <code>done</code> → <code>concluída</code><br>
+                        <code>todo</code> → <code>não realizada</code><br>
+                        <code>in-progress</code> → <code>em progresso</code>
+                    </div>
+                    <div class="mapping-item">
+                        <strong>Conversão de datas:</strong><br>
+                        <code>createdAt</code>, <code>dueDate</code> → Timestamp<br>
+                        <code>startDate</code> → <code>date</code> (Timestamp)
+                    </div>
+                    <div class="mapping-item">
+                        <strong>Conversão de horas:</strong><br>
+                        <code>estimatedHours</code> → <code>hours</code><br>
+                        <small>Converter para minutos decimais</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="analisarDados()">📊 Analisar Dados</button>
+                <button class="btn btn-success" onclick="corrigirHistorico()">🔧 Corrigir Histórico</button>
+                <button class="btn btn-warning" onclick="validarCorrecoes()">✅ Validar Correções</button>
+            </div>
+
+            <div id="status" class="status info">
+                ⏳ Aguardando início da correção do histórico...
+            </div>
+
+            <div class="progress">
+                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div class="stats" id="stats" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">Total de Tarefas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="correctedTasks">0</div>
+                    <div class="stat-label">Tarefas Corrigidas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="errorTasks">0</div>
+                    <div class="stat-label">Erros Encontrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="successRate">0%</div>
+                    <div class="stat-label">Taxa de Sucesso</div>
+                </div>
+            </div>
+
+            <div id="log" class="log" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let dadosOriginais = null;
+        let dadosCorrigidos = null;
+        let logContainer = null;
+
+        // Mapeamento de usuários (IDs para nomes)
+        const userMapping = {
+            'zsuocpdsu': 'Fernanda Corá',
+            'j0btep3k7': 'Daniel dos Anjos', 
+            '4yf3vduik': 'Flávio Corá'
+        };
+
+        // Mapeamento de status
+        const statusMapping = {
+            'done': 'concluída',
+            'todo': 'não realizada',
+            'in-progress': 'em progresso',
+            'canceled': 'cancelada'
+        };
+
+        function log(message, type = 'info') {
+            if (!logContainer) {
+                logContainer = document.getElementById('log');
+                logContainer.style.display = 'block';
+            }
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function updateStats(total, corrected, errors) {
+            document.getElementById('stats').style.display = 'grid';
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('correctedTasks').textContent = corrected;
+            document.getElementById('errorTasks').textContent = errors;
+            
+            const successRate = total > 0 ? Math.round((corrected / total) * 100) : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+
+        async function carregarDados() {
+            try {
+                log('Carregando dados das tarefas migradas...', 'info');
+                
+                const response = await fetch('http://localhost:8080/taskora-migrated-2025-09-02.json');
+                if (!response.ok) {
+                    throw new Error(`Erro ao carregar dados: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                dadosOriginais = data;
+                
+                log(`Dados carregados: ${data.collections.tasks.length} tarefas encontradas`, 'success');
+                return data;
+            } catch (error) {
+                log(`Erro ao carregar dados: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        function analisarDados() {
+            updateStatus('🔍 Analisando dados das tarefas...', 'info');
+            log('Iniciando análise dos dados...', 'info');
+            
+            carregarDados().then(data => {
+                const tasks = data.collections.tasks;
+                let problemasEncontrados = 0;
+                
+                log(`Analisando ${tasks.length} tarefas...`, 'info');
+                
+                tasks.forEach((task, index) => {
+                    let problemas = [];
+                    
+                    // Verificar campos obrigatórios para o histórico
+                    if (!task.description && task.title) problemas.push('Campo description ausente (tem title)');
+                    if (!task.owner && task.assignedTo) problemas.push('Campo owner ausente (tem assignedTo)');
+                    if (!task.client && task.clientId) problemas.push('Campo client ausente (tem clientId)');
+                    if (!task.orgId) problemas.push('Campo orgId ausente');
+                    
+                    // Verificar formato de datas
+                    if (task.createdAt && typeof task.createdAt === 'string') problemas.push('createdAt em formato string');
+                    if (task.dueDate && typeof task.dueDate === 'string') problemas.push('dueDate em formato string');
+                    
+                    // Verificar status
+                    if (task.status && !['concluída', 'em progresso', 'não realizada', 'cancelada'].includes(task.status)) {
+                        problemas.push(`Status '${task.status}' não mapeado`);
+                    }
+                    
+                    // Verificar horas
+                    if (task.estimatedHours !== undefined && task.hours === undefined) {
+                        problemas.push('Campo hours ausente (tem estimatedHours)');
+                    }
+                    
+                    if (problemas.length > 0) {
+                        problemasEncontrados++;
+                        if (index < 5) { // Mostrar apenas os primeiros 5 para não poluir o log
+                            log(`Tarefa ${task.id}: ${problemas.join(', ')}`, 'warning');
+                        }
+                    }
+                });
+                
+                log(`Análise concluída: ${problemasEncontrados} tarefas com problemas de ${tasks.length} total`, 'info');
+                updateStats(tasks.length, 0, problemasEncontrados);
+                updateStatus(`📊 Análise concluída: ${problemasEncontrados} tarefas precisam de correção`, 'warning');
+                updateProgress(25);
+                
+            }).catch(error => {
+                log(`Erro na análise: ${error.message}`, 'error');
+                updateStatus('❌ Erro na análise dos dados', 'error');
+            });
+        }
+
+        function corrigirHistorico() {
+            if (!dadosOriginais) {
+                updateStatus('⚠️ Execute a análise primeiro', 'error');
+                return;
+            }
+            
+            updateStatus('🔧 Corrigindo histórico das tarefas...', 'info');
+            log('Iniciando correção do histórico...', 'info');
+            
+            const tasks = dadosOriginais.collections.tasks;
+            const tarefasCorrigidas = [];
+            let corrigidas = 0;
+            let erros = 0;
+            
+            tasks.forEach((task, index) => {
+                try {
+                    const tarefaCorrigida = {
+                        ...task,
+                        // Mapeamento de campos para o histórico
+                        description: task.title || task.description || 'Tarefa sem descrição',
+                        owner: userMapping[task.assignedTo] || task.assignedTo || 'Não atribuído',
+                        client: task.clientId || 'Sem cliente',
+                        
+                        // Mapeamento de status
+                        status: statusMapping[task.status] || task.status || 'não realizada',
+                        
+                        // Conversão de datas para Timestamp
+                        createdAt: task.createdAt ? new Date(task.createdAt) : new Date(),
+                        updatedAt: task.updatedAt ? new Date(task.updatedAt) : new Date(),
+                        dueDate: task.dueDate ? new Date(task.dueDate) : null,
+                        date: task.startDate ? new Date(task.startDate) : (task.createdAt ? new Date(task.createdAt) : new Date()),
+                        
+                        // Conversão de horas
+                        hours: task.estimatedHours || task.actualHours || 0,
+                        
+                        // Campos obrigatórios
+                        orgId: 'dacora',
+                        
+                        // Remover campos antigos desnecessários para o histórico
+                        title: undefined,
+                        assignedTo: undefined,
+                        clientId: undefined,
+                        projectId: undefined,
+                        estimatedHours: undefined,
+                        actualHours: undefined,
+                        startDate: undefined
+                    };
+                    
+                    // Remover campos undefined
+                    Object.keys(tarefaCorrigida).forEach(key => {
+                        if (tarefaCorrigida[key] === undefined) {
+                            delete tarefaCorrigida[key];
+                        }
+                    });
+                    
+                    tarefasCorrigidas.push(tarefaCorrigida);
+                    corrigidas++;
+                    
+                    if (index % 10 === 0) {
+                        updateProgress(25 + (index / tasks.length) * 50);
+                    }
+                    
+                } catch (error) {
+                    erros++;
+                    log(`Erro ao corrigir tarefa ${task.id}: ${error.message}`, 'error');
+                }
+            });
+            
+            dadosCorrigidos = {
+                ...dadosOriginais,
+                data: {
+                    ...dadosOriginais.data,
+                    tasks: tarefasCorrigidas
+                }
+            };
+            
+            log(`Correção concluída: ${corrigidas} tarefas corrigidas, ${erros} erros`, 'success');
+            updateStats(tasks.length, corrigidas, erros);
+            updateStatus(`✅ Histórico corrigido: ${corrigidas} tarefas processadas`, 'success');
+            updateProgress(75);
+        }
+
+        function validarCorrecoes() {
+            if (!dadosCorrigidos) {
+                updateStatus('⚠️ Execute a correção primeiro', 'error');
+                return;
+            }
+            
+            updateStatus('✅ Validando correções...', 'info');
+            log('Iniciando validação das correções...', 'info');
+            
+            const tasks = dadosCorrigidos.collections.tasks;
+            let validadas = 0;
+            let problemas = 0;
+            
+            tasks.forEach(task => {
+                let valida = true;
+                
+                // Validar campos obrigatórios para o histórico
+                if (!task.description) { valida = false; problemas++; }
+                if (!task.owner) { valida = false; problemas++; }
+                if (!task.orgId) { valida = false; problemas++; }
+                if (!task.status || !['concluída', 'em progresso', 'não realizada', 'cancelada'].includes(task.status)) {
+                    valida = false; problemas++;
+                }
+                
+                if (valida) validadas++;
+            });
+            
+            // Gerar arquivo corrigido
+            const dataStr = JSON.stringify(dadosCorrigidos, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'taskora-historico-corrigido.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            log(`Validação concluída: ${validadas} tarefas válidas, ${problemas} problemas restantes`, 'success');
+            log('Arquivo corrigido gerado: taskora-historico-corrigido.json', 'success');
+            updateStats(tasks.length, validadas, problemas);
+            updateStatus(`🎉 Validação concluída! Arquivo gerado com ${validadas} tarefas válidas`, 'success');
+            updateProgress(100);
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Ferramenta de correção do histórico carregada', 'info');
+            log('Clique em "Analisar Dados" para começar', 'info');
+        });
+    </script>
+</body>
+</html>

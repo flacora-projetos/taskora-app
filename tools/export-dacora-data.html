@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Export Dados Dácora → Taskora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .info-box p {
+            color: #1976d2;
+            margin: 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .progress-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Export Dados Dácora → Taskora</h1>
+            <p>Exportar dados do Firebase da Dácora para migração</p>
+        </div>
+        
+        <div class="info-box">
+            <p>ℹ️ <strong>Nota:</strong> O script usará a sessão já logada no seu navegador.</p>
+        </div>
+        
+        <div class="actions">
+            <button class="btn" onclick="connectAndExport()">🚀 Conectar e Exportar</button>
+            <button class="btn btn-success" id="downloadBtn" onclick="downloadData()" disabled>📥 Baixar JSON</button>
+        </div>
+        
+        <div id="status"></div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+        let db = null;
+        let exportedData = null;
+        
+        // Configuração Firebase da Dácora
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
+            authDomain: "dacora---tarefas.firebaseapp.com",
+            projectId: "dacora---tarefas",
+            storageBucket: "dacora---tarefas.firebasestorage.app",
+            messagingSenderId: "406318974539",
+            appId: "1:406318974539:web:d842997c1b064c0ba56fce"
+        };
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function updateProgress(percent) {
+            const container = document.getElementById('progressContainer');
+            const bar = document.getElementById('progressBar');
+            
+            if (percent > 0) {
+                container.style.display = 'block';
+                bar.style.width = percent + '%';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        async function connectAndExport() {
+            try {
+                showStatus('🔄 Conectando ao Firebase da Dácora...', 'info');
+                updateProgress(10);
+                
+                // Inicializar Firebase
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                
+                // Conectar ao Firestore
+                db = firebase.firestore();
+                
+                showStatus('✅ Conectado! Iniciando exportação...', 'success');
+                updateProgress(20);
+                
+                // Exportar dados
+                await exportAllData();
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showStatus(`❌ Erro: ${error.message}`, 'error');
+                updateProgress(0);
+            }
+        }
+        
+        async function exportAllData() {
+            try {
+                showStatus('🔄 Coletando dados...', 'info');
+                updateProgress(30);
+                
+                exportedData = {
+                    exportDate: new Date().toISOString(),
+                    projectInfo: {
+                        source: 'Dácora',
+                        target: 'Taskora',
+                        version: '5.5.2'
+                    },
+                    collections: {}
+                };
+                
+                // Lista de coleções para exportar
+                const collections = [
+                    'tasks', 'tarefas', 'clientes', 'clients', 'usuarios', 'users',
+                    'projetos', 'projects', 'equipe', 'team', 'calendario', 'calendar',
+                    'configuracoes', 'settings', 'relatorios', 'reports', 'categorias',
+                    'categories', 'status', 'prioridades', 'priorities'
+                ];
+                
+                let completed = 0;
+                const total = collections.length;
+                
+                for (const collectionName of collections) {
+                    try {
+                        const progress = 30 + (completed / total) * 60;
+                        updateProgress(progress);
+                        showStatus(`🔄 Exportando: ${collectionName}...`, 'info');
+                        
+                        const snapshot = await db.collection(collectionName).get();
+                        
+                        if (!snapshot.empty) {
+                            exportedData.collections[collectionName] = [];
+                            
+                            snapshot.forEach(doc => {
+                                exportedData.collections[collectionName].push({
+                                    id: doc.id,
+                                    data: doc.data()
+                                });
+                            });
+                            
+                            console.log(`✅ ${collectionName}: ${snapshot.size} documentos`);
+                        } else {
+                            console.log(`⚠️ ${collectionName}: coleção vazia`);
+                        }
+                        
+                    } catch (error) {
+                        console.warn(`⚠️ Erro ao acessar ${collectionName}:`, error.message);
+                    }
+                    
+                    completed++;
+                }
+                
+                updateProgress(100);
+                
+                const totalDocs = Object.values(exportedData.collections)
+                    .reduce((sum, collection) => sum + collection.length, 0);
+                
+                showStatus(`✅ Exportação concluída! ${totalDocs} documentos exportados de ${Object.keys(exportedData.collections).length} coleções.`, 'success');
+                
+                document.getElementById('downloadBtn').disabled = false;
+                
+            } catch (error) {
+                console.error('Erro na exportação:', error);
+                showStatus(`❌ Erro na exportação: ${error.message}`, 'error');
+                updateProgress(0);
+            }
+        }
+        
+        function downloadData() {
+            if (!exportedData) {
+                showStatus('❌ Nenhum dado para baixar!', 'error');
+                return;
+            }
+            
+            try {
+                const jsonString = JSON.stringify(exportedData, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `dacora-export-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                URL.revokeObjectURL(url);
+                
+                showStatus('✅ Arquivo JSON baixado com sucesso!', 'success');
+                
+            } catch (error) {
+                console.error('Erro no download:', error);
+                showStatus(`❌ Erro no download: ${error.message}`, 'error');
+            }
+        }
+        
+        // Log de inicialização
+        console.log('🔥 Export Dácora → Taskora v1.0');
+        console.log('📋 Pronto para exportar dados!');
+    </script>
+</body>
+</html>

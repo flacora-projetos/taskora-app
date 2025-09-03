@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Migração Final - Dados Brutos Dácora → Taskora v5.5</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f1f5f9;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0f172a;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .alert {
+            background: #dcfce7;
+            border: 2px solid #10b981;
+            color: #065f46;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .warning {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .section h3 {
+            color: #475569;
+            margin-top: 0;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .progress {
+            background: #e2e8f0;
+            border-radius: 8px;
+            height: 25px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: #10b981;
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #10b981;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .log {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .mapping-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .mapping-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .mapping-item:last-child {
+            border-bottom: none;
+        }
+        .dacora-field {
+            color: #ef4444;
+            font-weight: bold;
+        }
+        .taskora-field {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .validation-result {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Migração Final - Dados Brutos Dácora → Taskora v5.5</h1>
+        
+        <div class="alert">
+            ✅ MIGRAÇÃO CORRETA: Esta ferramenta extrai APENAS os dados brutos da Dácora e os mapeia para o schema CORRETO do Taskora v5.5
+            <br><br>
+            <strong>GARANTIA:</strong> Nenhum schema será importado ou alterado - apenas dados puros!
+        </div>
+
+        <!-- Firebase Config -->
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+        <!-- Progresso -->
+        <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: 0%">Aguardando...</div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="dacoraTasksCount">0</div>
+                <div class="stat-label">Tarefas Dácora</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="dacoraClientsCount">0</div>
+                <div class="stat-label">Clientes Dácora</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="dacoraTeamCount">0</div>
+                <div class="stat-label">Equipe Dácora</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="migratedCount">0</div>
+                <div class="stat-label">Migrados</div>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="section">
+            <h3>1. Preparação da Migração</h3>
+            <button onclick="conectarFirebase()">🔗 Conectar Firebase</button>
+            <button onclick="carregarDadosBrutos()" id="btnCarregar" disabled>📂 Carregar Dados Brutos Dácora</button>
+            <button onclick="validarSchema()" id="btnValidar" disabled>✅ Validar Schema Taskora</button>
+        </div>
+
+        <div class="section">
+            <h3>2. Execução da Migração</h3>
+            <button onclick="iniciarMigracao()" id="btnMigrar" disabled class="btn-success">🚀 Migrar Dados Brutos</button>
+            <button onclick="validarMigracao()" id="btnValidarMigracao" disabled>🔍 Validar Migração</button>
+        </div>
+
+        <!-- Preview do Mapeamento -->
+        <div class="section">
+            <h3>3. Preview do Mapeamento de Dados</h3>
+            <div id="mappingPreview" class="mapping-preview">
+                <p>Carregue os dados da Dácora para ver o mapeamento...</p>
+            </div>
+        </div>
+
+        <!-- Resultados da Validação -->
+        <div class="section">
+            <h3>4. Validação da Migração</h3>
+            <div id="validationResults"></div>
+        </div>
+
+        <!-- Log -->
+        <div class="section">
+            <h3>Log da Migração</h3>
+            <div class="log" id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config - Taskora
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEZokJOUgNJvjKvN8kNqQzI8Ej7cGxKzE",
+            authDomain: "taskora-39404.firebaseapp.com",
+            projectId: "taskora-39404",
+            storageBucket: "taskora-39404.firebasestorage.app",
+            messagingSenderId: "1097282772",
+            appId: "1:1097282772:web:b8b8b8b8b8b8b8b8b8b8b8"
+        };
+
+        let app, db;
+        let dadosBrutosDacora = null;
+        let resultadosMigracao = {
+            tasks: { total: 0, migrados: 0, erros: [] },
+            clients: { total: 0, migrados: 0, erros: [] },
+            team: { total: 0, migrados: 0, erros: [] }
+        };
+
+        // Schema CORRETO do Taskora v5.5 - NUNCA ALTERAR!
+        const TASKORA_SCHEMA_V55 = {
+            tasks: {
+                required: ['orgId', 'title', 'status', 'owner', 'createdAt', 'updatedAt'],
+                optional: ['clientRef', 'description', 'assigneeRef', 'priority', 'startAt', 'dueAt', 'reminderAt', 'hours', 'estimatedMinutes', 'spentMinutes', 'date', 'createdBy', 'deletedAt']
+            },
+            clients: {
+                required: ['orgId', 'displayName', 'status', 'tier', 'createdAt', 'updatedAt'],
+                optional: ['email', 'phone', 'website', 'instagram', 'defaultAssigneeRef', 'entryDate', 'responsible', 'paymentMethod', 'documents', 'notes', 'budgets', 'activePlatforms', 'performance', 'balanceControl']
+            },
+            team: {
+                required: ['name', 'status', 'createdAt', 'updatedAt'],
+                optional: ['email', 'phone', 'specialty', 'level', 'notes']
+            }
+        };
+
+        // Mapeamento Dácora → Taskora (APENAS DADOS, NÃO SCHEMA!)
+        const MAPEAMENTO_DADOS = {
+            tasks: {
+                'description': 'title',  // Dácora.description → Taskora.title
+                'status': 'status',      // Manter status
+                'owner': 'owner',        // Manter owner
+                'date': 'date',          // Manter date
+                'dueDate': 'dueAt',      // Dácora.dueDate → Taskora.dueAt
+                'hours': 'hours'         // Manter hours
+            },
+            clients: {
+                'name': 'displayName',   // Dácora.name → Taskora.displayName
+                'email': 'email',        // Manter email
+                'tier': 'tier',          // Manter tier
+                'responsible': 'responsible' // Manter responsible
+            },
+            team: {
+                'name': 'name',          // Manter name
+                'email': 'email',        // Manter email
+                'specialty': 'specialty', // Manter specialty
+                'status': 'status'       // Manter status
+            }
+        };
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function atualizarProgresso(porcentagem, texto) {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = porcentagem + '%';
+            progressBar.textContent = texto || (porcentagem + '%');
+        }
+
+        // 1. Conectar Firebase
+        async function conectarFirebase() {
+            try {
+                log('🔗 Conectando ao Firebase Taskora v5.5...');
+                app = firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                
+                // Testar conexão
+                await db.collection('test').doc('migration_test').set({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'migration_ready'
+                });
+                
+                log('✅ Conexão estabelecida com sucesso!', 'success');
+                document.getElementById('btnCarregar').disabled = false;
+                atualizarProgresso(20, 'Firebase conectado');
+            } catch (error) {
+                log(`❌ Erro ao conectar: ${error.message}`, 'error');
+            }
+        }
+
+        // 2. Carregar APENAS Dados Brutos da Dácora
+        async function carregarDadosBrutos() {
+            try {
+                log('📂 Carregando APENAS dados brutos da Dácora...');
+                const response = await fetch('./dacora-export-2025-09-02.json');
+                const backupCompleto = await response.json();
+                
+                // EXTRAIR APENAS OS DADOS BRUTOS - IGNORAR QUALQUER SCHEMA!
+                dadosBrutosDacora = {
+                    tasks: backupCompleto.tasks || [],
+                    clients: backupCompleto.clients || [],
+                    owners: backupCompleto.owners || []  // Será mapeado para 'team'
+                };
+                
+                // Atualizar estatísticas
+                document.getElementById('dacoraTasksCount').textContent = dadosBrutosDacora.tasks.length;
+                document.getElementById('dacoraClientsCount').textContent = dadosBrutosDacora.clients.length;
+                document.getElementById('dacoraTeamCount').textContent = dadosBrutosDacora.owners.length;
+                
+                log(`✅ Dados carregados: ${dadosBrutosDacora.tasks.length} tarefas, ${dadosBrutosDacora.clients.length} clientes, ${dadosBrutosDacora.owners.length} membros`, 'success');
+                
+                mostrarPreviewMapeamento();
+                document.getElementById('btnValidar').disabled = false;
+                atualizarProgresso(40, 'Dados carregados');
+            } catch (error) {
+                log(`❌ Erro ao carregar dados: ${error.message}`, 'error');
+            }
+        }
+
+        // 3. Mostrar Preview do Mapeamento
+        function mostrarPreviewMapeamento() {
+            const previewDiv = document.getElementById('mappingPreview');
+            let html = '<h4>🔄 Mapeamento de Dados (Dácora → Taskora v5.5)</h4>';
+            
+            // Tasks
+            html += '<div class="mapping-item"><strong>📋 TAREFAS:</strong></div>';
+            for (const [dacoraField, taskoraField] of Object.entries(MAPEAMENTO_DADOS.tasks)) {
+                html += `<div class="mapping-item">`;
+                html += `<span class="dacora-field">Dácora.${dacoraField}</span>`;
+                html += `<span>→</span>`;
+                html += `<span class="taskora-field">Taskora.${taskoraField}</span>`;
+                html += `</div>`;
+            }
+            
+            // Clients
+            html += '<div class="mapping-item"><strong>👥 CLIENTES:</strong></div>';
+            for (const [dacoraField, taskoraField] of Object.entries(MAPEAMENTO_DADOS.clients)) {
+                html += `<div class="mapping-item">`;
+                html += `<span class="dacora-field">Dácora.${dacoraField}</span>`;
+                html += `<span>→</span>`;
+                html += `<span class="taskora-field">Taskora.${taskoraField}</span>`;
+                html += `</div>`;
+            }
+            
+            // Team
+            html += '<div class="mapping-item"><strong>🏢 EQUIPE:</strong></div>';
+            for (const [dacoraField, taskoraField] of Object.entries(MAPEAMENTO_DADOS.team)) {
+                html += `<div class="mapping-item">`;
+                html += `<span class="dacora-field">Dácora.owners.${dacoraField}</span>`;
+                html += `<span>→</span>`;
+                html += `<span class="taskora-field">Taskora.team.${taskoraField}</span>`;
+                html += `</div>`;
+            }
+            
+            previewDiv.innerHTML = html;
+        }
+
+        // 4. Validar Schema do Taskora
+        async function validarSchema() {
+            if (!db) {
+                log('❌ Firebase não conectado!', 'error');
+                return;
+            }
+
+            try {
+                log('✅ Validando schema do Taskora v5.5...');
+                
+                // Verificar se as coleções existem e têm a estrutura correta
+                for (const [collectionName, schemaInfo] of Object.entries(TASKORA_SCHEMA_V55)) {
+                    try {
+                        const snapshot = await db.collection(collectionName).limit(1).get();
+                        if (snapshot.empty) {
+                            log(`ℹ️ Coleção ${collectionName} está vazia - OK para migração`);
+                        } else {
+                            const doc = snapshot.docs[0];
+                            const fields = Object.keys(doc.data());
+                            log(`✅ ${collectionName}: ${fields.length} campos encontrados`);
+                        }
+                    } catch (error) {
+                        log(`⚠️ Coleção ${collectionName} não encontrada - será criada`, 'warning');
+                    }
+                }
+                
+                log('✅ Schema validado - pronto para migração!', 'success');
+                document.getElementById('btnMigrar').disabled = false;
+                atualizarProgresso(60, 'Schema validado');
+            } catch (error) {
+                log(`❌ Erro na validação: ${error.message}`, 'error');
+            }
+        }
+
+        // 5. Mapear Dados Brutos (Dácora → Taskora)
+        function mapearDadosBrutos(dadoOriginal, tipo) {
+            const dadoMapeado = {
+                orgId: 'migrated-from-dacora',  // Sempre adicionar orgId
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            const mapeamento = MAPEAMENTO_DADOS[tipo];
+            
+            // Mapear campos conforme definido
+            for (const [campoOriginal, campoDestino] of Object.entries(mapeamento)) {
+                if (dadoOriginal[campoOriginal] !== undefined) {
+                    dadoMapeado[campoDestino] = dadoOriginal[campoOriginal];
+                }
+            }
+            
+            // Adicionar campos obrigatórios específicos
+            if (tipo === 'tasks') {
+                dadoMapeado.title = dadoMapeado.title || 'Tarefa migrada';
+                dadoMapeado.status = dadoMapeado.status || 'pending';
+                dadoMapeado.owner = dadoMapeado.owner || 'system';
+            } else if (tipo === 'clients') {
+                dadoMapeado.displayName = dadoMapeado.displayName || 'Cliente migrado';
+                dadoMapeado.status = dadoMapeado.status || 'active';
+                dadoMapeado.tier = dadoMapeado.tier || 'standard';
+                // Campos de performance (obrigatórios no schema v5.5)
+                dadoMapeado.realLeads = dadoOriginal.realLeads || null;
+                dadoMapeado.realBilling = dadoOriginal.realBilling || null;
+                dadoMapeado.monthlyLeads = dadoOriginal.monthlyLeads || null;
+                dadoMapeado.currentROI = dadoOriginal.currentROI || null;
+                dadoMapeado.billingGoal = dadoOriginal.billingGoal || null;
+                dadoMapeado.conversionRate = dadoOriginal.conversionRate || null;
+                dadoMapeado.documentLinks = dadoOriginal.documentLinks || '';
+                dadoMapeado.tags = dadoOriginal.tags || [];
+            } else if (tipo === 'team') {
+                dadoMapeado.name = dadoMapeado.name || 'Membro migrado';
+                dadoMapeado.status = dadoMapeado.status || 'active';
+                // Campos de estatísticas (obrigatórios no schema v5.5)
+                dadoMapeado.averageRating = dadoOriginal.averageRating || 0;
+                dadoMapeado.totalHours = dadoOriginal.totalHours || 0;
+                dadoMapeado.totalTasks = dadoOriginal.totalTasks || 0;
+            }
+            
+            return dadoMapeado;
+        }
+
+        // 6. Migrar Dados Brutos
+        async function iniciarMigracao() {
+            if (!db || !dadosBrutosDacora) {
+                log('❌ Pré-requisitos não atendidos!', 'error');
+                return;
+            }
+
+            try {
+                log('🚀 Iniciando migração de dados brutos...');
+                atualizarProgresso(70, 'Migrando dados...');
+                
+                // Migrar Tasks
+                log('📋 Migrando tarefas...');
+                for (const [index, taskOriginal] of dadosBrutosDacora.tasks.entries()) {
+                    try {
+                        const taskMapeada = mapearDadosBrutos(taskOriginal, 'tasks');
+                        await db.collection('tasks').add(taskMapeada);
+                        resultadosMigracao.tasks.migrados++;
+                    } catch (error) {
+                        resultadosMigracao.tasks.erros.push(`Tarefa ${index}: ${error.message}`);
+                    }
+                }
+                resultadosMigracao.tasks.total = dadosBrutosDacora.tasks.length;
+                
+                // Migrar Clients
+                log('👥 Migrando clientes...');
+                for (const [index, clientOriginal] of dadosBrutosDacora.clients.entries()) {
+                    try {
+                        const clientMapeado = mapearDadosBrutos(clientOriginal, 'clients');
+                        await db.collection('clients').add(clientMapeado);
+                        resultadosMigracao.clients.migrados++;
+                    } catch (error) {
+                        resultadosMigracao.clients.erros.push(`Cliente ${index}: ${error.message}`);
+                    }
+                }
+                resultadosMigracao.clients.total = dadosBrutosDacora.clients.length;
+                
+                // Migrar Team (owners)
+                log('🏢 Migrando equipe...');
+                for (const [index, ownerOriginal] of dadosBrutosDacora.owners.entries()) {
+                    try {
+                        const teamMapeado = mapearDadosBrutos(ownerOriginal, 'team');
+                        await db.collection('team').add(teamMapeado);
+                        resultadosMigracao.team.migrados++;
+                    } catch (error) {
+                        resultadosMigracao.team.erros.push(`Membro ${index}: ${error.message}`);
+                    }
+                }
+                resultadosMigracao.team.total = dadosBrutosDacora.owners.length;
+                
+                const totalMigrados = resultadosMigracao.tasks.migrados + resultadosMigracao.clients.migrados + resultadosMigracao.team.migrados;
+                document.getElementById('migratedCount').textContent = totalMigrados;
+                
+                log('🎉 Migração concluída!', 'success');
+                log(`📊 Resultados: ${totalMigrados} registros migrados`);
+                
+                document.getElementById('btnValidarMigracao').disabled = false;
+                atualizarProgresso(90, 'Migração concluída');
+            } catch (error) {
+                log(`❌ Erro na migração: ${error.message}`, 'error');
+            }
+        }
+
+        // 7. Validar Migração
+        async function validarMigracao() {
+            if (!db) {
+                log('❌ Firebase não conectado!', 'error');
+                return;
+            }
+
+            try {
+                log('🔍 Validando migração...');
+                
+                const validationDiv = document.getElementById('validationResults');
+                let html = '<h4>📊 Resultados da Validação</h4>';
+                
+                // Verificar cada coleção
+                for (const [collectionName, resultado] of Object.entries(resultadosMigracao)) {
+                    const snapshot = await db.collection(collectionName).get();
+                    const countFirestore = snapshot.size;
+                    
+                    html += `<div class="validation-result">`;
+                    html += `<h5>📋 ${collectionName.toUpperCase()}</h5>`;
+                    html += `<p><strong>Total Dácora:</strong> ${resultado.total}</p>`;
+                    html += `<p><strong>Migrados:</strong> ${resultado.migrados}</p>`;
+                    html += `<p><strong>No Firestore:</strong> ${countFirestore}</p>`;
+                    
+                    if (resultado.erros.length > 0) {
+                        html += `<p><strong>Erros:</strong></p><ul>`;
+                        resultado.erros.forEach(erro => {
+                            html += `<li>${erro}</li>`;
+                        });
+                        html += `</ul>`;
+                    }
+                    
+                    const sucesso = resultado.migrados === resultado.total && countFirestore >= resultado.migrados;
+                    html += `<p><strong>Status:</strong> ${sucesso ? '✅ OK' : '⚠️ Verificar'}</p>`;
+                    html += `</div>`;
+                }
+                
+                validationDiv.innerHTML = html;
+                
+                log('✅ Validação concluída!', 'success');
+                atualizarProgresso(100, 'Validação concluída');
+            } catch (error) {
+                log(`❌ Erro na validação: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

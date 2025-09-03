@@ -4,17 +4,17 @@
 // Ambiente: produção com autenticação anônima habilitada (sem tela de login).
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
-  authDomain: "taskora-39404.firebaseapp.com",
-  projectId: "taskora-39404",
-  storageBucket: "taskora-39404.firebasestorage.app",
-  messagingSenderId: "650011927392",
-  appId: "1:650011927392:web:26d75b732ecbb21dacf405"
-}; // valores fornecidos pelo usuário:contentReference[oaicite:1]{index=1}
+  apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
+  authDomain: "dacora---tarefas.firebaseapp.com",
+  projectId: "dacora---tarefas",
+  storageBucket: "dacora---tarefas.firebasestorage.app",
+  messagingSenderId: "406318974539",
+  appId: "1:406318974539:web:d842997c1b064c0ba56fce"
+}; // Configuração da Dácora - migrado do export-dacora-data.html
 
 if (typeof window !== "undefined") {
   // Disponibiliza para assets/js/firebase.js
   window.firebaseConfig = firebaseConfig;
   // Log leve para conferência no console
-  console.log("[Taskora] Firebase config carregado:", firebaseConfig.projectId);
+  console.log("[Dácora] Firebase config carregado:", firebaseConfig.projectId);
 }

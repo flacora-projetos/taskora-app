@@ -7,7 +7,7 @@ import {
   collection, query, orderBy, limit, getDocs,
   addDoc, updateDoc, deleteDoc, doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-import { createTask, updateTask } from "../data/tasksRepo.js";
+import { createTask, updateTask, deleteTask } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
 import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 
@@ -748,27 +748,24 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 
     async function handleDuplicate(row){
       try{
-        const copyRaw = {
+        const copyPayload = {
+          title: row.title || row.description || "(cópia)",
+          description: row.description ? `${row.description} (cópia)` : "(cópia)",
           client: row.client || "",
           owner: row.owner || "",
-          description: row.description ? `${row.description} (cópia)` : "(cópia)",
           status: canonStatus(row.status || "não realizada"),
           hours: (typeof row.hours==="number" ? row.hours : undefined),
           date: row.date || fmtDateISO(row.createdAt) || toISOLocal(todayLocal()),
           dueDate: row.dueDate || fmtDateISO(todayLocal()),
-          endDate: row.endDate || undefined,
-          recurrence: row.recurrence && row.recurrence.type ? row.recurrence : {type:"none"},
           recurrenceType: row.recurrenceType || "none",
           ...(row.recurrenceDays ? {recurrenceDays:[...row.recurrenceDays]} : {}),
-          ...(row.recurrenceUntil ? {recurrenceUntil: row.recurrenceUntil} : {}),
-          createdAt: serverTimestamp()
+          ...(row.recurrenceUntil ? {recurrenceUntil: row.recurrenceUntil} : {})
         };
-        const copy = noUndef(copyRaw); // 🔧 remove undefined antes de salvar
-        const ref = await addDoc(collection(db,"tasks"), copy);
+        const taskId = await createTask(copyPayload);
         showCenterToast("Tarefa duplicada");
-        // Atualiza rapidamente a UI (inserindo no topo visual)
-        allRows.unshift({id: ref.id, ...copy, createdAt: {seconds: Math.floor(Date.now()/1000)}});
-        page = 0; renderTableSlice();
+        // Recarrega a lista para mostrar a nova tarefa
+        page = 0; 
+        await loadTasks();
       }catch(err){
         console.error("[Tasks] Erro ao duplicar:", err);
         alert("Falha ao duplicar a tarefa.");
@@ -787,13 +784,11 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
         clients, owners, isEdit:true, initial: row,
         async onOk(payload){
           try{
-            const clean = noUndef(payload); // 🔧 remove undefined antes de atualizar
-            await updateDoc(doc(db,"tasks", row.id), clean);
+            await updateTask(row.id, payload);
             showCenterToast("Tarefa atualizada");
-            // Atualiza buffer local e a linha
-            const idx = allRows.findIndex(r=>r.id===row.id);
-            if(idx>=0) allRows[idx] = { ...allRows[idx], ...clean };
-            page = 0; renderTableSlice();
+            // Recarrega a lista para mostrar as alterações
+            page = 0; 
+            await loadTasks();
           }catch(err){
             console.error("[Tasks] Erro ao atualizar:", err);
             alert("Falha ao salvar alterações.");

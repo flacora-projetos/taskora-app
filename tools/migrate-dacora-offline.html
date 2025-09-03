@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migração Dácora → Taskora (Offline)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .file-input {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        
+        .file-input input {
+            margin: 10px 0;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .error {
+            color: #ff4757;
+        }
+        
+        .success {
+            color: #2ed573;
+        }
+        
+        .warning {
+            color: #ffa502;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Migração Offline</h1>
+            <p>Dácora → Taskora v5.5 (Dados Locais)</p>
+        </div>
+        
+        <div class="content">
+            <div class="file-input">
+                <h3>📁 Carregar Arquivo de Exportação</h3>
+                <p>Selecione o arquivo dacora-export-2025-09-02.json</p>
+                <input type="file" id="fileInput" accept=".json" />
+            </div>
+            
+            <div class="stats" id="stats" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-number" id="clientsCount">0</div>
+                    <div class="stat-label">Clientes Encontrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="teamCount">0</div>
+                    <div class="stat-label">Membros da Equipe</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="migratedCount">0</div>
+                    <div class="stat-label">Itens Migrados</div>
+                </div>
+            </div>
+            
+            <div class="progress-container" style="display: none;" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="button" onclick="analyzeData()" id="analyzeBtn" disabled>📊 Analisar Dados</button>
+                <button class="button" onclick="migrateData()" id="migrateBtn" disabled>🚀 Executar Migração</button>
+                <button class="button" onclick="exportReport()" id="exportBtn" disabled>📋 Exportar Relatório</button>
+            </div>
+            
+            <div class="log" id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        let dacoraData = null;
+        let migrationData = {
+            clients: [],
+            team: []
+        };
+        let migrationResults = {
+            clients: [],
+            team: [],
+            errors: []
+        };
+
+        // Running in offline mode only - no Firebase needed
+        let db = null;
+        console.log('Running in offline mode - Firebase not required');
+
+        // Carregar arquivo
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        dacoraData = JSON.parse(e.target.result);
+                        log('✅ Arquivo carregado com sucesso!');
+                        document.getElementById('analyzeBtn').disabled = false;
+                    } catch (error) {
+                        log('❌ Erro ao carregar arquivo: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warning' ? 'warning' : '';
+            logElement.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function updateProgress(percent, message) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            
+            progressContainer.style.display = 'block';
+            progressBar.style.width = percent + '%';
+            
+            if (message) {
+                log(message);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('clientsCount').textContent = migrationData.clients.length;
+            document.getElementById('teamCount').textContent = migrationData.team.length;
+            document.getElementById('migratedCount').textContent = migrationResults.clients.length + migrationResults.team.length;
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        async function analyzeData() {
+            if (!dacoraData) {
+                log('❌ Nenhum arquivo carregado!', 'error');
+                return;
+            }
+
+            log('🔍 Iniciando análise dos dados locais...');
+            updateProgress(10, 'Analisando estrutura...');
+
+            migrationData = {
+                clients: [],
+                team: []
+            };
+
+            try {
+                // Analisar clientes
+                updateProgress(30, 'Analisando clientes...');
+                
+                const settingsCollection = dacoraData.collections?.settings;
+                if (settingsCollection && Array.isArray(settingsCollection)) {
+                    const clientsDoc = settingsCollection.find(doc => doc.id === 'clients');
+                    if (clientsDoc && clientsDoc.data && clientsDoc.data.list) {
+                        migrationData.clients = clientsDoc.data.list;
+                        log(`✅ Encontrados ${migrationData.clients.length} clientes`);
+                    }
+                }
+
+                // Analisar equipe
+                updateProgress(60, 'Analisando equipe...');
+                
+                if (settingsCollection && Array.isArray(settingsCollection)) {
+                    const ownersDoc = settingsCollection.find(doc => doc.id === 'owners');
+                    if (ownersDoc && ownersDoc.data && ownersDoc.data.names) {
+                        migrationData.team = ownersDoc.data.names.map((name, index) => ({
+                            id: `owner_${index}`,
+                            name: name
+                        }));
+                        log(`✅ Encontrados ${migrationData.team.length} membros da equipe`);
+                    }
+                }
+
+                updateProgress(100, 'Análise concluída!');
+                updateStats();
+                
+                document.getElementById('migrateBtn').disabled = false;
+                log(`📊 Análise concluída: ${migrationData.clients.length} clientes, ${migrationData.team.length} membros da equipe`, 'success');
+                
+            } catch (error) {
+                log(`❌ Erro na análise: ${error.message}`, 'error');
+            }
+        }
+
+        async function migrateData() {
+            if (migrationData.clients.length === 0 && migrationData.team.length === 0) {
+                log('❌ Nenhum dado para migrar! Execute a análise primeiro.', 'error');
+                return;
+            }
+
+            log('🚀 Iniciando migração dos dados...');
+            migrationResults = { clients: [], team: [], errors: [] };
+
+            try {
+                // Migrar clientes
+                if (migrationData.clients.length > 0) {
+                    log('👥 Migrando clientes para nova coleção...');
+                    
+                    for (let i = 0; i < migrationData.clients.length; i++) {
+                        const client = migrationData.clients[i];
+                        updateProgress((i / migrationData.clients.length) * 50, `Migrando cliente: ${client.name}`);
+                        
+                        try {
+                            // Mapear campos para schema Taskora v5.5 com valores seguros
+                            const taskoraClient = {
+                                name: (client.name && typeof client.name === 'string') ? client.name : (client.id || 'Cliente Sem Nome'),
+                                tier: (client.tier && typeof client.tier === 'string') ? client.tier : 'standard',
+                                status: 'active',
+                                owner: (client.owner && typeof client.owner === 'string') ? client.owner : '',
+                                createdAt: new Date().toISOString(),
+                                updatedAt: new Date().toISOString(),
+                                // Campos de performance (valores padrão)
+                                realBilling: 0,
+                                realLeads: 0,
+                                billingGoal: 0,
+                                leadsGoal: 0,
+                                roi: 0,
+                                // Saldos das plataformas (estruturas padrão)
+                                metaAds: { deposit: 0, depositDate: null, dailyBudget: 0 },
+                                googleAds: { deposit: 0, depositDate: null, dailyBudget: 0 },
+                                tiktokAds: { deposit: 0, depositDate: null, dailyBudget: 0 },
+                                pinterestAds: { deposit: 0, depositDate: null, dailyBudget: 0 }
+                            };
+
+                            // Usar ID original ou gerar novo
+                            const docId = client.id || `client_${Date.now()}_${i}`;
+                            
+                            migrationResults.clients.push({ id: docId, ...taskoraClient });
+                            log(`✅ Cliente migrado: ${client.name}`);
+                            
+                        } catch (error) {
+                            const errorMsg = `Erro ao migrar cliente ${client.name}: ${error.message}`;
+                            log(`❌ ${errorMsg}`, 'error');
+                            migrationResults.errors.push(errorMsg);
+                        }
+                    }
+                }
+
+                // Migrar equipe
+                if (migrationData.team.length > 0) {
+                    log('👨‍💼 Migrando equipe para nova coleção...');
+                    
+                    for (let i = 0; i < migrationData.team.length; i++) {
+                        const member = migrationData.team[i];
+                        updateProgress(50 + (i / migrationData.team.length) * 50, `Migrando membro: ${member.name}`);
+                        
+                        try {
+                            // Mapear campos para schema Taskora v5.5 com valores seguros
+                            const taskoraMember = {
+                                name: (member.name && typeof member.name === 'string') ? member.name : 'Membro Sem Nome',
+                                email: '',
+                                specialty: 'general',
+                                level: 'senior',
+                                status: 'active',
+                                createdAt: new Date().toISOString(),
+                                updatedAt: new Date().toISOString()
+                            };
+
+                            const docId = member.id || `member_${Date.now()}_${i}`;
+                            
+                            migrationResults.team.push({ id: docId, ...taskoraMember });
+                            log(`✅ Membro migrado: ${member.name}`);
+                            
+                        } catch (error) {
+                            const errorMsg = `Erro ao migrar membro ${member.name}: ${error.message}`;
+                            log(`❌ ${errorMsg}`, 'error');
+                            migrationResults.errors.push(errorMsg);
+                        }
+                    }
+                }
+
+                updateProgress(100, 'Migração concluída!');
+                updateStats();
+                
+                const totalMigrated = migrationResults.clients.length + migrationResults.team.length;
+                const totalErrors = migrationResults.errors.length;
+                
+                log(`🎉 Migração concluída! ${totalMigrated} itens migrados, ${totalErrors} erros`, 'success');
+                document.getElementById('exportBtn').disabled = false;
+                
+            } catch (error) {
+                log(`❌ Erro na migração: ${error.message}`, 'error');
+            }
+        }
+
+        function exportReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                migration: {
+                    totalItems: migrationData.clients.length + migrationData.team.length,
+                    migrated: migrationResults.clients.length + migrationResults.team.length,
+                    errors: migrationResults.errors.length,
+                    clients: migrationResults.clients.length,
+                    team: migrationResults.team.length
+                },
+                errors: migrationResults.errors,
+                data: {
+                    clients: migrationResults.clients,
+                    team: migrationResults.team
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `migration-report-offline-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            log('📋 Relatório exportado com sucesso!', 'success');
+        }
+    </script>
+
+    <!-- Offline migration tool - no Firebase required -->
+</body>
+</html>

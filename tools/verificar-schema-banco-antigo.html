@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Verificar Schema do Banco Antigo - Taskora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .status {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #007bff;
+        }
+        .btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .schema-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .schema-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .schema-title {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .field-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .field-item {
+            background: #e9ecef;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .field-type {
+            color: #6c757d;
+            font-style: italic;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Verificar Schema do Banco Antigo</h1>
+            <p>Extraindo estrutura real dos clientes do Taskora antigo</p>
+        </div>
+        
+        <div class="content">
+            <div class="status" id="status">
+                <strong>Status:</strong> Aguardando conexão...
+            </div>
+            
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <button class="btn" id="connectBtn" onclick="conectarEExtrair()">🚀 Conectar e Extrair Schema</button>
+            <button class="btn" id="exportBtn" onclick="exportarSchema()" disabled>📥 Exportar Schema</button>
+            
+            <div class="log" id="log"></div>
+            
+            <div class="schema-display" id="schemaDisplay" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuração do Firebase do banco ANTIGO do Taskora
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+            authDomain: "taskora-39404.firebaseapp.com",
+            projectId: "taskora-39404",
+            storageBucket: "taskora-39404.firebasestorage.app",
+            messagingSenderId: "650011927392",
+            appId: "1:650011927392:web:26d75b732ecbb21dacf405"
+        };
+
+        let db;
+        let schemaData = {};
+
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#74c0fc';
+            logElement.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').innerHTML = `<strong>Status:</strong> ${message}`;
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        async function conectarEExtrair() {
+            try {
+                document.getElementById('connectBtn').disabled = true;
+                updateStatus('Conectando ao Firebase...');
+                updateProgress(10);
+                log('🔥 Inicializando Firebase do banco antigo do Taskora...');
+
+                // Inicializar Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                
+                log('✅ Conexão estabelecida com sucesso!', 'success');
+                updateStatus('Conectado! Extraindo dados...');
+                updateProgress(25);
+
+                // Extrair schema dos clientes
+                await extrairSchemaClients();
+                updateProgress(60);
+
+                // Extrair schema das tarefas
+                await extrairSchemaTasks();
+                updateProgress(80);
+
+                // Extrair schema do team
+                await extrairSchemaTeam();
+                updateProgress(100);
+
+                updateStatus('✅ Extração completa!');
+                document.getElementById('exportBtn').disabled = false;
+                exibirSchema();
+                
+            } catch (error) {
+                log(`❌ Erro: ${error.message}`, 'error');
+                updateStatus('❌ Erro na conexão');
+                document.getElementById('connectBtn').disabled = false;
+            }
+        }
+
+        async function extrairSchemaClients() {
+            log('📊 Extraindo schema da coleção CLIENTS...');
+            
+            try {
+                const snapshot = await db.collection('clients').limit(10).get();
+                const clients = [];
+                const allFields = new Set();
+                const fieldTypes = {};
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    clients.push({ id: doc.id, ...data });
+                    
+                    // Mapear todos os campos e tipos
+                    Object.keys(data).forEach(field => {
+                        allFields.add(field);
+                        const value = data[field];
+                        const type = Array.isArray(value) ? 'array' : 
+                                   value === null ? 'null' :
+                                   typeof value === 'object' ? 'object' :
+                                   typeof value;
+                        fieldTypes[field] = fieldTypes[field] || new Set();
+                        fieldTypes[field].add(type);
+                    });
+                });
+                
+                schemaData.clients = {
+                    total: snapshot.size,
+                    fields: Array.from(allFields).sort(),
+                    fieldTypes: Object.fromEntries(
+                        Object.entries(fieldTypes).map(([field, types]) => 
+                            [field, Array.from(types)]
+                        )
+                    ),
+                    samples: clients.slice(0, 3)
+                };
+                
+                log(`✅ CLIENTS: ${snapshot.size} documentos, ${allFields.size} campos únicos`, 'success');
+                
+            } catch (error) {
+                log(`❌ Erro ao extrair clients: ${error.message}`, 'error');
+                schemaData.clients = { error: error.message };
+            }
+        }
+
+        async function extrairSchemaTasks() {
+            log('📋 Extraindo schema da coleção TASKS...');
+            
+            try {
+                const snapshot = await db.collection('tasks').limit(10).get();
+                const tasks = [];
+                const allFields = new Set();
+                const fieldTypes = {};
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    tasks.push({ id: doc.id, ...data });
+                    
+                    Object.keys(data).forEach(field => {
+                        allFields.add(field);
+                        const value = data[field];
+                        const type = Array.isArray(value) ? 'array' : 
+                                   value === null ? 'null' :
+                                   typeof value === 'object' ? 'object' :
+                                   typeof value;
+                        fieldTypes[field] = fieldTypes[field] || new Set();
+                        fieldTypes[field].add(type);
+                    });
+                });
+                
+                schemaData.tasks = {
+                    total: snapshot.size,
+                    fields: Array.from(allFields).sort(),
+                    fieldTypes: Object.fromEntries(
+                        Object.entries(fieldTypes).map(([field, types]) => 
+                            [field, Array.from(types)]
+                        )
+                    ),
+                    samples: tasks.slice(0, 3)
+                };
+                
+                log(`✅ TASKS: ${snapshot.size} documentos, ${allFields.size} campos únicos`, 'success');
+                
+            } catch (error) {
+                log(`❌ Erro ao extrair tasks: ${error.message}`, 'error');
+                schemaData.tasks = { error: error.message };
+            }
+        }
+
+        async function extrairSchemaTeam() {
+            log('👥 Extraindo schema da coleção TEAM...');
+            
+            try {
+                const snapshot = await db.collection('team').limit(10).get();
+                const team = [];
+                const allFields = new Set();
+                const fieldTypes = {};
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    team.push({ id: doc.id, ...data });
+                    
+                    Object.keys(data).forEach(field => {
+                        allFields.add(field);
+                        const value = data[field];
+                        const type = Array.isArray(value) ? 'array' : 
+                                   value === null ? 'null' :
+                                   typeof value === 'object' ? 'object' :
+                                   typeof value;
+                        fieldTypes[field] = fieldTypes[field] || new Set();
+                        fieldTypes[field].add(type);
+                    });
+                });
+                
+                schemaData.team = {
+                    total: snapshot.size,
+                    fields: Array.from(allFields).sort(),
+                    fieldTypes: Object.fromEntries(
+                        Object.entries(fieldTypes).map(([field, types]) => 
+                            [field, Array.from(types)]
+                        )
+                    ),
+                    samples: team.slice(0, 3)
+                };
+                
+                log(`✅ TEAM: ${snapshot.size} documentos, ${allFields.size} campos únicos`, 'success');
+                
+            } catch (error) {
+                log(`❌ Erro ao extrair team: ${error.message}`, 'error');
+                schemaData.team = { error: error.message };
+            }
+        }
+
+        function exibirSchema() {
+            const display = document.getElementById('schemaDisplay');
+            display.style.display = 'block';
+            display.innerHTML = '';
+            
+            Object.entries(schemaData).forEach(([collection, data]) => {
+                if (data.error) {
+                    display.innerHTML += `
+                        <div class="schema-item">
+                            <div class="schema-title">❌ ${collection.toUpperCase()}</div>
+                            <p style="color: #dc3545;">Erro: ${data.error}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const fieldsHtml = data.fields.map(field => {
+                    const types = data.fieldTypes[field].join(' | ');
+                    return `<div class="field-item">${field} <span class="field-type">(${types})</span></div>`;
+                }).join('');
+                
+                display.innerHTML += `
+                    <div class="schema-item">
+                        <div class="schema-title">📊 ${collection.toUpperCase()} (${data.total} docs)</div>
+                        <div class="field-list">${fieldsHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function exportarSchema() {
+            const dataStr = JSON.stringify(schemaData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `taskora-schema-antigo-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            log('📥 Schema exportado com sucesso!', 'success');
+        }
+
+        // Log inicial
+        log('🔍 Ferramenta de Verificação de Schema carregada');
+        log('📋 Esta ferramenta irá conectar no banco ANTIGO do Taskora');
+        log('🎯 Objetivo: Extrair estrutura real dos clientes, tarefas e equipe');
+    </script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrar Apenas Nomes dos Clientes - Dácora → Taskora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .step h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Migração Específica: Nomes dos Clientes</h1>
+            <p>Migrar apenas os nomes dos clientes da Dácora para o schema Taskora v5.5</p>
+        </div>
+
+        <div class="content">
+            <div class="warning">
+                <strong>⚠️ Migração Específica:</strong> Esta ferramenta migra APENAS os nomes dos clientes, preservando todos os outros campos existentes no Firebase.
+            </div>
+
+            <div class="step">
+                <h3>📁 Passo 1: Carregar Backup da Dácora</h3>
+                <p>Selecione o arquivo de backup da Dácora (dacora-export-2025-09-02.json)</p>
+                <input type="file" id="fileInput" accept=".json" style="margin-bottom: 10px;">
+                <div id="statusCarregamento"></div>
+            </div>
+
+            <div class="step">
+                <h3>📋 Processo de Migração</h3>
+                <p>1. Carregar backup da Dácora (dacora-export-2025-09-02.json)</p>
+                <p>2. Conectar ao Firebase Taskora</p>
+                <p>3. Migrar apenas os nomes dos clientes</p>
+                <p>4. Preservar todos os outros campos existentes</p>
+            </div>
+
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalClients">0</div>
+                    <div class="stat-label">Clientes no Backup</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="migratedClients">0</div>
+                    <div class="stat-label">Nomes Migrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="errorCount">0</div>
+                    <div class="stat-label">Erros</div>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" id="btnCarregar" onclick="carregarBackup()">📂 Carregar Backup</button>
+                <button class="btn" id="btnConectar" onclick="conectarFirebase()" disabled>🔗 Conectar Firebase</button>
+                <button class="btn" id="btnMigrar" onclick="migrarNomes()" disabled>🚀 Migrar Nomes</button>
+            </div>
+
+            <div class="log" id="log"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        let db = null;
+        let backupData = null;
+        let clientsData = [];
+        let stats = {
+            total: 0,
+            migrated: 0,
+            errors: 0
+        };
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+            authDomain: "taskora-39404.firebaseapp.com",
+            projectId: "taskora-39404",
+            storageBucket: "taskora-39404.firebasestorage.app",
+            messagingSenderId: "650011927392",
+            appId: "1:650011927392:web:26d75b732ecbb21dacf405"
+        };
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('log');
+            const colors = {
+                info: '#00ff00',
+                warning: '#ffff00',
+                error: '#ff0000',
+                success: '#00ffff'
+            };
+            
+            logElement.innerHTML += `<span style="color: ${colors[type]}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function atualizarStats() {
+            document.getElementById('totalClients').textContent = stats.total;
+            document.getElementById('migratedClients').textContent = stats.migrated;
+            document.getElementById('errorCount').textContent = stats.errors;
+        }
+
+        function atualizarProgresso(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function updateStatus(message) {
+            const statusElement = document.getElementById('statusCarregamento');
+            if (statusElement) {
+                statusElement.innerHTML = message;
+            }
+        }
+
+        // 1. Carregar Backup da Dácora
+        async function carregarBackup() {
+            try {
+                const fileInput = document.getElementById('fileInput');
+                const file = fileInput.files[0];
+                
+                if (!file) {
+                    updateStatus('Por favor, selecione um arquivo de backup primeiro.');
+                    return;
+                }
+                
+                log('📂 Carregando backup da Dácora...');
+                updateStatus('Carregando backup da Dácora...');
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const backupContent = event.target.result;
+                        
+                        // Carregar backup da Dácora
+                        const dacoraData = JSON.parse(backupContent);
+                        
+                        // Encontrar a coleção de clientes na estrutura da Dácora
+                         let dacoraClients = [];
+                         
+                         // Verificar em collections.settings com id 'clients'
+                         if (dacoraData.collections && dacoraData.collections.settings) {
+                             const clientsSettings = dacoraData.collections.settings.find(item => item.id === 'clients');
+                             if (clientsSettings && clientsSettings.data && clientsSettings.data.list) {
+                                 dacoraClients = clientsSettings.data.list || [];
+                             }
+                         }
+                         
+                         // Fallback: verificar em collections.clients
+                         if (dacoraClients.length === 0 && dacoraData.collections && dacoraData.collections.clients) {
+                             const clientsCollection = dacoraData.collections.clients.find(item => item.data && item.data.list);
+                             if (clientsCollection) {
+                                 dacoraClients = clientsCollection.data.list || [];
+                             }
+                         }
+                         
+                         // Fallback: verificar diretamente em clients
+                         if (dacoraClients.length === 0 && dacoraData.clients) {
+                             dacoraClients = dacoraData.clients;
+                         }
+                        
+                        if (dacoraClients.length === 0) {
+                            throw new Error('Nenhum cliente encontrado no backup da Dácora');
+                        }
+                        
+                        clientsData = dacoraClients;
+                        stats.total = clientsData.length;
+                        
+                        log(`✅ Backup carregado: ${stats.total} clientes encontrados`, 'success');
+                        updateStatus(`Backup carregado com sucesso! Encontrados ${stats.total} clientes.`);
+                        atualizarStats();
+                        
+                        document.getElementById('btnCarregar').disabled = true;
+                        document.getElementById('btnConectar').disabled = false;
+                        
+                    } catch (error) {
+                        log(`❌ Erro ao processar backup: ${error.message}`, 'error');
+                        updateStatus('Erro ao processar o arquivo de backup. Verifique se é um arquivo JSON válido.');
+                    }
+                };
+                
+                reader.onerror = function() {
+                    log('❌ Erro ao ler arquivo', 'error');
+                    updateStatus('Erro ao ler o arquivo selecionado.');
+                };
+                
+                reader.readAsText(file);
+                
+            } catch (error) {
+                log(`❌ Erro ao carregar backup: ${error.message}`, 'error');
+                updateStatus('Erro ao carregar backup. Verifique o arquivo.');
+            }
+        }
+
+        // 2. Conectar ao Firebase
+        async function conectarFirebase() {
+            try {
+                log('🔗 Conectando ao Firebase Taskora...');
+                
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                
+                // Teste de conectividade
+                await db.collection('clients').limit(1).get();
+                
+                log('✅ Conectado ao Firebase com sucesso!', 'success');
+                
+                document.getElementById('btnConectar').disabled = true;
+                document.getElementById('btnMigrar').disabled = false;
+                
+            } catch (error) {
+                log(`❌ Erro ao conectar Firebase: ${error.message}`, 'error');
+            }
+        }
+
+        // 3. Migrar Apenas Nomes dos Clientes
+        async function migrarNomes() {
+            if (!db || !clientsData.length) {
+                log('❌ Firebase não conectado ou dados não carregados', 'error');
+                return;
+            }
+
+            try {
+                log('🚀 Iniciando migração dos nomes dos clientes...');
+                document.getElementById('btnMigrar').disabled = true;
+                
+                for (let i = 0; i < clientsData.length; i++) {
+                    const client = clientsData[i];
+                    
+                    try {
+                        // Buscar cliente existente no Firebase pelo nome ou email
+                        const clientQuery = await db.collection('clients')
+                            .where('displayName', '==', client.name)
+                            .limit(1)
+                            .get();
+                        
+                        let clientRef;
+                        
+                        if (!clientQuery.empty) {
+                            // Cliente existe - atualizar apenas o nome se necessário
+                            clientRef = clientQuery.docs[0].ref;
+                            const existingData = clientQuery.docs[0].data();
+                            
+                            if (existingData.displayName !== client.name) {
+                                await clientRef.update({
+                                    displayName: client.name || 'Cliente Sem Nome',
+                                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                });
+                                log(`✅ Nome atualizado: ${client.name}`);
+                            } else {
+                                log(`ℹ️ Nome já correto: ${client.name}`);
+                            }
+                        } else {
+                            // Cliente não existe - criar apenas com nome e campos mínimos
+                            const newClientData = {
+                                orgId: 'dacora',
+                                displayName: client.name || 'Cliente Sem Nome',
+                                email: client.email || '',
+                                phone: client.phone || '',
+                                website: client.website || '',
+                                instagram: client.instagram || '',
+                                status: 'ATIVO',
+                                tier: 'LOW_TIER',
+                                responsible: client.responsible || 'Não Definido',
+                                paymentMethod: 'PIX',
+                                entryDate: null,
+                                notes: '',
+                                // Campos obrigatórios do schema v5.5
+                                realLeads: null,
+                                realBilling: null,
+                                monthlyLeads: null,
+                                currentROI: null,
+                                billingGoal: null,
+                                conversionRate: null,
+                                documentLinks: '',
+                                tags: [],
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            };
+                            
+                            await db.collection('clients').add(newClientData);
+                            log(`✅ Cliente criado: ${client.name}`);
+                        }
+                        
+                        stats.migrated++;
+                        
+                    } catch (error) {
+                        stats.errors++;
+                        log(`❌ Erro ao migrar ${client.name}: ${error.message}`, 'error');
+                    }
+                    
+                    // Atualizar progresso
+                    const progress = ((i + 1) / clientsData.length) * 100;
+                    atualizarProgresso(progress);
+                    atualizarStats();
+                    
+                    // Pequena pausa para não sobrecarregar o Firebase
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                log('🎉 Migração de nomes concluída!', 'success');
+                log(`📊 Resumo: ${stats.migrated} nomes migrados, ${stats.errors} erros`, 'success');
+                
+            } catch (error) {
+                log(`❌ Erro na migração: ${error.message}`, 'error');
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🔧 Ferramenta de Migração de Nomes inicializada');
+            log('📋 Pronta para migrar apenas os nomes dos clientes da Dácora');
+            atualizarStats();
+        });
+    </script>
+</body>
+</html>

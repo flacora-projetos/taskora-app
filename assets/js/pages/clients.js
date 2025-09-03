@@ -1437,8 +1437,8 @@ import {
                
                <!-- Classificação -->
                <div class="cl-form-group col-span-4">
-                 <label class="cl-form-label">Tier *</label>
-                 <select class="cl-form-select" name="tier" required>
+                 <label class="cl-form-label">Tier</label>
+                 <select class="cl-form-select" name="tier">
                    <option value="">Selecione...</option>
                    <option value="KEY_ACCOUNT">Key Account</option>
                    <option value="MID_TIER">Mid Tier</option>
@@ -1462,8 +1462,8 @@ import {
                </div>
                
                <div class="cl-form-group col-span-12">
-                 <label class="cl-form-label">Responsável *</label>
-                 <select class="cl-form-select" name="responsible" id="client-responsible-select" required>
+                 <label class="cl-form-label">Responsável</label>
+                 <select class="cl-form-select" name="responsible" id="client-responsible-select">
                    <option value="">Selecione um responsável...</option>
                  </select>
                </div>

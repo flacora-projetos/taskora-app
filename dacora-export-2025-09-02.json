@@ -1,0 +1,3875 @@
+{
+  "exportDate": "2025-09-02T22:22:37.614Z",
+  "projectInfo": {
+    "source": "Dácora",
+    "target": "Taskora",
+    "version": "5.5.2"
+  },
+  "collections": {
+    "tasks": [
+      {
+        "id": "097iPBpi6GRNczWHD2Sl",
+        "data": {
+          "description": "Desativar criativos de MENSAGENS e incluir novos: https://www.instagram.com/reel/DNf7uEStwLf/ https://www.instagram.com/reel/DNGSiXaNwA0/ https://www.instagram.com/reel/DLzyRWCthdQ/",
+          "dueDate": "2025-08-19",
+          "client": "Make Plant",
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "recurrenceUntil": "",
+          "owner": "Flávio Corá",
+          "date": "2025-08-19",
+          "createdAt": {
+            "seconds": 1755612071,
+            "nanoseconds": 451000000
+          },
+          "recurrenceType": "none",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.5
+        }
+      },
+      {
+        "id": "0jVH0TBkrEYwjBIDdL8y",
+        "data": {
+          "description": "Envio do resumo semanal",
+          "date": "2025-08-25",
+          "hours": 0.1,
+          "dueDate": "2025-08-25",
+          "createdAt": {
+            "seconds": 1756144840,
+            "nanoseconds": 377000000
+          },
+          "status": "Concluída",
+          "client": "Lerrux",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "0lHOVQTsFskMY6qnS86C",
+        "data": {
+          "createdAt": {
+            "seconds": 1756818335,
+            "nanoseconds": 512000000
+          },
+          "client": "Sant'Alberti",
+          "dueDate": "2025-09-01",
+          "date": "2025-09-01",
+          "hours": 0.4,
+          "status": "Concluída",
+          "description": "Ativação de anúncios do cupom \"combo\" na Meta e Pinterest",
+          "owner": "Daniel dos Anjos",
+          "recurrence": {
+            "type": "none"
+          }
+        }
+      },
+      {
+        "id": "18tD65oX1mDvrRQkbPuE",
+        "data": {
+          "date": "2025-08-20",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755553468,
+            "nanoseconds": 871000000
+          },
+          "description": "Atualizar títulos, descrições e recursos dos anúncios de Google Ads.\nFer te mandei uma estrutura de campanha com títulos, descrições e palavras chaves feita por um Agente GPT, depois me fala se fez sentido e se vamos aproveitar alguma coisa desse documento. RESPONDI NO WHATSAPP. DOCUMENTO APROVADO. ",
+          "dueDate": "2025-08-22",
+          "recurrenceUntil": "",
+          "hours": 0.5,
+          "client": "Dra. Karyne",
+          "recurrenceDays": []
+        }
+      },
+      {
+        "id": "1FT7rwIHWU1cmz6J9VYD",
+        "data": {
+          "status": "Concluída",
+          "hours": 0.5,
+          "date": "2025-08-20",
+          "client": "Precisão",
+          "createdAt": {
+            "seconds": 1755694605,
+            "nanoseconds": 941000000
+          },
+          "description": "Subir criativos: Boi 777 - Niegi e João - Precisão",
+          "dueDate": "",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "1XZpTLpjCxiM9U13zaXS",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755797145,
+            "nanoseconds": 543000000
+          },
+          "dueDate": "2025-08-25",
+          "status": "Concluída",
+          "hours": 0.5,
+          "client": "Tratto Agro",
+          "owner": "Flávio Corá",
+          "description": "Revisar planejamento e, se tiver alguma dúvida, deixar comentários no documento: https://docs.google.com/document/d/1HZ0saWHDzwNwgtgcnozyIqjeyY-VwgHw_yVrT3hTRjQ/edit?usp=sharing",
+          "date": "2025-08-21"
+        }
+      },
+      {
+        "id": "1hZDs6mYyQNqbq1w6DLz",
+        "data": {
+          "client": "Hannover",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Daniel dos Anjos",
+          "date": "2025-08-29",
+          "dueDate": "2025-08-31",
+          "status": "Iniciada",
+          "createdAt": {
+            "seconds": 1756491361,
+            "nanoseconds": 263000000
+          },
+          "hours": 0.4,
+          "description": "Criação de nova estrutura de campanhas na Meta     (29/08) TOPO - VENDAS (Compra)  Público 120 dias - REELS & STORIES Público aberto (pode ter divisão de faixas etárias por conjunto de anúncios) - REELS & STORIES Criativos storytelling, food porn, ocasião (jantar romântico)  Criativos subidos: https://www.instagram.com/reel/DLutf73uiYu/ https://www.instagram.com/reel/DM21fZHu7IQ/ https://www.instagram.com/reel/DNx_TUU4iNq/ https://www.instagram.com/reel/DM-SureubfC/      (29/08) RMKT - VENDAS (Compra)   Público 7 dias - FEEDs & STORIES Público 30 dias - FEEDs & STORIES Criativos de oferta  Obs.: A cada mês ou trimestre, se começarem a acumular muitos grupos de anúncios ou criativos, podemos criar novas campanhas com a mesma estrutura."
+        }
+      },
+      {
+        "id": "1u5BsoAdKO40eJqS4Wft",
+        "data": {
+          "hours": 0.2,
+          "status": "Concluída",
+          "dueDate": "2025-08-26",
+          "date": "2025-08-26",
+          "owner": "Daniel dos Anjos",
+          "description": "[GSA - Mensagens(WhatsApp)] Subiu novo conjunto na campanha, deixando apenas essa campanha com esse conjunto ativo",
+          "recurrenceType": "none",
+          "recurrenceUntil": "",
+          "createdAt": {
+            "seconds": 1756241950,
+            "nanoseconds": 757000000
+          },
+          "client": "GSA",
+          "recurrenceDays": [],
+          "recurrence": {
+            "type": "none"
+          }
+        }
+      },
+      {
+        "id": "1yK3sdXAF5IbrcQcOJ8o",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Dazzie",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755631587,
+            "nanoseconds": 669000000
+          },
+          "dueDate": "2025-08-21",
+          "status": "Concluída",
+          "description": "Fazer alterações que ficaram combinadas na reunião do dia 18/08",
+          "date": "2025-08-19"
+        }
+      },
+      {
+        "id": "20Cd0WTlk76jUaMAGhOZ",
+        "data": {
+          "hours": 3,
+          "owner": "Flávio Corá",
+          "dueDate": "2025-09-02",
+          "date": "2025-09-02",
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Concluída",
+          "description": "Resumo todos os clientes Agosto com análise",
+          "createdAt": {
+            "seconds": 1756845319,
+            "nanoseconds": 543000000
+          },
+          "client": "Allgrotech - Agência"
+        }
+      },
+      {
+        "id": "27wZrRmYW8O2i7IDrLz6",
+        "data": {
+          "description": "Falar com a Dani sobre boleto Meta e Pix Google",
+          "createdAt": {
+            "seconds": 1756768276,
+            "nanoseconds": 839000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Em Progresso",
+          "dueDate": "2025-09-02",
+          "owner": "Fernanda Corá",
+          "hours": 0,
+          "client": "Oxen Currais",
+          "date": "2025-09-02"
+        }
+      },
+      {
+        "id": "2ECWvUxZvzuTW7XHGxKi",
+        "data": {
+          "recurrenceDays": [],
+          "hours": 0.5,
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Aviarte",
+          "status": "Não Realizada",
+          "owner": "Fernanda Corá",
+          "date": "2025-09-01",
+          "description": "Criar Calendário de E-mails",
+          "recurrenceType": "none",
+          "dueDate": "2025-09-05",
+          "recurrenceUntil": "",
+          "createdAt": {
+            "seconds": 1755527247,
+            "nanoseconds": 40000000
+          }
+        }
+      },
+      {
+        "id": "2IkrWY293rsG0eRsGAiL",
+        "data": {
+          "createdAt": {
+            "seconds": 1755269259,
+            "nanoseconds": 93000000
+          },
+          "date": "2025-08-15",
+          "dueDate": "2025-08-18",
+          "client": "Sant'Alberti",
+          "description": "Subir novos criativos do cupom COMBO nas campanhas PMAX (Google Ads) e Retargeting (Pinterest): https://drive.google.com/drive/folders/1LgLydSpZeX2YA-aSmRwqus7_Y23X1tcE?usp=drive_link",
+          "status": "Concluída",
+          "owner": "Daniel dos Anjos",
+          "hours": 1
+        }
+      },
+      {
+        "id": "2JKgY4HiACthjG7lYcDt",
+        "data": {
+          "recurrenceUntil": "",
+          "owner": "Fernanda Corá",
+          "recurrenceDays": [],
+          "recurrenceType": "weekly",
+          "createdAt": {
+            "seconds": 1755526569,
+            "nanoseconds": 860000000
+          },
+          "date": "2025-08-14",
+          "hours": 0.5,
+          "status": "Concluída",
+          "description": "Enviar report semanal",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "Dr. Lucas Sartori",
+          "dueDate": "2025-08-15"
+        }
+      },
+      {
+        "id": "2WZsJLqZJxANGXO9XD1y",
+        "data": {
+          "recurrenceUntil": "",
+          "date": "2025-08-20",
+          "createdAt": {
+            "seconds": 1755729324,
+            "nanoseconds": 612000000
+          },
+          "owner": "Fernanda Corá",
+          "client": "Rei dos Pulverizadores",
+          "description": "Analisar campanha e enviar report ",
+          "dueDate": "2025-08-21",
+          "status": "Concluída",
+          "hours": 1,
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceDays": [],
+          "recurrenceType": "none"
+        }
+      },
+      {
+        "id": "4rNlDQQt18LQglZ8ekCD",
+        "data": {
+          "dueDate": "2025-08-20",
+          "date": "2025-08-19",
+          "createdAt": {
+            "seconds": 1755548881,
+            "nanoseconds": 540000000
+          },
+          "status": "Concluída",
+          "description": "Verificar se podemos incluir esse vídeo na campanha de branding da SantaFé: https://drive.google.com/file/d/141IjGPko-IgL_ZpXlj-9eZpkRWnH4dXf/view?usp=drive_link",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "client": "Allgrotech - Agência",
+          "hours": 0
+        }
+      },
+      {
+        "id": "5CYmKOTRteyOhNvnGAIw",
+        "data": {
+          "status": "Concluída",
+          "hours": 0,
+          "date": "2025-09-01",
+          "client": "La Belle",
+          "createdAt": {
+            "seconds": 1756748265,
+            "nanoseconds": 935000000
+          },
+          "description": "subir criativo : Outfit day e Summervibes",
+          "dueDate": "2025-09-01",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "5UDoSbl0nqkFgBhF62Fx",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "date": "2025-09-02",
+          "client": "Dra. Gabi Sartori",
+          "status": "Concluída",
+          "hours": 0.1,
+          "createdAt": {
+            "seconds": 1756817723,
+            "nanoseconds": 633000000
+          },
+          "dueDate": "2025-09-02",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "description": "Analíse do desempenho das campanhas/ N foi necessário mudanças"
+        }
+      },
+      {
+        "id": "5WR5zpVXNQKZ861b9hVq",
+        "data": {
+          "owner": "Flávio Corá",
+          "client": "Dra. Maria Nazaré",
+          "description": "emitir pix Google",
+          "date": "2025-09-02",
+          "createdAt": {
+            "seconds": 1756845357,
+            "nanoseconds": 98000000
+          },
+          "dueDate": "2025-09-02",
+          "hours": 0.2,
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "5pdKwVp1SOakX8SZJhmD",
+        "data": {
+          "recurrenceUntil": "",
+          "owner": "Flávio Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "client": "Adpill",
+          "hours": 0.5,
+          "createdAt": {
+            "seconds": 1756319932,
+            "nanoseconds": 257000000
+          },
+          "dueDate": "2025-08-28",
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "description": "Excluir seguidores e público que interagiu nos últimos 7 dias das campanhas da Adpill e do dr. Lucas para evitar saturação de criativos.\nJá estava configurado dessa forma 😊",
+          "date": "2025-08-27"
+        }
+      },
+      {
+        "id": "5zesWtmzXgkvQiAfoEmM",
+        "data": {
+          "createdAt": {
+            "seconds": 1756761933,
+            "nanoseconds": 0
+          },
+          "client": "Dr. Flávio Zenun",
+          "description": "Resumo do mês de agosto: Campanha sofreu queda drástica na performance, fiz investigação e otimização e solicitei acesso ao GTM para detecção de problemas. O Google estava acrescentando palavras chaves de correspondência ampla automaticamente. palavras chaves de ",
+          "dueDate": "",
+          "status": "Concluída",
+          "hours": 1.5,
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "date": "2025-09-01"
+        }
+      },
+      {
+        "id": "7ZMp2YsZkiL68FzKycRK",
+        "data": {
+          "recurrenceUntil": "",
+          "description": "Tentar corrigir configuração da tag do Pinterest",
+          "createdAt": {
+            "seconds": 1756213882,
+            "nanoseconds": 37000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "status": "Não Realizada",
+          "dueDate": "",
+          "owner": "Fernanda Corá",
+          "hours": 0.5,
+          "client": "Aviarte",
+          "date": "2025-08-28",
+          "recurrenceDays": []
+        }
+      },
+      {
+        "id": "7cu9k6CiQJTCy8ZCztNJ",
+        "data": {
+          "description": "Oxen Currais reclamou de queda no nº de mensagens na semana passada, então precisamos verificar qual o motivo (se o CPM subiu, se os criativos novos não performaram) e otimizar criativos",
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "date": "2025-08-25",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 1,
+          "client": "Oxen Currais",
+          "createdAt": {
+            "seconds": 1756128596,
+            "nanoseconds": 395000000
+          },
+          "dueDate": "2025-08-25"
+        }
+      },
+      {
+        "id": "7fuWCZFiQEtLt3qOx4yb",
+        "data": {
+          "client": "Allgrotech - Agência",
+          "date": "2025-09-07",
+          "createdAt": {
+            "seconds": 1755268649,
+            "nanoseconds": 481000000
+          },
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "hours": 1.5,
+          "status": "Não Realizada",
+          "description": "Fazer RELATÓRIO 1º SEMESTRE para Key Accounts com base no modelo da Agrisys e subir na pasta de cada cliente da Allgrotech. \nhttps://lookerstudio.google.com/reporting/ec1be76d-81e4-4323-b97a-ea09f738822b",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceUntil": "",
+          "dueDate": "2025-09-07",
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "7u5UNwbuCuL14RIdzdLL",
+        "data": {
+          "client": "Allgrotech - Agencia",
+          "createdAt": {
+            "seconds": 1755520034,
+            "nanoseconds": 571000000
+          },
+          "description": "Conferir saldos das contas ALLGROTECH:\n",
+          "dueDate": "2025-08-18",
+          "owner": "Flávio Corá",
+          "date": "2025-08-18",
+          "status": "Concluída",
+          "recurrenceType": "weekdays",
+          "recurrence": {
+            "days": [
+              1,
+              4
+            ],
+            "type": "weekdays",
+            "until": "2025-12-31"
+          },
+          "recurrenceUntil": "2025-12-31",
+          "recurrenceDays": [
+            1,
+            4
+          ],
+          "hours": 0.5
+        }
+      },
+      {
+        "id": "9Mv7LhtRI4oK1XWn7w1k",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-26",
+          "description": "Alterações solicitadas pela Fernanda em um pdf de análise ",
+          "dueDate": "2025-08-26",
+          "hours": 0.2,
+          "createdAt": {
+            "seconds": 1756242207,
+            "nanoseconds": 216000000
+          },
+          "client": "Sant'Alberti",
+          "owner": "Daniel dos Anjos",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "9QwOW7xYQIyHg3CWEVqg",
+        "data": {
+          "createdAt": {
+            "seconds": 1755539794,
+            "nanoseconds": 326000000
+          },
+          "client": "Dona Raiz",
+          "date": "2025-08-18",
+          "status": "Concluída",
+          "dueDate": "2025-08-18",
+          "hours": 0,
+          "description": "Envio do resumo semanal",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "9YPNmRfIAROerDDkoDLU",
+        "data": {
+          "description": "Subir novos reels e desativar antigos nas duas campanhas: https://www.instagram.com/p/DNg6z_VsfaU/ https://www.instagram.com/p/DNO6KDFx_E6/ https://www.instagram.com/p/DMOVMu2OtT-/",
+          "date": "2025-08-21",
+          "hours": 0.5,
+          "status": "Concluída",
+          "recurrenceType": "none",
+          "createdAt": {
+            "seconds": 1755795485,
+            "nanoseconds": 758000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-22",
+          "owner": "Flávio Corá",
+          "recurrenceUntil": "",
+          "recurrenceDays": [],
+          "client": "Dra. Karyne"
+        }
+      },
+      {
+        "id": "9lXeGalwMZdoqqngFzaz",
+        "data": {
+          "status": "Concluída",
+          "client": "Aviarte",
+          "description": "Subir alguns anúncios no Meio e Topo Casamento(Desativando alguns anúncios nessa campanha)",
+          "date": "2025-08-19",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755631531,
+            "nanoseconds": 430000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Daniel dos Anjos",
+          "dueDate": "2025-08-19"
+        }
+      },
+      {
+        "id": "9lnmv1dMKGwY7YVJg611",
+        "data": {
+          "hours": 0.5,
+          "date": "2025-08-26",
+          "status": "Concluída",
+          "client": "Líder Rolamentos",
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Incluir novos criativos:  https://drive.google.com/file/d/1mozZRa-tdbGZG19PPliNXakWwvgMTm_H/view?usp=drivesdk  https://drive.google.com/file/d/18arPWrqyDM3mL8GJsBjmGd6OMtsaKXZ1/view?usp=drivesdk  https://drive.google.com/file/d/1G7IeZo2FJevqmRAegCS9zs2YbXOQCp0W/view?usp=drivesdk  https://drive.google.com/file/d/1to4yMS82kaxZfXlWJQUkwfW6htj3_YKm/view?usp=drivesdk  Legenda universal:👉 Entre em contato com nosso time e descubra a solução ideal para você! ",
+          "owner": "Flávio Corá",
+          "createdAt": {
+            "seconds": 1756145930,
+            "nanoseconds": 626000000
+          },
+          "dueDate": "2025-08-27"
+        }
+      },
+      {
+        "id": "A3TBT8lLav8M6MBfL9kX",
+        "data": {
+          "createdAt": {
+            "seconds": 1756317447,
+            "nanoseconds": 176000000
+          },
+          "dueDate": "2025-09-05",
+          "hours": 1,
+          "recurrenceType": "none",
+          "client": "Dácora",
+          "owner": "Flávio Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceDays": [],
+          "date": "2025-09-05",
+          "recurrenceUntil": "",
+          "description": "Fazer dashboard com todos os Ecommerces com base no da Allgrotech (mas no formato horizontal) por favorzinho. Fer, voce tem um modelo pra ser o primeiro da lista?",
+          "status": "Não Realizada"
+        }
+      },
+      {
+        "id": "A7dBAkiezTBhuviF43xr",
+        "data": {
+          "hours": 0.1,
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Emitir boleto 500,00, já emitido 25/09 e cliente não pagou",
+          "createdAt": {
+            "seconds": 1756767952,
+            "nanoseconds": 647000000
+          },
+          "client": "Otimiza",
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "dueDate": "2025-09-02",
+          "date": "2025-09-02"
+        }
+      },
+      {
+        "id": "AddcArbsJVtyTtw4MrS6",
+        "data": {
+          "client": "Allgrotech - Agência",
+          "owner": "Flávio Corá",
+          "description": "Relatório 7d - todas as empresas",
+          "recurrence": {
+            "days": [
+              1
+            ],
+            "type": "weekdays"
+          },
+          "date": "2025-08-19",
+          "hours": 1,
+          "createdAt": {
+            "seconds": 1755610463,
+            "nanoseconds": 479000000
+          },
+          "status": "Concluída",
+          "dueDate": "2025-08-19"
+        }
+      },
+      {
+        "id": "Azpl6YflIyiYiVqYf7AB",
+        "data": {
+          "recurrenceType": "none",
+          "description": "Para o relatório mensal, trazer visão do GA4 de performance por canais (origem/mídia) e relatório das plataformas de anúncios mostrando a distribuição do investimento por produto e/ou criativo. ",
+          "status": "Em Progresso",
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-09-01",
+          "dueDate": "2025-09-05",
+          "recurrenceUntil": "",
+          "createdAt": {
+            "seconds": 1756213740,
+            "nanoseconds": 519000000
+          },
+          "owner": "Fernanda Corá",
+          "recurrenceDays": [],
+          "hours": 1.5,
+          "client": "Sant'Alberti"
+        }
+      },
+      {
+        "id": "C7nqipiGpsHlli8Fc9f7",
+        "data": {
+          "client": "Líder Rolamentos",
+          "date": "2025-08-19",
+          "createdAt": {
+            "seconds": 1755548471,
+            "nanoseconds": 947000000
+          },
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "hours": 0.2,
+          "status": "Concluída",
+          "description": "Subir criativo novo: https://drive.google.com/file/d/1to4yMS82kaxZfXlWJQUkwfW6htj3_YKm/view?usp=sharing",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceUntil": "",
+          "dueDate": "2025-08-20",
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "CO5Cd8QYXFhDVAhFBz2f",
+        "data": {
+          "date": "2025-08-14",
+          "description": "Analíse do desempenho das campanhas/ N foi necessário mudanças",
+          "owner": "Daniel dos Anjos",
+          "createdAt": {
+            "seconds": 1755177888,
+            "nanoseconds": 751000000
+          },
+          "client": "Dr. Lucas Sartori",
+          "hours": 0,
+          "status": "Concluída",
+          "dueDate": "2025-08-14"
+        }
+      },
+      {
+        "id": "CrZJLqDjuVWH5ziF8rcj",
+        "data": {
+          "createdAt": {
+            "seconds": 1756732599,
+            "nanoseconds": 125000000
+          },
+          "description": "Relatório Agosto",
+          "date": "2025-09-01",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.5,
+          "client": "Giann Túllio",
+          "dueDate": "2025-09-01",
+          "status": "Concluída",
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "DMkPF4cPJJqoYEIx1N5P",
+        "data": {
+          "createdAt": {
+            "seconds": 1756315976,
+            "nanoseconds": 388000000
+          },
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Fernanda Corá",
+          "description": "Enviei resumo simplificado. Reativei campanha PMAX trazendo orçamento de SEARCH. Desativei campanha de TRÁFEGO e mantive de MENSAGENS. ",
+          "hours": 0.5,
+          "client": "Dra. Karyne",
+          "date": "2025-08-27",
+          "dueDate": "2025-08-27"
+        }
+      },
+      {
+        "id": "DrdMou93bseiLzFHBYdf",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "hours": 0,
+          "description": "Envio de resumo semanal para o Fondue e Tomahawk",
+          "client": "Hannover",
+          "dueDate": "2025-08-18",
+          "createdAt": {
+            "seconds": 1755539578,
+            "nanoseconds": 633000000
+          },
+          "recurrence": {
+            "type": "weekly"
+          },
+          "date": "2025-08-18",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "EExvcdxlUBMGO82zL8NE",
+        "data": {
+          "createdAt": {
+            "seconds": 1755729716,
+            "nanoseconds": 62000000
+          },
+          "recurrenceUntil": "",
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "client": "Dra. Karyne",
+          "dueDate": "2025-08-29",
+          "date": "2025-08-26",
+          "hours": 2,
+          "status": "Concluída",
+          "description": "Preparar treinamento CRM",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          }
+        }
+      },
+      {
+        "id": "EWuhV7rkMqnGxE8KezGG",
+        "data": {
+          "status": "Concluída",
+          "recurrenceType": "none",
+          "client": "Aviarte",
+          "hours": 1.5,
+          "date": "2025-08-21",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755729561,
+            "nanoseconds": 832000000
+          },
+          "dueDate": "2025-08-22",
+          "description": "Finalizar e enviar rascunhos de e-mails do mês: https://docs.google.com/document/d/1QzFb6E18w-SBrVfgEZwImAsoa6-dbSYWxs1BCi9f38U/edit?usp=sharing",
+          "recurrenceDays": [],
+          "owner": "Fernanda Corá",
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "Ecg7fGJ0afYmzDxIGMEO",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-18",
+          "description": "Conferir se o investimento mensal está de acordo com o previsto: R$ 2 mil em Meta, R$ 1 mil em Google e R$ 1 mil em Pinterest. Por enquanto, distribuir 70% do orçamento diário em campanhas de meio e remarketing (Meta - VENDAS; Google - PMAX; e Pinterest - RETARGETING).",
+          "dueDate": "2025-08-18",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755525021,
+            "nanoseconds": 113000000
+          },
+          "owner": "Daniel dos Anjos",
+          "client": "Sant'Alberti",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "EmNkjw67XwsNqBBDEq5y",
+        "data": {
+          "createdAt": {
+            "seconds": 1755182478,
+            "nanoseconds": 398000000
+          },
+          "owner": "Daniel dos Anjos",
+          "date": "2025-08-14",
+          "client": "Lerrux",
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos",
+          "dueDate": "2025-08-14",
+          "hours": 0,
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "Frw2ESoxbJ07dWNFMXQB",
+        "data": {
+          "client": "Dra Taísa Gauer",
+          "recurrenceDays": [],
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "createdAt": {
+            "seconds": 1756319813,
+            "nanoseconds": 201000000
+          },
+          "recurrenceUntil": "",
+          "recurrenceType": "none",
+          "hours": 0.5,
+          "dueDate": "2025-08-28",
+          "date": "2025-08-27",
+          "description": "Ajustar orçamento diário para R$ 18,00. Adicionar novos criativos sem desativar os demais: https://www.instagram.com/p/DNp33JcR83Y/ https://www.instagram.com/p/DNAuEOgNEXY/.\nComo não temos ads no CJ de Reels coloquei todo o orçamento no FEED"
+        }
+      },
+      {
+        "id": "Fu2AfleHtAms6nOiTQOG",
+        "data": {
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "description": "Subir todos os reels de abril/maio (exceto o que não está editado) na campanha de mensagens da Oxen: https://drive.google.com/drive/folders/1UXc9Mk0WrjKqHj__lRRzHbEzR90KHhoz?usp=drive_link\nConfirmar legendas antes de publicar?",
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-19",
+          "dueDate": "2025-08-20",
+          "recurrenceUntil": "",
+          "createdAt": {
+            "seconds": 1755549927,
+            "nanoseconds": 320000000
+          },
+          "recurrenceDays": [],
+          "owner": "Flávio Corá",
+          "hours": 0.5,
+          "client": "Allgrotech - Agência"
+        }
+      },
+      {
+        "id": "GkbRRRTEpFqiBjbyn9OK",
+        "data": {
+          "recurrenceDays": [],
+          "recurrenceType": "weekly",
+          "status": "Concluída",
+          "client": "Hannover",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "hours": 0.1,
+          "recurrenceUntil": "",
+          "dueDate": "2025-09-02",
+          "date": "2025-09-02",
+          "description": "[Hannover Fondue] Desativou conjunto de Teste A/B q estava indo muito mau",
+          "owner": "Daniel dos Anjos",
+          "createdAt": {
+            "seconds": 1756818024,
+            "nanoseconds": 537000000
+          }
+        }
+      },
+      {
+        "id": "HL46otFpqKuHVjSZnsNN",
+        "data": {
+          "createdAt": {
+            "seconds": 1756140577,
+            "nanoseconds": 570000000
+          },
+          "client": "Dácora",
+          "date": "2025-08-25",
+          "status": "Concluída",
+          "dueDate": "2025-08-25",
+          "hours": 2,
+          "description": "Resumos do dia, clientes não Allgrotech",
+          "owner": "Flávio Corá",
+          "recurrence": {
+            "type": "none"
+          }
+        }
+      },
+      {
+        "id": "HQa9sfwIoVGQY93LoxQL",
+        "data": {
+          "recurrenceType": "none",
+          "date": "2025-08-20",
+          "dueDate": "2025-08-21",
+          "recurrenceUntil": "",
+          "description": "Responder formulário: https://docs.google.com/forms/d/e/1FAIpQLSeEYC9zk5Z1seGly-EGRgiF0xeAJ5kBCU83BY27iFJgobfphg/viewform?usp=sharing&ouid=100350274287213715864",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755611597,
+            "nanoseconds": 543000000
+          },
+          "owner": "Fernanda Corá",
+          "recurrenceDays": [],
+          "hours": 0.5,
+          "client": "Dácora"
+        }
+      },
+      {
+        "id": "HYzwYrRVPHcyvdiXuwJ1",
+        "data": {
+          "createdAt": {
+            "seconds": 1756213703,
+            "nanoseconds": 881000000
+          },
+          "description": "Fazer análise aprofundada da jornada de compra a partir da combinação dos relatórios dos setores de produto, atendimento e mídia paga",
+          "recurrenceUntil": "",
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "client": "Sant'Alberti",
+          "dueDate": "2025-09-02",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Não Realizada",
+          "hours": 1,
+          "date": "2025-09-01"
+        }
+      },
+      {
+        "id": "HrNydwn0pYRZlX50vM3t",
+        "data": {
+          "owner": "Fernanda Corá",
+          "hours": 0.5,
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755729665,
+            "nanoseconds": 941000000
+          },
+          "client": "Sant'Alberti",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-22",
+          "description": "Auxiliar Stefano com integração entre Nuvemshop e Kommo ",
+          "date": "2025-08-21"
+        }
+      },
+      {
+        "id": "Hsoo1y6CuqkMMHfApLGS",
+        "data": {
+          "owner": "Flávio Corá",
+          "date": "2025-08-15",
+          "status": "Concluída",
+          "client": "Verde Verduras",
+          "description": "Analisar performance do criativo novo",
+          "createdAt": {
+            "seconds": 1755275485,
+            "nanoseconds": 329000000
+          },
+          "dueDate": "2025-08-15",
+          "hours": 0
+        }
+      },
+      {
+        "id": "IHjYJEi9yogFWciLL9GN",
+        "data": {
+          "status": "Concluída",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "createdAt": {
+            "seconds": 1756215255,
+            "nanoseconds": 201000000
+          },
+          "owner": "Fernanda Corá",
+          "client": "Sant'Alberti",
+          "date": "2025-09-01",
+          "description": "Preparar relatório para reunião",
+          "dueDate": "2025-09-02",
+          "recurrenceType": "weekly",
+          "recurrenceDays": [],
+          "hours": 0.5,
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "IIaisDVrFJgYudQiCYjE",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Não Realizada",
+          "client": "Líder Rolamentos",
+          "createdAt": {
+            "seconds": 1756302441,
+            "nanoseconds": 582000000
+          },
+          "owner": "Flávio Corá",
+          "date": "2025-09-10",
+          "description": "Emitir boleto 400,00",
+          "hours": 0.5,
+          "dueDate": "2025-09-10"
+        }
+      },
+      {
+        "id": "IqTG1oOu7XAJn0yLS3IT",
+        "data": {
+          "recurrenceDays": [],
+          "status": "Concluída",
+          "hours": 0.5,
+          "recurrenceUntil": "",
+          "date": "2025-08-26",
+          "dueDate": "2025-08-26",
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Allgrotech - Agência",
+          "createdAt": {
+            "seconds": 1756215684,
+            "nanoseconds": 547000000
+          },
+          "recurrenceType": "none",
+          "description": "Terminar de enviar resumos semanais e boletos do mês",
+          "owner": "Fernanda Corá"
+        }
+      },
+      {
+        "id": "IyiMQpvFYOzoLLMH33L7",
+        "data": {
+          "owner": "Fernanda Corá",
+          "date": "2025-09-01",
+          "hours": 1,
+          "status": "Não Realizada",
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Agromoto",
+          "createdAt": {
+            "seconds": 1756752447,
+            "nanoseconds": 616000000
+          },
+          "dueDate": "2025-09-03",
+          "description": "Elaborar plano de campanhas "
+        }
+      },
+      {
+        "id": "JGc83WQJQvr49SnIKMqb",
+        "data": {
+          "recurrence": {
+            "type": "weekdays",
+            "days": [
+              3
+            ]
+          },
+          "recurrenceType": "weekdays",
+          "owner": "Flávio Corá",
+          "client": "Allgrotech - Agência",
+          "recurrenceUntil": "",
+          "date": "2025-08-18",
+          "dueDate": "2025-08-22",
+          "description": "Analisar desempenho geral das contas  com Fernanda em reunião: https://drive.google.com/file/d/14zHNYchzwIlc9NL582MKqmUhNH3KONpO/view?usp=sharing",
+          "createdAt": {
+            "seconds": 1755525370,
+            "nanoseconds": 265000000
+          },
+          "hours": 1,
+          "recurrenceDays": [
+            3
+          ],
+          "status": "Em Progresso"
+        }
+      },
+      {
+        "id": "JKMv4pj87JOSN6hxFm7l",
+        "data": {
+          "recurrenceUntil": "",
+          "status": "Concluída",
+          "owner": "Fernanda Corá",
+          "dueDate": "2025-08-27",
+          "recurrenceDays": [],
+          "client": "Dácora",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1756314078,
+            "nanoseconds": 343000000
+          },
+          "hours": 2,
+          "date": "2025-08-27",
+          "recurrenceType": "none",
+          "description": "Revisar posts prontos e passar planejamento de conteúdo para Confluir"
+        }
+      },
+      {
+        "id": "JQywijKEYr7ofwRDDG5S",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Dona Raiz",
+          "date": "2025-08-22",
+          "description": "Desativiou criativos q n estavam tão bem nos últimos 7 dias e reativou outros",
+          "dueDate": "2025-08-22",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755882805,
+            "nanoseconds": 73000000
+          },
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "JslkQCL9JPa0dEv0tGSH",
+        "data": {
+          "date": "2025-08-26",
+          "hours": 0.2,
+          "dueDate": "2025-08-26",
+          "description": "Subiu dois anúncios, um em dois conjuntos diferentes na campanha de tráfego insta",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1756242132,
+            "nanoseconds": 106000000
+          },
+          "client": "Dra. Gabi Sartori",
+          "owner": "Daniel dos Anjos",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "KYanvNoPSFRdABnqfUGs",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-22",
+          "owner": "Daniel dos Anjos",
+          "description": "Desativei anúncio com custo por compra muito alto no conjunto \"IG 365D + SITE 180D - FEEDs\" na campanha de vendas",
+          "status": "Concluída",
+          "dueDate": "2025-08-22",
+          "client": "Aphase",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755882937,
+            "nanoseconds": 458000000
+          }
+        }
+      },
+      {
+        "id": "KvTXCcfQkyQjYL4tWPP1",
+        "data": {
+          "owner": "Flávio Corá",
+          "dueDate": "2025-08-18",
+          "createdAt": {
+            "seconds": 1755528797,
+            "nanoseconds": 869000000
+          },
+          "date": "2025-08-18",
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Fazer resumo semanal ",
+          "client": "Rei dos Pulverizadores",
+          "hours": 0,
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "L7KrKZTPi8n3wHTXJXrt",
+        "data": {
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "Sant'Alberti",
+          "description": "Envio do resumo semanal",
+          "dueDate": "2025-08-25",
+          "status": "Concluída",
+          "hours": 0.1,
+          "date": "2025-08-25",
+          "createdAt": {
+            "seconds": 1756144679,
+            "nanoseconds": 16000000
+          },
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "LAEosReDOBGtLHF4QEBK",
+        "data": {
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "recurrenceUntil": "",
+          "dueDate": "2025-09-02",
+          "owner": "Flávio Corá",
+          "client": "Dra. Karyne",
+          "description": "Emitir resumo do mês de agosto",
+          "date": "2025-09-01",
+          "recurrenceDays": [],
+          "hours": 0.2,
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1756752525,
+            "nanoseconds": 948000000
+          }
+        }
+      },
+      {
+        "id": "LCvflz6AhLk4VILocItY",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Concluída",
+          "dueDate": "2025-08-25",
+          "createdAt": {
+            "seconds": 1756126430,
+            "nanoseconds": 445000000
+          },
+          "date": "2025-08-25",
+          "owner": "Flávio Corá",
+          "client": "Precisão",
+          "hours": 0,
+          "description": "Precisão: verificar novamente se as conversões estão funcionando normalmente tanto no site quanto na LP"
+        }
+      },
+      {
+        "id": "MJfF8fHRrNCRk0bSr9yL",
+        "data": {
+          "createdAt": {
+            "seconds": 1756481480,
+            "nanoseconds": 333000000
+          },
+          "description": "Emitir boleto Meta 300,00",
+          "client": "Precisão",
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Não Realizada",
+          "hours": 0.5,
+          "owner": "Flávio Corá",
+          "date": "2025-09-10",
+          "dueDate": "2025-09-10"
+        }
+      },
+      {
+        "id": "MS9sFkU2IoMfMI5sRjKN",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Ajuste nos orçamentos de todos os clientes para fechar o mês",
+          "status": "Concluída",
+          "dueDate": "2025-08-26",
+          "client": "Clientes [Daniel]",
+          "hours": 0.2,
+          "owner": "Daniel dos Anjos",
+          "createdAt": {
+            "seconds": 1756242022,
+            "nanoseconds": 740000000
+          },
+          "date": "2025-08-26"
+        }
+      },
+      {
+        "id": "NJwpa8g7zbDQsy2CjuVF",
+        "data": {
+          "owner": "Fernanda Corá",
+          "hours": 0.5,
+          "date": "2025-08-25",
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "Sant'Alberti",
+          "recurrenceType": "weekly",
+          "createdAt": {
+            "seconds": 1755527612,
+            "nanoseconds": 566000000
+          },
+          "recurrenceUntil": "",
+          "dueDate": "2025-08-25",
+          "description": "Preparar pauta e report para reunião"
+        }
+      },
+      {
+        "id": "NOQHgghGuoT03ns4g7Dr",
+        "data": {
+          "hours": 0.5,
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "dueDate": "2025-08-28",
+          "owner": "Fernanda Corá",
+          "description": "Configurar e-mail sobre batizado e primeira eucaristia ",
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-28",
+          "client": "Aviarte",
+          "status": "Não Realizada",
+          "createdAt": {
+            "seconds": 1756213941,
+            "nanoseconds": 59000000
+          },
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "Nm4Djg0twTrHgLCNFY87",
+        "data": {
+          "hours": 1,
+          "description": "Subir 09 videos na campanha de casamentos, orçamento 50,00/dia, rodar em Agosto/2025",
+          "client": "Gian Tullio",
+          "date": "2025-08-15",
+          "createdAt": {
+            "seconds": 1755267464,
+            "nanoseconds": 827000000
+          },
+          "dueDate": "2025-08-15",
+          "owner": "Flávio Corá",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "NpFkXOWmg1x8Aw1UZHh6",
+        "data": {
+          "createdAt": {
+            "seconds": 1756254788,
+            "nanoseconds": 803000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-27",
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "hours": 1.5,
+          "description": "Emitir boletos clientes Allgrotech Agência - \nSementes/Cria/Gusmão/Minerthal",
+          "dueDate": "2025-08-27",
+          "recurrenceUntil": "",
+          "recurrenceDays": [],
+          "client": "Allgrotech - Agência",
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "NqjAay1c2vTvOKWueF0z",
+        "data": {
+          "client": "Dácora",
+          "owner": "Fernanda Corá",
+          "recurrenceUntil": "",
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "date": "2025-08-21",
+          "description": "Montar e enviar proposta para Avlon ",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-21",
+          "hours": 1,
+          "recurrenceDays": [],
+          "createdAt": {
+            "seconds": 1755821632,
+            "nanoseconds": 789000000
+          }
+        }
+      },
+      {
+        "id": "ODZKHcWIHHlotK4hMd3V",
+        "data": {
+          "recurrenceType": "none",
+          "owner": "Flávio Corá",
+          "dueDate": "2025-08-22",
+          "hours": 0.2,
+          "createdAt": {
+            "seconds": 1755872807,
+            "nanoseconds": 381000000
+          },
+          "date": "2025-08-22",
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Subir criativo novo: https://www.instagram.com/p/DNnxJ9_xFWS/\nConta sem saldo desde 21/08, boleto emitido",
+          "recurrenceUntil": "",
+          "client": "VetAgro",
+          "recurrenceDays": [],
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "ON7KgeCOcMyS2eQH5Xav",
+        "data": {
+          "hours": 0,
+          "owner": "Daniel dos Anjos",
+          "dueDate": "2025-08-22",
+          "date": "2025-08-22",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Desativiou criativos q n estavam tão bem nos últimos 7 dias e reativou outros no conjunto da oferta premium",
+          "client": "Hannover",
+          "createdAt": {
+            "seconds": 1755883148,
+            "nanoseconds": 627000000
+          }
+        }
+      },
+      {
+        "id": "OdgD8d194UmoQgGxFatN",
+        "data": {
+          "date": "2025-08-27",
+          "recurrenceType": "none",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Fernanda Corá",
+          "status": "Não Realizada",
+          "description": "Escrever scripts e gravar 4 vídeos para Reels e TikTok",
+          "createdAt": {
+            "seconds": 1755527438,
+            "nanoseconds": 512000000
+          },
+          "dueDate": "2025-08-28",
+          "recurrenceUntil": "",
+          "hours": 1,
+          "client": "Dácora",
+          "recurrenceDays": []
+        }
+      },
+      {
+        "id": "OyecFHPDVShMG4CPjzcg",
+        "data": {
+          "hours": 0.5,
+          "status": "Concluída",
+          "date": "2025-08-29",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "",
+          "client": "La Belle",
+          "createdAt": {
+            "seconds": 1756478838,
+            "nanoseconds": 701000000
+          },
+          "description": "Subir https://www.instagram.com/reel/DN79cAujcjD/",
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "P1h6frkYpENDZT0j6d8D",
+        "data": {
+          "createdAt": {
+            "seconds": 1756480708,
+            "nanoseconds": 603000000
+          },
+          "dueDate": "2025-09-08",
+          "owner": "Flávio Corá",
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "client": "Líder Rolamentos",
+          "hours": 0.5,
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Orçamento Google - emitir",
+          "recurrenceUntil": "",
+          "status": "Não Realizada",
+          "date": "2025-09-08"
+        }
+      },
+      {
+        "id": "PVdfKLkXnWlJhpIVAmqY",
+        "data": {
+          "hours": 0.5,
+          "dueDate": "2025-08-14",
+          "status": "Concluída",
+          "date": "2025-08-14",
+          "description": "Subimos 01 criativos novo. Esperando o cliente decidir sobre o outro criativo dos 10 anos da empresa",
+          "owner": "Flávio Corá",
+          "createdAt": {
+            "seconds": 1755173402,
+            "nanoseconds": 731000000
+          },
+          "client": "La Belle"
+        }
+      },
+      {
+        "id": "PXyMG8EKdhcwHVK1h0y1",
+        "data": {
+          "date": "2025-08-21",
+          "description": "Fazer planejamento de campanhas ",
+          "recurrenceDays": [],
+          "recurrenceUntil": "",
+          "hours": 1,
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "dueDate": "2025-08-22",
+          "createdAt": {
+            "seconds": 1755729802,
+            "nanoseconds": 820000000
+          },
+          "client": "Tratto Agro"
+        }
+      },
+      {
+        "id": "Ph4Od3rxs8Es7htwn3HZ",
+        "data": {
+          "hours": 1,
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "description": "Otimização de anuncios, palavras chaves e descrições da campanha Google",
+          "date": "2025-08-21",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755784023,
+            "nanoseconds": 645000000
+          },
+          "dueDate": "",
+          "client": "Dr. Flávio Zenun"
+        }
+      },
+      {
+        "id": "Q30qwEaEwFOsoNgRQmVY",
+        "data": {
+          "description": "Escolher criativo novo da semana",
+          "recurrenceUntil": "",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "VetSell",
+          "recurrenceDays": [],
+          "recurrenceType": "weekly",
+          "hours": 0.5,
+          "status": "Concluída",
+          "date": "2025-08-20",
+          "createdAt": {
+            "seconds": 1755821563,
+            "nanoseconds": 176000000
+          },
+          "dueDate": "2025-08-22",
+          "owner": "Fernanda Corá"
+        }
+      },
+      {
+        "id": "RB17YW6KSkDc0Ds9ktt0",
+        "data": {
+          "client": "Hannover",
+          "description": "Analisar campanhas e propor otimizações",
+          "date": "2025-08-28",
+          "dueDate": "2025-08-28",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Fernanda Corá",
+          "recurrenceUntil": "",
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "hours": 1.5,
+          "recurrenceType": "none",
+          "createdAt": {
+            "seconds": 1756215740,
+            "nanoseconds": 41000000
+          }
+        }
+      },
+      {
+        "id": "RD7LKokr8BBYNys5YMnB",
+        "data": {
+          "date": "2025-08-29",
+          "createdAt": {
+            "seconds": 1756435338,
+            "nanoseconds": 493000000
+          },
+          "status": "Não Realizada",
+          "client": "Flávio Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-09-01",
+          "description": "Comprar pen drive e instalar Fyde OS",
+          "owner": "Flávio Corá",
+          "hours": 0
+        }
+      },
+      {
+        "id": "TDElKZswptiYdPlLZRwf",
+        "data": {
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "date": "2025-08-25",
+          "client": "Tratto Agro",
+          "createdAt": {
+            "seconds": 1756145019,
+            "nanoseconds": 172000000
+          },
+          "hours": 0,
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-26",
+          "description": "Entrar em contato, apresentar-se como gestor de tráfego da Allgrotech e fazer vinculação do novo WhatsApp: (62) 3416-1070"
+        }
+      },
+      {
+        "id": "THQ9y6poaGrn4yFSC2WA",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Cria Fértil",
+          "status": "Não Realizada",
+          "createdAt": {
+            "seconds": 1756846052,
+            "nanoseconds": 774000000
+          },
+          "date": "2025-09-08",
+          "dueDate": "2025-09-09",
+          "description": "Emitir boleto Meta 500,00",
+          "owner": "Flávio Corá",
+          "hours": 0.2
+        }
+      },
+      {
+        "id": "TsncBTtUkmRtQEY6cuUO",
+        "data": {
+          "createdAt": {
+            "seconds": 1756128654,
+            "nanoseconds": 241000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "Allgrotech - Agência",
+          "date": "2025-08-25",
+          "dueDate": "2025-08-25",
+          "status": "Concluída",
+          "description": "VETSELL, MAKE PLANT, AGRISYS, ALLGROTECH  > Enviar resumo “Últimos 7 dias” e pedir feedback sobre leads ",
+          "hours": 3,
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "Uii7ODzNjn8tBdNIHT5U",
+        "data": {
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1756145504,
+            "nanoseconds": 107000000
+          },
+          "description": "Envio do resumo semanal",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "dueDate": "2025-08-25",
+          "owner": "Daniel dos Anjos",
+          "client": "Aviarte",
+          "hours": 0.2,
+          "date": "2025-08-25"
+        }
+      },
+      {
+        "id": "UnImua4ai2s2Jx4ZH4Cx",
+        "data": {
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "",
+          "client": "Líder Rolamentos",
+          "createdAt": {
+            "seconds": 1756408211,
+            "nanoseconds": 623000000
+          },
+          "description": "Subir criativo de vaga de emprego, detalhes da persona? Local? mensagens? campanha antiga?",
+          "hours": 0.5,
+          "owner": "Flávio Corá",
+          "date": "2025-08-28"
+        }
+      },
+      {
+        "id": "UwsGG9fUcPrInViVq7eO",
+        "data": {
+          "description": "Marcar sessão de diagnóstico com lead do MDA ",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Fernanda Corá",
+          "hours": 0.2,
+          "client": "Dácora",
+          "date": "2025-08-22",
+          "createdAt": {
+            "seconds": 1755821674,
+            "nanoseconds": 520000000
+          },
+          "status": "Iniciada",
+          "dueDate": "2025-08-22"
+        }
+      },
+      {
+        "id": "VnuHOjz9br5vmxvIwKmG",
+        "data": {
+          "date": "2025-08-19",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.2,
+          "dueDate": "2025-08-20",
+          "client": "Allgrotech - Agência",
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755549125,
+            "nanoseconds": 971000000
+          },
+          "owner": "Flávio Corá",
+          "description": "Incluir novo criativo no grupo de corte da Minerthal: https://www.instagram.com/reel/DM7WSw-oUuS/"
+        }
+      },
+      {
+        "id": "W4kqyRmmhB0iuX4HLpue",
+        "data": {
+          "hours": 2,
+          "recurrenceUntil": "",
+          "recurrenceType": "none",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Fernanda Corá",
+          "description": "Enviar resumos pendentes e reorganizar distribuição de clientes ",
+          "client": "Dácora",
+          "createdAt": {
+            "seconds": 1756215802,
+            "nanoseconds": 873000000
+          },
+          "recurrenceDays": [],
+          "status": "Concluída",
+          "dueDate": "2025-08-28",
+          "date": "2025-08-26"
+        }
+      },
+      {
+        "id": "W6aeXkFBIKng3iEs81aC",
+        "data": {
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-09-02",
+          "createdAt": {
+            "seconds": 1756752426,
+            "nanoseconds": 866000000
+          },
+          "hours": 1,
+          "client": "Duro PVC",
+          "status": "Não Realizada",
+          "description": "Elaborar plano de campanhas ",
+          "date": "2025-09-01"
+        }
+      },
+      {
+        "id": "WUElaCbh4B8KlmnLVAzA",
+        "data": {
+          "recurrenceUntil": "",
+          "createdAt": {
+            "seconds": 1755123929,
+            "nanoseconds": 58000000
+          },
+          "description": "Enviar reports semanais nos grupos",
+          "hours": 0.2,
+          "recurrenceDays": [],
+          "status": "Concluída",
+          "dueDate": "2025-08-19",
+          "owner": "Fernanda Corá",
+          "date": "2025-08-19",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "Allgrotech - Agência",
+          "recurrenceType": "weekly"
+        }
+      },
+      {
+        "id": "X9hxnDMsnFX7xuqTpDOK",
+        "data": {
+          "date": "2025-08-21",
+          "owner": "Flávio Corá",
+          "hours": 0.5,
+          "description": "Incluir novos criativos de feed: https://www.instagram.com/p/DL5tsXmx-eH/ https://www.instagram.com/p/DLh45nOxYHb/",
+          "dueDate": "2025-08-22",
+          "createdAt": {
+            "seconds": 1755795547,
+            "nanoseconds": 136000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Concluída",
+          "client": "Dra. Karyne"
+        }
+      },
+      {
+        "id": "Xf4eZ5up4r7vydEYe4Hn",
+        "data": {
+          "hours": 0,
+          "client": "Dácora",
+          "status": "Em Progresso",
+          "dueDate": "2025-08-14",
+          "createdAt": {
+            "seconds": 1755177313,
+            "nanoseconds": 992000000
+          },
+          "date": "2025-08-14",
+          "owner": "Flávio Corá",
+          "description": "Atualização do APP"
+        }
+      },
+      {
+        "id": "Xh7bIsuUvDgMLYsWfV8g",
+        "data": {
+          "status": "Concluída",
+          "client": "VetSell",
+          "createdAt": {
+            "seconds": 1755283169,
+            "nanoseconds": 622000000
+          },
+          "hours": 0.2,
+          "owner": "Flávio Corá",
+          "description": "Subir novo criativo na campanha de LEITE: https://www.instagram.com/p/DAGi3ciR20p/",
+          "date": "2025-08-15",
+          "dueDate": "2025-08-15"
+        }
+      },
+      {
+        "id": "XnrIVK4bhm2OgVdZlJmo",
+        "data": {
+          "createdAt": {
+            "seconds": 1756144651,
+            "nanoseconds": 632000000
+          },
+          "hours": 0.2,
+          "dueDate": "2025-08-25",
+          "date": "2025-08-25",
+          "description": "Envio do resumo semanal",
+          "client": "Hannover",
+          "owner": "Daniel dos Anjos",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "weekly"
+          }
+        }
+      },
+      {
+        "id": "XqYzyd9oTQ5oOdvtMVWL",
+        "data": {
+          "client": "Allgrotech - Agência",
+          "owner": "Flávio Corá",
+          "description": "Subir novo criativo nos grupos de corte e leite da Minerthal: https://www.instagram.com/reel/DMueMt-q3z3/",
+          "createdAt": {
+            "seconds": 1755549212,
+            "nanoseconds": 827000000
+          },
+          "status": "Concluída",
+          "hours": 0.2,
+          "date": "2025-08-19",
+          "dueDate": "2025-08-20",
+          "recurrence": {
+            "type": "none"
+          }
+        }
+      },
+      {
+        "id": "YTUOymoYIeRC3FY773Ja",
+        "data": {
+          "recurrenceDays": [],
+          "createdAt": {
+            "seconds": 1755527324,
+            "nanoseconds": 93000000
+          },
+          "recurrence": {
+            "type": "weekly"
+          },
+          "recurrenceType": "weekly",
+          "hours": 0.5,
+          "recurrenceUntil": "",
+          "dueDate": "2025-08-22",
+          "owner": "Flávio Corá",
+          "client": "VetSell",
+          "status": "Concluída",
+          "date": "2025-08-22",
+          "description": "Subir criativo novo da semana"
+        }
+      },
+      {
+        "id": "YTYHczC35lNR6RhVd7ED",
+        "data": {
+          "recurrenceUntil": "",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "client": "Dra. Karyne",
+          "hours": 1,
+          "createdAt": {
+            "seconds": 1756213994,
+            "nanoseconds": 627000000
+          },
+          "dueDate": "2025-08-26",
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "description": "Auditar e otimizar campanha de Google Ads. Principal alteração: aumentei o CPA desejado de R$ 12,00 para R$ 21,60.",
+          "date": "2025-08-26"
+        }
+      },
+      {
+        "id": "YZKxk7CxNoKIjGNGssPU",
+        "data": {
+          "hours": 0.5,
+          "recurrenceType": "none",
+          "recurrenceUntil": "",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Daniel dos Anjos",
+          "description": "Responder formulário: https://docs.google.com/forms/d/e/1FAIpQLSfn2fo1k6lnqXRTiMIt8wyu-OSxiSb91e3mevtOxx0BT5y7Rw/viewform?usp=sharing&ouid=100350274287213715864 - cópia",
+          "client": "Dácora",
+          "createdAt": {
+            "seconds": 1755613541,
+            "nanoseconds": 483000000
+          },
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "dueDate": "2025-08-20",
+          "date": "2025-08-18"
+        }
+      },
+      {
+        "id": "Yks5hna0A5H8wsGEo7Qq",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "client": "Aviarte",
+          "dueDate": "2025-08-18",
+          "date": "2025-08-18",
+          "hours": 0,
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755539746,
+            "nanoseconds": 794000000
+          },
+          "status": "Concluída",
+          "description": " Alteração na distribuição de orçamento entre os conjuntos da campanha de Mensagens"
+        }
+      },
+      {
+        "id": "ZmJkVHrdo4pmZRM7yxf5",
+        "data": {
+          "recurrenceUntil": "",
+          "date": "2025-08-21",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "description": "Gerar report semanal",
+          "status": "Concluída",
+          "recurrenceType": "weekly",
+          "client": "Dr. Lucas Sartori",
+          "recurrenceDays": [],
+          "hours": 0.2,
+          "createdAt": {
+            "seconds": 1755123674,
+            "nanoseconds": 960000000
+          },
+          "owner": "Daniel dos Anjos",
+          "dueDate": "2025-08-22"
+        }
+      },
+      {
+        "id": "ZnMDKC0prO66UabUbcyk",
+        "data": {
+          "description": "subir criativos - https://www.instagram.com/reel/DNyCUrV4t3e/ - https://www.instagram.com/reel/DNnxJ9_xFWS/",
+          "hours": 0.5,
+          "client": "VetAgro",
+          "createdAt": {
+            "seconds": 1756300546,
+            "nanoseconds": 167000000
+          },
+          "owner": "Flávio Corá",
+          "date": "2025-08-27",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-27",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "b1PdsQbYhgVUjoTfu9ZU",
+        "data": {
+          "createdAt": {
+            "seconds": 1756146130,
+            "nanoseconds": 99000000
+          },
+          "dueDate": "2025-08-27",
+          "client": "Gusmão Lima",
+          "description": "Subir campanha de mensagens da Gusmão Lima a partir do plano atualizado: https://docs.google.com/document/d/1bIdpiYlC2ac_P6QMoy-mpJnZVmN7FtNMBSp6aBoHdYo/edit?usp=sharing",
+          "date": "2025-08-26",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "hours": 1
+        }
+      },
+      {
+        "id": "b47BsmUd2hirfaV9xtCb",
+        "data": {
+          "hours": 0,
+          "owner": "Flávio Corá",
+          "recurrence": {
+            "days": [
+              1
+            ],
+            "type": "weekdays"
+          },
+          "description": "Resumo semanal",
+          "client": "La Belle",
+          "createdAt": {
+            "seconds": 1755662044,
+            "nanoseconds": 7000000
+          },
+          "status": "Concluída",
+          "dueDate": "",
+          "date": "2025-08-20"
+        }
+      },
+      {
+        "id": "bNnVtNSgNHmNpwEcNLog",
+        "data": {
+          "description": "[Bem sucedido][Teste de 7 D][Google Ads][  Hannover Fondue - Search Topo] - Troca de estratégia de lances de maximizar conversões para CPA desejado de R$9(Com base no histórico dos últimos meses)",
+          "date": "2025-08-25",
+          "hours": 0,
+          "dueDate": "2025-09-02",
+          "recurrenceUntil": "2025-09-01",
+          "createdAt": {
+            "seconds": 1756149494,
+            "nanoseconds": 55000000
+          },
+          "recurrenceDays": [],
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "client": "Hannover",
+          "recurrence": {
+            "until": "2025-09-01",
+            "type": "none"
+          },
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "bRHQu2T9vH3lyy05G0Wz",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-18",
+          "owner": "Flávio Corá",
+          "createdAt": {
+            "seconds": 1755519894,
+            "nanoseconds": 339000000
+          },
+          "hours": 1.5,
+          "description": "PRECISÃO, OXEN, VETSELL, MAKE PLANT, FORAGRO, CONVIÊ > Enviar resumo semanal e pedir feedback sobre leads ",
+          "status": "Concluída",
+          "dueDate": "2025-08-18",
+          "client": "Allgrotech - Agencia"
+        }
+      },
+      {
+        "id": "caOz9EGIObsGwq6peQt2",
+        "data": {
+          "date": "2025-09-01",
+          "status": "Concluída",
+          "client": "Sant'Alberti",
+          "dueDate": "",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none",
+            "until": "2025-09-01"
+          },
+          "createdAt": {
+            "seconds": 1756752235,
+            "nanoseconds": 883000000
+          },
+          "hours": 0.6,
+          "description": "Atualizar banner principal e elementos da Home. Configurar combo Linha Nórdica com 5% de desconto. Configurar \"Compre Junto\" da capa Maxi Laços Listras Azul."
+        }
+      },
+      {
+        "id": "chQiobJDhtxQt70FQ5hX",
+        "data": {
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "Hannover",
+          "dueDate": "2025-08-25",
+          "owner": "Daniel dos Anjos",
+          "date": "2025-08-25",
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos",
+          "hours": 0.2,
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1756145651,
+            "nanoseconds": 971000000
+          }
+        }
+      },
+      {
+        "id": "e7yugsVmJMc8mGeLfOmT",
+        "data": {
+          "recurrenceType": "none",
+          "createdAt": {
+            "seconds": 1755286093,
+            "nanoseconds": 957000000
+          },
+          "description": "Incluir gráfico de pizza sinalizando tipo de conversão (chamadas x cliques no botão de whatsapp) na página do Google: https://lookerstudio.google.com/reporting/4a78ba32-9092-4702-bbc9-43185c230a8a",
+          "owner": "Flávio Corá",
+          "date": "2025-08-15",
+          "recurrenceUntil": "",
+          "status": "Concluída",
+          "hours": 0,
+          "client": "Líder Rolamentos",
+          "dueDate": "2025-08-18",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceDays": []
+        }
+      },
+      {
+        "id": "e8aj1Few8GIEo6GGiYV2",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-09-01",
+          "recurrenceType": "none",
+          "description": "Emitir resumo do mês de agosto",
+          "dueDate": "2025-09-02",
+          "hours": 0.2,
+          "createdAt": {
+            "seconds": 1756752481,
+            "nanoseconds": 779000000
+          },
+          "client": "VetSell",
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "recurrenceUntil": "",
+          "recurrenceDays": []
+        }
+      },
+      {
+        "id": "eBG6Klw0VvElZ0QIv0Zh",
+        "data": {
+          "createdAt": {
+            "seconds": 1756144811,
+            "nanoseconds": 27000000
+          },
+          "description": "Envio do resumo semanal",
+          "dueDate": "2025-08-25",
+          "owner": "Daniel dos Anjos",
+          "date": "2025-08-25",
+          "client": "GSA",
+          "status": "Concluída",
+          "hours": 0.1,
+          "recurrence": {
+            "type": "weekly"
+          }
+        }
+      },
+      {
+        "id": "ed6L5VjbpSqwfJ1AhlxF",
+        "data": {
+          "createdAt": {
+            "seconds": 1756254860,
+            "nanoseconds": 218000000
+          },
+          "hours": 1,
+          "client": "Narah Lopes",
+          "date": "2025-08-27",
+          "description": "Ajustar relatório todos os clientes",
+          "status": "Concluída",
+          "owner": "Flávio Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-26"
+        }
+      },
+      {
+        "id": "egygu4tDymtrz3ewASDT",
+        "data": {
+          "date": "2025-08-14",
+          "owner": "Daniel dos Anjos",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755177470,
+            "nanoseconds": 650000000
+          },
+          "client": "Dra. Gabi Sartori",
+          "dueDate": "2025-08-14",
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "elCTtXySMw3K52CNWH8e",
+        "data": {
+          "description": "Relatorio semanal com visão 2025",
+          "owner": "Flávio Corá",
+          "date": "2025-08-21",
+          "client": "La Belle",
+          "hours": 1,
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "",
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755787228,
+            "nanoseconds": 352000000
+          }
+        }
+      },
+      {
+        "id": "ewdygMC2qXgQay5uLMrm",
+        "data": {
+          "status": "Concluída",
+          "description": "Emitir resumo do mês de agosto",
+          "client": "Precisão",
+          "recurrenceDays": [],
+          "dueDate": "2025-09-02",
+          "createdAt": {
+            "seconds": 1756752511,
+            "nanoseconds": 40000000
+          },
+          "owner": "Flávio Corá",
+          "hours": 0.2,
+          "date": "2025-09-01",
+          "recurrenceType": "none",
+          "recurrenceUntil": "",
+          "recurrence": {
+            "type": "none"
+          }
+        }
+      },
+      {
+        "id": "fDJigqbnNFFX2iZxTKAC",
+        "data": {
+          "client": "Aviarte",
+          "description": "Envio do resumo semanal",
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755539722,
+            "nanoseconds": 560000000
+          },
+          "dueDate": "2025-08-18",
+          "date": "2025-08-18",
+          "owner": "Daniel dos Anjos",
+          "hours": 0,
+          "recurrence": {
+            "type": "weekly"
+          }
+        }
+      },
+      {
+        "id": "fUZuC3OjoYkgEKOBSo0K",
+        "data": {
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755527233,
+            "nanoseconds": 242000000
+          },
+          "client": "Allgrotech - Agência",
+          "hours": 1,
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Revisar desempenho das contas com Flávio em reunião",
+          "owner": "Fernanda Corá",
+          "date": "2025-08-18",
+          "dueDate": "2025-08-18"
+        }
+      },
+      {
+        "id": "fb6Kl7L8ZYQeKmspyTVa",
+        "data": {
+          "hours": 0,
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos",
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755178931,
+            "nanoseconds": 255000000
+          },
+          "dueDate": "2025-08-14",
+          "owner": "Daniel dos Anjos",
+          "client": "Hannover",
+          "date": "2025-08-14"
+        }
+      },
+      {
+        "id": "gRHuQjudmFMeUMeQcQtQ",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Concluída",
+          "recurrenceDays": [],
+          "dueDate": "2025-08-19",
+          "createdAt": {
+            "seconds": 1755620273,
+            "nanoseconds": 871000000
+          },
+          "date": "2025-08-19",
+          "recurrenceUntil": "",
+          "description": "Criativo novo para subir: https://www.instagram.com/p/DNX5vJUxO8t/\nSubido no CJ Calcário Rio Verde",
+          "recurrenceType": "none",
+          "client": "Gusmão Lima",
+          "hours": 0.2,
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "gcvQ1SNKG1YmWGwoOekp",
+        "data": {
+          "status": "Concluída",
+          "hours": 0,
+          "client": "Dazzie",
+          "description": "Envio do resumo semanal",
+          "date": "2025-08-18",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "createdAt": {
+            "seconds": 1755541483,
+            "nanoseconds": 479000000
+          },
+          "dueDate": "2025-08-18",
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "gk53Du8uIUmKagv2arl1",
+        "data": {
+          "description": "PRECISÃO, OXEN > Enviar resumo “Este mês” e pedir feedback sobre leads",
+          "status": "Concluída",
+          "owner": "Flávio Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-25",
+          "createdAt": {
+            "seconds": 1756128690,
+            "nanoseconds": 826000000
+          },
+          "client": "Allgrotech - Agência",
+          "date": "2025-08-25",
+          "hours": 2
+        }
+      },
+      {
+        "id": "hhp24bTT0csXrljJ1rGE",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1756768526,
+            "nanoseconds": 685000000
+          },
+          "description": "Relatório de Cobranças Agosto",
+          "status": "Concluída",
+          "dueDate": "",
+          "date": "2025-09-01",
+          "owner": "Flávio Corá",
+          "client": "Profarm",
+          "hours": 0.2
+        }
+      },
+      {
+        "id": "hkYgozUFvGJoglQ8h82h",
+        "data": {
+          "status": "Concluída",
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos",
+          "date": "2025-08-14",
+          "dueDate": "2025-07-14",
+          "client": "Dona Raiz",
+          "owner": "Daniel dos Anjos",
+          "createdAt": {
+            "seconds": 1755178531,
+            "nanoseconds": 836000000
+          },
+          "hours": 0
+        }
+      },
+      {
+        "id": "iEKnC7Ns4kjlsDmaTGCp",
+        "data": {
+          "recurrenceUntil": "2025-12-15",
+          "createdAt": {
+            "seconds": 1755525232,
+            "nanoseconds": 502000000
+          },
+          "recurrence": {
+            "until": "2025-12-15",
+            "type": "weekly"
+          },
+          "description": "Atualizar e apresentar lista de pendências: https://docs.google.com/document/d/1s2KA1JN0Oc_eOtX-PLWM1B2MlMVKA-kkDV_AAuWS4_g/edit?usp=sharing",
+          "dueDate": "2025-08-18",
+          "status": "Concluída",
+          "date": "2025-08-18",
+          "owner": "Fernanda Corá",
+          "client": "Allgrotech - Agência",
+          "recurrenceDays": [],
+          "recurrenceType": "weekly",
+          "hours": 1
+        }
+      },
+      {
+        "id": "iWsQ0E39nLr3FBKjGheO",
+        "data": {
+          "recurrence": {
+            "type": "weekly"
+          },
+          "owner": "Fernanda Corá",
+          "hours": 1,
+          "createdAt": {
+            "seconds": 1755525732,
+            "nanoseconds": 902000000
+          },
+          "date": "2025-08-18",
+          "recurrenceDays": [],
+          "dueDate": "2025-08-18",
+          "status": "Concluída",
+          "recurrenceType": "weekly",
+          "client": "Dácora",
+          "description": "Revisar conteúdos da semana",
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "jJKewnWPwzaJzGjbtsaO",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.5,
+          "recurrenceType": "none",
+          "description": "Saldo Google - 500,00 PIX, cliente não respondeu mensagem até 01/09, falei com a Fernanda.",
+          "recurrenceDays": [],
+          "date": "2025-08-29",
+          "status": "Não Realizada",
+          "client": "Oxen Currais",
+          "owner": "Flávio Corá",
+          "recurrenceUntil": "",
+          "createdAt": {
+            "seconds": 1756480807,
+            "nanoseconds": 940000000
+          },
+          "dueDate": "2025-08-29"
+        }
+      },
+      {
+        "id": "jMbgSL4q95MfMRhaxs3E",
+        "data": {
+          "date": "2025-09-02",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "hours": 0.2,
+          "dueDate": "2025-09-02",
+          "createdAt": {
+            "seconds": 1756817687,
+            "nanoseconds": 449000000
+          },
+          "status": "Concluída",
+          "owner": "Daniel dos Anjos",
+          "client": "Dr. Lucas Sartori",
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos"
+        }
+      },
+      {
+        "id": "jU6KOHXQjBxjh6kyLw2l",
+        "data": {
+          "client": "Gusmão Lima",
+          "description": "Subir novos criativos selecionados pela Fernanda",
+          "dueDate": "2025-08-15",
+          "createdAt": {
+            "seconds": 1755123777,
+            "nanoseconds": 465000000
+          },
+          "status": "Concluída",
+          "owner": "Flávio Corá",
+          "date": "2025-08-14",
+          "hours": 0.5
+        }
+      },
+      {
+        "id": "jl5odVgV7VpQYtlsIhim",
+        "data": {
+          "owner": "Flávio Corá",
+          "client": "Dácora",
+          "description": "Responder formulário: https://docs.google.com/forms/d/e/1FAIpQLSfn2fo1k6lnqXRTiMIt8wyu-OSxiSb91e3mevtOxx0BT5y7Rw/viewform?usp=sharing&ouid=100350274287213715864",
+          "hours": 0,
+          "date": "2025-08-18",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755545053,
+            "nanoseconds": 700000000
+          },
+          "dueDate": "2025-08-20",
+          "recurrenceType": "none",
+          "recurrenceDays": [],
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "johwhtkw6tbd0jxFcfk2",
+        "data": {
+          "client": "Dra Taísa Gauer",
+          "recurrenceDays": [],
+          "date": "2025-09-01",
+          "status": "Concluída",
+          "hours": 0.2,
+          "recurrenceUntil": "",
+          "owner": "Flávio Corá",
+          "createdAt": {
+            "seconds": 1756752541,
+            "nanoseconds": 179000000
+          },
+          "dueDate": "2025-09-02",
+          "description": "Emitir resumo do mês de agosto",
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none"
+        }
+      },
+      {
+        "id": "judfZsdjqFHfLpLteIIE",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "VetSell",
+          "hours": 0,
+          "recurrenceUntil": "",
+          "date": "2025-08-22",
+          "createdAt": {
+            "seconds": 1755875654,
+            "nanoseconds": 281000000
+          },
+          "recurrenceDays": [],
+          "owner": "Flávio Corá",
+          "description": "Ver questão de excesso de campanhas",
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "dueDate": "2025-08-22"
+        }
+      },
+      {
+        "id": "k1N00RsAJPzbMWV7HUgd",
+        "data": {
+          "date": "2025-08-21",
+          "hours": 0.2,
+          "description": "Gerar report semanal",
+          "status": "Concluída",
+          "owner": "Daniel dos Anjos",
+          "recurrenceType": "weekly",
+          "recurrenceUntil": "",
+          "dueDate": "2025-08-22",
+          "client": "Dra. Gabi Sartori",
+          "recurrenceDays": [],
+          "createdAt": {
+            "seconds": 1755526250,
+            "nanoseconds": 958000000
+          },
+          "recurrence": {
+            "type": "weekly"
+          }
+        }
+      },
+      {
+        "id": "k7R6B7Eofbixs9iuf8pA",
+        "data": {
+          "dueDate": "2025-08-25",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.5,
+          "client": "Aviarte",
+          "createdAt": {
+            "seconds": 1756150023,
+            "nanoseconds": 835000000
+          },
+          "description": "Programar e-mails 02 e 03 ",
+          "status": "Concluída",
+          "date": "2025-08-25"
+        }
+      },
+      {
+        "id": "kHTb9tUzZEjP38KEosCO",
+        "data": {
+          "owner": "Fernanda Corá",
+          "dueDate": "2025-08-25",
+          "date": "2025-08-25",
+          "client": "VetSell",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Gerar relatório de criativos separando campanhas de corte e leite",
+          "hours": 0.5,
+          "createdAt": {
+            "seconds": 1756154099,
+            "nanoseconds": 84000000
+          }
+        }
+      },
+      {
+        "id": "ktAAJgyhjxAYBnh7dl15",
+        "data": {
+          "dueDate": "2025-09-18",
+          "status": "Não Realizada",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1756302646,
+            "nanoseconds": 500000000
+          },
+          "owner": "Flávio Corá",
+          "description": "Emitir boleto 500,00",
+          "hours": 0.5,
+          "client": "Nutrifol",
+          "date": "2025-09-18"
+        }
+      },
+      {
+        "id": "lKvWQRTUfNxb3owHtFrO",
+        "data": {
+          "status": "Concluída",
+          "client": "Sant'Alberti",
+          "dueDate": "2025-08-19",
+          "hours": 0.5,
+          "recurrenceUntil": "",
+          "description": "Preparar pauta e report para reunião\t",
+          "owner": "Fernanda Corá",
+          "createdAt": {
+            "seconds": 1755527557,
+            "nanoseconds": 297000000
+          },
+          "date": "2025-08-19",
+          "recurrenceType": "weekly",
+          "recurrenceDays": [],
+          "recurrence": {
+            "type": "weekly"
+          }
+        }
+      },
+      {
+        "id": "lhs9TvFN4RFMCnzZkxB3",
+        "data": {
+          "description": "Criar Calendário de E-mails",
+          "dueDate": "2025-08-19",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "monthly"
+          },
+          "recurrenceDays": [],
+          "createdAt": {
+            "seconds": 1755123456,
+            "nanoseconds": 408000000
+          },
+          "date": "2025-08-19",
+          "recurrenceType": "monthly",
+          "recurrenceUntil": "",
+          "hours": 0.5,
+          "owner": "Fernanda Corá",
+          "client": "Aviarte"
+        }
+      },
+      {
+        "id": "m4LEcqbcB1zcw55fFzHZ",
+        "data": {
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755795024,
+            "nanoseconds": 142000000
+          },
+          "date": "2025-08-21",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "owner": "Daniel dos Anjos",
+          "description": "Perguntar no grupo se o Rafael quer trocar os criativos de feed ",
+          "client": "Aphase",
+          "dueDate": "2025-08-22",
+          "hours": 0.5
+        }
+      },
+      {
+        "id": "mZSmqSghopbyUeyUSRkc",
+        "data": {
+          "createdAt": {
+            "seconds": 1755541453,
+            "nanoseconds": 47000000
+          },
+          "recurrence": {
+            "type": "weekly"
+          },
+          "status": "Concluída",
+          "dueDate": "2025-08-18",
+          "date": "2025-08-18",
+          "hours": 0,
+          "owner": "Daniel dos Anjos",
+          "client": "GSA",
+          "description": "Envio do resumo semanal"
+        }
+      },
+      {
+        "id": "mfGRhdFMfO0hp1mnnveX",
+        "data": {
+          "recurrenceUntil": "",
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "owner": "Flávio Corá",
+          "client": "VetSell",
+          "createdAt": {
+            "seconds": 1755871022,
+            "nanoseconds": 125000000
+          },
+          "description": "Subir novos criativos > Paga minhas contas - CORTE campanha principal  *https://drive.google.com/file/d/1eUs-JfxmNGcf2sUYoFHivyM3OuD-oqS4/view?usp=sharing*  \nFezes no período de seca - CORTE campanha principal E LEITE  https://drive.google.com/file/d/1tArw23iBCBp2KrxoliN9Bv94xLUH4qgb/view?usp=sharing  \nCálculo viabilidade do MUB na seca - CORTE campanha principal https://drive.google.com/file/d/1Q-hWSG6y3dZp7gCev0GHQ4BfHK-LYvIg/view?usp=sharing",
+          "dueDate": "2025-08-22",
+          "recurrenceDays": [],
+          "hours": 0.5,
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-22"
+        }
+      },
+      {
+        "id": "nbbxsFpDvnt8r1FLN9Su",
+        "data": {
+          "createdAt": {
+            "seconds": 1756145464,
+            "nanoseconds": 972000000
+          },
+          "recurrence": {
+            "type": "weekly"
+          },
+          "status": "Concluída",
+          "hours": 0.1,
+          "description": "Envio do resumo semanal",
+          "owner": "Daniel dos Anjos",
+          "client": "Dazzie",
+          "dueDate": "2025-08-25",
+          "date": "2025-08-25"
+        }
+      },
+      {
+        "id": "nm4ZEROYLQg8ac9VeDN4",
+        "data": {
+          "description": "Suporte em CRO. Configurei Compre Junto dos combos (cabeceira com capa e saia de cama; pufe com capa) e Order Bump de produtos da Coleção Távola. ",
+          "recurrenceUntil": "",
+          "recurrenceDays": [],
+          "status": "Concluída",
+          "hours": 1.5,
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "client": "Sant'Alberti",
+          "date": "2025-08-27",
+          "owner": "Fernanda Corá",
+          "createdAt": {
+            "seconds": 1755729469,
+            "nanoseconds": 156000000
+          },
+          "dueDate": "2025-08-27"
+        }
+      },
+      {
+        "id": "nrL5CvlQGcq696TKJqPK",
+        "data": {
+          "description": "Relatório Agosto: Solicitamos criativos/posts novos e pausamos a campanha da Adpill",
+          "client": "Adpill",
+          "status": "Concluída",
+          "dueDate": "",
+          "owner": "Flávio Corá",
+          "date": "2025-09-01",
+          "createdAt": {
+            "seconds": 1756763034,
+            "nanoseconds": 740000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.5
+        }
+      },
+      {
+        "id": "o5lFuOjhrXWqYuHOWTbM",
+        "data": {
+          "createdAt": {
+            "seconds": 1755540028,
+            "nanoseconds": 411000000
+          },
+          "client": "Lerrux",
+          "dueDate": "2025-08-18",
+          "date": "2025-08-18",
+          "status": "Concluída",
+          "hours": 0,
+          "owner": "Daniel dos Anjos",
+          "description": "Envio do resumo semanal",
+          "recurrence": {
+            "type": "weekly"
+          }
+        }
+      },
+      {
+        "id": "oPtPxl1AhUXORHnYgwKY",
+        "data": {
+          "client": "Lerrux",
+          "date": "2025-08-25",
+          "createdAt": {
+            "seconds": 1756145616,
+            "nanoseconds": 551000000
+          },
+          "status": "Concluída",
+          "hours": 0,
+          "description": "Envio do boleto para Setembro",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "dueDate": "2025-08-25",
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "ohxt8SfTmXINAijaiOhC",
+        "data": {
+          "createdAt": {
+            "seconds": 1755794843,
+            "nanoseconds": 83000000
+          },
+          "client": "VetSell",
+          "description": "Gerar resumo com visão \"Esta semana\" para analisarmos no grupo a performance dos criativos",
+          "dueDate": "2025-08-21",
+          "status": "Concluída",
+          "hours": 0.5,
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "date": "2025-08-21"
+        }
+      },
+      {
+        "id": "ojL3Hwi9NlHqcPv0wt36",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Fernanda Corá",
+          "dueDate": "2025-08-18",
+          "date": "2025-08-18",
+          "hours": 0.5,
+          "description": "Preparar pauta e report para reunião",
+          "status": "Concluída",
+          "client": "Aviarte",
+          "createdAt": {
+            "seconds": 1755527523,
+            "nanoseconds": 360000000
+          }
+        }
+      },
+      {
+        "id": "pK7oweeBYOt5CzUfD6w2",
+        "data": {
+          "description": "Emitir resumo do mês de agosto",
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "date": "2025-09-01",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.2,
+          "dueDate": "2025-09-02",
+          "createdAt": {
+            "seconds": 1756752475,
+            "nanoseconds": 535000000
+          },
+          "client": "Rei dos Pulverizadores"
+        }
+      },
+      {
+        "id": "q1eqF6wKgJRmDzBEE06V",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "description": "Conferiu se estava tudo funcionando normalmente para o final de semana",
+          "date": "2025-08-22",
+          "owner": "Daniel dos Anjos",
+          "status": "Concluída",
+          "client": "Clientes [Daniel]",
+          "hours": 0,
+          "createdAt": {
+            "seconds": 1755883414,
+            "nanoseconds": 817000000
+          },
+          "dueDate": "2025-08-22"
+        }
+      },
+      {
+        "id": "q3GuVD0byZGpjlORinHa",
+        "data": {
+          "status": "Concluída",
+          "description": "subir criativo https://drive.google.com/file/d/1U4qFnOYfzUYNKmaN1PzlHEoTteLcM1X9/view?usp=sharing",
+          "hours": 0.5,
+          "createdAt": {
+            "seconds": 1756479331,
+            "nanoseconds": 439000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "dueDate": "2025-08-29",
+          "client": "VetSell",
+          "date": "2025-08-29"
+        }
+      },
+      {
+        "id": "qDqq4fp5uOZjde0Fqx57",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "date": "2025-08-18",
+          "client": "Sant'Alberti",
+          "status": "Concluída",
+          "hours": 0,
+          "dueDate": "2025-08-18",
+          "createdAt": {
+            "seconds": 1755539904,
+            "nanoseconds": 858000000
+          },
+          "recurrence": {
+            "type": "weekly"
+          },
+          "description": "Envio do resumo semanal"
+        }
+      },
+      {
+        "id": "qyIK7JACyC6pHX5uZOw1",
+        "data": {
+          "dueDate": "2025-08-25",
+          "date": "2025-08-25",
+          "status": "Concluída",
+          "client": "Aphase",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "createdAt": {
+            "seconds": 1756144876,
+            "nanoseconds": 647000000
+          },
+          "description": "Envio do resumo semanal",
+          "owner": "Daniel dos Anjos",
+          "hours": 0.2
+        }
+      },
+      {
+        "id": "rH757PCNPKocrhgLxLp4",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-28",
+          "recurrenceUntil": "",
+          "dueDate": "2025-08-28",
+          "createdAt": {
+            "seconds": 1756128728,
+            "nanoseconds": 348000000
+          },
+          "client": "VetSell",
+          "recurrenceType": "none",
+          "owner": "Flávio Corá",
+          "description": "Gerar resumo “Esta semana” e incluir novo criativo da VetSell. Criativos novos enviados na quarta pela Eliz, subidos com ativação 28/08.",
+          "recurrenceDays": [],
+          "status": "Concluída",
+          "hours": 1
+        }
+      },
+      {
+        "id": "rdWWdDJ1iNxtIEDlDdRM",
+        "data": {
+          "recurrenceUntil": "",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-20",
+          "date": "2025-08-20",
+          "hours": 0.5,
+          "recurrenceType": "none",
+          "recurrenceDays": [],
+          "description": "Responder formulário: https://docs.google.com/forms/d/e/1FAIpQLSfn2fo1k6lnqXRTiMIt8wyu-OSxiSb91e3mevtOxx0BT5y7Rw/viewform?usp=sharing&ouid=100350274287213715864",
+          "status": "Concluída",
+          "client": "Dácora",
+          "createdAt": {
+            "seconds": 1755726559,
+            "nanoseconds": 392000000
+          }
+        }
+      },
+      {
+        "id": "riNfzY2DnE2zC1qRwlsR",
+        "data": {
+          "status": "Concluída",
+          "description": "Envio do resumo semanal",
+          "hours": 0.2,
+          "owner": "Daniel dos Anjos",
+          "createdAt": {
+            "seconds": 1756145433,
+            "nanoseconds": 96000000
+          },
+          "dueDate": "2025-08-25",
+          "recurrence": {
+            "type": "weekly"
+          },
+          "client": "Dona Raiz",
+          "date": "2025-08-25"
+        }
+      },
+      {
+        "id": "rkgNMBm4Kux7r1YqeYIr",
+        "data": {
+          "dueDate": "2025-08-29",
+          "recurrenceUntil": "",
+          "hours": 0,
+          "recurrenceType": "none",
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-29",
+          "description": "Emitir boleto Meta 650,00",
+          "createdAt": {
+            "seconds": 1756302218,
+            "nanoseconds": 947000000
+          },
+          "client": "Oxen Currais",
+          "recurrenceDays": [],
+          "owner": "Flávio Corá",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "s6pD3iFFhuOWJfkO6tWo",
+        "data": {
+          "date": "2025-08-19",
+          "recurrenceUntil": "",
+          "client": "Aviarte",
+          "recurrenceType": "none",
+          "createdAt": {
+            "seconds": 1755527182,
+            "nanoseconds": 301000000
+          },
+          "recurrenceDays": [],
+          "hours": 0.5,
+          "status": "Concluída",
+          "owner": "Fernanda Corá",
+          "recurrence": {
+            "type": "none"
+          },
+          "dueDate": "2025-08-20",
+          "description": "Preparar e-mail da semana"
+        }
+      },
+      {
+        "id": "skWD2kRsbq42R0dP5rD5",
+        "data": {
+          "status": "Concluída",
+          "description": "Verificar saldo das contas e cobrar boletos não pagos",
+          "createdAt": {
+            "seconds": 1756126365,
+            "nanoseconds": 822000000
+          },
+          "date": "2025-08-25",
+          "hours": 1,
+          "recurrence": {
+            "type": "weekdays",
+            "days": [
+              1,
+              4
+            ]
+          },
+          "dueDate": "2025-08-25",
+          "owner": "Flávio Corá",
+          "client": "Allgrotech - Agência"
+        }
+      },
+      {
+        "id": "tCFq3aOPaEDTFoWCNNId",
+        "data": {
+          "dueDate": "2025-08-22",
+          "client": "Dra. Karyne",
+          "recurrence": {
+            "type": "none"
+          },
+          "status": "Concluída",
+          "owner": "Flávio Corá",
+          "description": "Verificar o que podemos fazer (além de aumentar a verba) para melhorar os resultados das campanhas de Google",
+          "date": "2025-08-21",
+          "hours": 1,
+          "createdAt": {
+            "seconds": 1755798831,
+            "nanoseconds": 608000000
+          }
+        }
+      },
+      {
+        "id": "tKbOxVeP5wGFBzfJC5o0",
+        "data": {
+          "createdAt": {
+            "seconds": 1755121564,
+            "nanoseconds": 298000000
+          },
+          "client": "Rei dos Pulverizadores",
+          "date": "2025-08-14",
+          "hours": 1,
+          "dueDate": "2025-08-14",
+          "owner": "Flávio Corá",
+          "description": "Subir nova campanha de Google com as modificações feitas pela Fernanda",
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "tQEa8x4bDf7MuZgPfVmg",
+        "data": {
+          "date": "2025-09-01",
+          "hours": 0.5,
+          "description": "Selecionar vídeos para YouTube Shorts, Idea Pins e TikTok ",
+          "recurrenceType": "none",
+          "dueDate": "2025-09-02",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755729510,
+            "nanoseconds": 380000000
+          },
+          "client": "Sant'Alberti",
+          "owner": "Fernanda Corá",
+          "status": "Não Realizada",
+          "recurrenceDays": [],
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "tnzqbBaqyfGPiBF7FGn8",
+        "data": {
+          "recurrenceDays": [],
+          "createdAt": {
+            "seconds": 1755620296,
+            "nanoseconds": 218000000
+          },
+          "hours": 0,
+          "recurrence": {
+            "type": "none"
+          },
+          "recurrenceType": "none",
+          "client": "Otimiza",
+          "status": "Concluída",
+          "date": "2025-08-19",
+          "recurrenceUntil": "",
+          "dueDate": "2025-08-19",
+          "description": "Criativo novo para subir: https://www.instagram.com/p/DNRWQmlN8nZ/\nJa havia subido esse no dia 15/08",
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "ugYBW2BpAPqBz0znBw51",
+        "data": {
+          "recurrenceDays": [],
+          "recurrenceUntil": "2025-08-18",
+          "date": "2025-08-15",
+          "createdAt": {
+            "seconds": 1755286282,
+            "nanoseconds": 919000000
+          },
+          "client": "Líder Rolamentos",
+          "hours": 0.2,
+          "dueDate": "2025-08-18",
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "description": "Incluir criativo novo: https://www.instagram.com/reel/DMF6uaauTnj/\nDesativei o criativo que estava com custo mais alto",
+          "recurrence": {
+            "until": "2025-08-18",
+            "type": "none"
+          },
+          "recurrenceType": "none"
+        }
+      },
+      {
+        "id": "uypRQXOPwQbYsyxg5B2N",
+        "data": {
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1756216141,
+            "nanoseconds": 963000000
+          },
+          "description": "Preparar treinamento de tráfego pago para equipe",
+          "recurrenceUntil": "",
+          "hours": 1,
+          "date": "2025-08-28",
+          "client": "Allgrotech - Agência",
+          "recurrenceDays": [],
+          "status": "Iniciada",
+          "dueDate": "2025-08-31",
+          "owner": "Fernanda Corá",
+          "recurrenceType": "none"
+        }
+      },
+      {
+        "id": "vNBuG0wFkrSR2ZqPGpkW",
+        "data": {
+          "owner": "Flávio Corá",
+          "client": "Rei dos Pulverizadores",
+          "description": "Criar os arquivos para upload da campanha de Google",
+          "hours": 0.5,
+          "date": "2025-08-13",
+          "dueDate": "2025-08-13",
+          "createdAt": {
+            "seconds": 1755122599,
+            "nanoseconds": 415000000
+          },
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "w0yRL07hMyLKfwiR8x3J",
+        "data": {
+          "owner": "Daniel dos Anjos",
+          "status": "Concluída",
+          "hours": 0,
+          "date": "2025-08-18",
+          "description": "Ajuste nos orçamentos de todos os clientes",
+          "client": "Clientes[Daniel]",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755701498,
+            "nanoseconds": 742000000
+          },
+          "dueDate": "2025-08-18"
+        }
+      },
+      {
+        "id": "wI31hrkYnhtIul3gFrKO",
+        "data": {
+          "client": "VetSell",
+          "owner": "Fernanda Corá",
+          "date": "2025-08-14",
+          "hours": 0.5,
+          "dueDate": "2025-08-15",
+          "description": "Ajustei orçamento. Reativei campanha A/B só com criativo das sementes de capim para separar orçamento. Inclui o criativo do BYD na campanha original de corte e reativei o da seca. Flávio incluiu um novo criativo de leite.",
+          "createdAt": {
+            "seconds": 1755123641,
+            "nanoseconds": 97000000
+          },
+          "status": "Concluída"
+        }
+      },
+      {
+        "id": "wghU2zOOoFrSfQuNtVjP",
+        "data": {
+          "dueDate": "2025-08-18",
+          "hours": 0,
+          "recurrence": {
+            "type": "weekly"
+          },
+          "date": "2025-08-18",
+          "description": "Envio do resumo semanal",
+          "createdAt": {
+            "seconds": 1755541424,
+            "nanoseconds": 607000000
+          },
+          "client": "Aphase",
+          "status": "Concluída",
+          "owner": "Daniel dos Anjos"
+        }
+      },
+      {
+        "id": "wobWr5CNx7RXd5Lf7Kr4",
+        "data": {
+          "createdAt": {
+            "seconds": 1755271829,
+            "nanoseconds": 960000000
+          },
+          "hours": 0.1,
+          "status": "Concluída",
+          "date": "2025-08-15",
+          "dueDate": "2025-08-15",
+          "owner": "Flávio Corá",
+          "client": "Otimiza",
+          "description": "Subir criativo https://www.instagram.com/reel/DNRWQmlN8nZ/?igsh=cG5iOTQzam9nMWJm"
+        }
+      },
+      {
+        "id": "wzifEppWNYeKusJ4p4J3",
+        "data": {
+          "hours": 0.2,
+          "client": "Hannover",
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-26",
+          "dueDate": "2025-08-26",
+          "recurrenceUntil": "",
+          "description": "Analíse do desempenho das campanhas/ Mudança em quais criativos estão ativos(Pelo orçamento diário alto é possível fazer essas alterações de 3 em 3 dias se necessário)",
+          "createdAt": {
+            "seconds": 1756242055,
+            "nanoseconds": 98000000
+          },
+          "owner": "Daniel dos Anjos",
+          "recurrenceType": "none",
+          "status": "Concluída",
+          "recurrenceDays": []
+        }
+      },
+      {
+        "id": "xJOtIiQViEjy49xv0XiG",
+        "data": {
+          "client": "Make Plant",
+          "status": "Concluída",
+          "owner": "Flávio Corá",
+          "dueDate": "2025-08-19",
+          "recurrence": {
+            "type": "none"
+          },
+          "createdAt": {
+            "seconds": 1755612160,
+            "nanoseconds": 530000000
+          },
+          "date": "2025-08-19",
+          "hours": 0.5,
+          "description": "Desativar criativos de TRÁFEGO e incluir novos: https://www.instagram.com/reel/DNYNXwhBT3S/ https://www.instagram.com/reel/DL-Fa9lvyvQ/ https://www.instagram.com/reel/DK1_NYPCcBm/"
+        }
+      },
+      {
+        "id": "xLNVFZQriUNkRY9OYwAe",
+        "data": {
+          "dueDate": "2025-09-02",
+          "status": "Concluída",
+          "recurrenceType": "none",
+          "createdAt": {
+            "seconds": 1756752496,
+            "nanoseconds": 437000000
+          },
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá",
+          "description": "Emitir resumo do mês de agosto",
+          "recurrenceDays": [],
+          "hours": 0.2,
+          "client": "Gusmão Lima",
+          "date": "2025-09-01",
+          "recurrenceUntil": ""
+        }
+      },
+      {
+        "id": "xrsiIyO5NB99HAPj7FO2",
+        "data": {
+          "dueDate": "2025-08-19",
+          "createdAt": {
+            "seconds": 1755617634,
+            "nanoseconds": 860000000
+          },
+          "owner": "Flávio Corá",
+          "description": "Replicar relatório com KPI´s",
+          "client": "Gusmão Lima",
+          "date": "2025-08-19",
+          "status": "Concluída",
+          "recurrence": {
+            "type": "none"
+          },
+          "hours": 0.5
+        }
+      },
+      {
+        "id": "yFpIUKcjLfidXbqUCuGF",
+        "data": {
+          "dueDate": "2025-08-15",
+          "date": "2025-08-14",
+          "hours": 0.5,
+          "createdAt": {
+            "seconds": 1755123894,
+            "nanoseconds": 831000000
+          },
+          "owner": "Flávio Corá",
+          "status": "Concluída",
+          "description": "Monitorar resultado da campanha de WhatsApp",
+          "client": "Conviê"
+        }
+      },
+      {
+        "id": "yOQIdrmXgvIez1sa5Q2i",
+        "data": {
+          "client": "Narah Lopes",
+          "dueDate": "",
+          "createdAt": {
+            "seconds": 1756745728,
+            "nanoseconds": 952000000
+          },
+          "hours": 0,
+          "description": "Relatório completo EXC foods",
+          "status": "Concluída",
+          "date": "2025-09-01",
+          "recurrence": {
+            "type": "none"
+          },
+          "owner": "Flávio Corá"
+        }
+      },
+      {
+        "id": "zOgHdp0cZxr0e7YEyZs6",
+        "data": {
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1756126303,
+            "nanoseconds": 11000000
+          },
+          "description": "Responder formulário Ingrid: https://docs.google.com/forms/d/e/1FAIpQLSfD3f4FCgKj-qeFJfLhEltboMD2-PdOLldIihWAKTxPnwaj_Q/viewform?usp=header",
+          "hours": 1,
+          "owner": "Flávio Corá",
+          "dueDate": "2025-08-25",
+          "recurrence": {
+            "type": "none"
+          },
+          "date": "2025-08-25",
+          "client": "Dácora"
+        }
+      },
+      {
+        "id": "zx4KVvqnB8qiBXUBQY2E",
+        "data": {
+          "hours": 1,
+          "dueDate": "2025-08-21",
+          "recurrence": {
+            "type": "none"
+          },
+          "client": "La Belle",
+          "description": "Redimensionar e subir criativos",
+          "status": "Concluída",
+          "createdAt": {
+            "seconds": 1755807436,
+            "nanoseconds": 242000000
+          },
+          "owner": "Flávio Corá",
+          "date": "2025-08-21"
+        }
+      }
+    ],
+    "settings": [
+      {
+        "id": "clients",
+        "data": {
+          "names": [
+            "Rei dos Pulverizadores",
+            "Aviarte",
+            "VetSell",
+            "Sant'Alberti",
+            "Hannover",
+            "Dr. Lucas Sartori",
+            "Dra. Gabi Sartori",
+            "Gusmão Lima",
+            "Conviê",
+            "Precisão",
+            "La Belle",
+            "Dácora",
+            "Dona Raiz",
+            "Lerrux",
+            "Giann Túllio",
+            "Allgrotech - Agência",
+            "Otimiza",
+            "Dr. Flávio Zenun",
+            "Verde Verduras",
+            "Líder Rolamentos",
+            "Dra. Maria Nazaré",
+            "Dra Taísa Gauer",
+            "Make Plant",
+            "Dazzie",
+            "GSA",
+            "Aphase",
+            "Dra. Karyne",
+            "Clientes [Daniel]",
+            "Tratto Agro",
+            "Lerrux",
+            "VetAgro",
+            "Oxen Currais",
+            "Narah Lopes",
+            "Nutrifol",
+            "Adpill",
+            "Flávio Corá",
+            "Duro PVC",
+            "Agromoto",
+            "Profarm",
+            "Cria Fértil"
+          ],
+          "list": [
+            {
+              "tier": "Mid Tier Account",
+              "name": "Rei dos Pulverizadores",
+              "id": "w4v21b4w",
+              "owner": "Fernanda Corá"
+            },
+            {
+              "owner": "Daniel dos Anjos",
+              "id": "h43b8ogc",
+              "name": "Aviarte",
+              "tier": "Key Account"
+            },
+            {
+              "tier": "Key Account",
+              "name": "VetSell",
+              "owner": "Flávio Corá",
+              "id": "q9h7v3bt"
+            },
+            {
+              "id": "ede0etfx",
+              "owner": "Daniel dos Anjos",
+              "tier": "Key Account",
+              "name": "Sant'Alberti"
+            },
+            {
+              "tier": "Key Account",
+              "owner": "Daniel dos Anjos",
+              "name": "Hannover",
+              "id": "9h5dlbqw"
+            },
+            {
+              "id": "phgvsx29",
+              "name": "Dr. Lucas Sartori",
+              "owner": "Daniel dos Anjos",
+              "tier": "Key Account"
+            },
+            {
+              "id": "twhnypto",
+              "name": "Dra. Gabi Sartori",
+              "tier": "Key Account",
+              "owner": "Daniel dos Anjos"
+            },
+            {
+              "id": "f27xdxeh",
+              "owner": "Flávio Corá",
+              "tier": "Mid Tier Account",
+              "name": "Gusmão Lima"
+            },
+            {
+              "tier": "Low Tier Account",
+              "id": "t3h07iez",
+              "owner": "Flávio Corá",
+              "name": "Conviê"
+            },
+            {
+              "id": "rternxsl",
+              "tier": "Low Tier Account",
+              "name": "Precisão",
+              "owner": "Flávio Corá"
+            },
+            {
+              "name": "La Belle",
+              "id": "du9mew67",
+              "tier": "Low Tier Account",
+              "owner": "Flávio Corá"
+            },
+            {
+              "name": "Dácora",
+              "id": "oe5lu0e7",
+              "owner": "Fernanda Corá",
+              "tier": "Key Account"
+            },
+            {
+              "name": "Dona Raiz",
+              "id": "yxyh8hn2",
+              "owner": "Daniel dos Anjos",
+              "tier": "Mid Tier Account"
+            },
+            {
+              "id": "v6qin54x",
+              "name": "Lerrux",
+              "tier": "Mid Tier Account",
+              "owner": "Daniel dos Anjos"
+            },
+            {
+              "tier": "Low Tier Account",
+              "id": "u8b8t20t",
+              "name": "Giann Túllio",
+              "owner": "Flávio Corá"
+            },
+            {
+              "name": "Allgrotech - Agência",
+              "id": "dx62usky",
+              "owner": "Flávio Corá",
+              "tier": "Key Account"
+            },
+            {
+              "owner": "Flávio Corá",
+              "id": "wnr1i167",
+              "tier": "Mid Tier Account",
+              "name": "Otimiza"
+            },
+            {
+              "tier": "Low Tier Account",
+              "name": "Dr. Flávio Zenun",
+              "owner": "Flávio Corá",
+              "id": "f0u1q82p"
+            },
+            {
+              "owner": "Flávio Corá",
+              "name": "Verde Verduras",
+              "id": "5f1109dn",
+              "tier": "Mid Tier Account"
+            },
+            {
+              "tier": "Key Account",
+              "owner": "Flávio Corá",
+              "name": "Líder Rolamentos",
+              "id": "8jyd17ql"
+            },
+            {
+              "owner": "Flávio Corá",
+              "name": "Dra. Maria Nazaré",
+              "id": "xne7pzd8",
+              "tier": "Low Tier Account"
+            },
+            {
+              "owner": "Flávio Corá",
+              "name": "Dra Taísa Gauer",
+              "id": "wnpfq3zs",
+              "tier": "Low Tier Account"
+            },
+            {
+              "id": "af8acllo",
+              "tier": "Low Tier Account",
+              "owner": "Flávio Corá",
+              "name": "Make Plant"
+            },
+            {
+              "name": "Dazzie",
+              "tier": "Low Tier Account",
+              "id": "5hbegfwi",
+              "owner": "Daniel dos Anjos"
+            },
+            {
+              "id": "ksbbhg2h",
+              "owner": "Daniel dos Anjos",
+              "tier": "Low Tier Account",
+              "name": "GSA"
+            },
+            {
+              "id": "ihtzqy4b",
+              "name": "Aphase",
+              "tier": "Mid Tier Account",
+              "owner": "Daniel dos Anjos"
+            },
+            {
+              "name": "Dra. Karyne",
+              "id": "0tt4p391",
+              "owner": "Flávio Corá",
+              "tier": "Key Account"
+            },
+            {
+              "owner": "Daniel dos Anjos",
+              "name": "Clientes [Daniel]",
+              "id": "p5u6k32k",
+              "tier": "Mid Tier Account"
+            },
+            {
+              "name": "Tratto Agro",
+              "id": "t6pxv09p",
+              "tier": "Low Tier Account",
+              "owner": "Flávio Corá"
+            },
+            {
+              "owner": "Daniel dos Anjos",
+              "id": "m0f6h24u",
+              "tier": "Mid Tier Account",
+              "name": "Lerrux"
+            },
+            {
+              "name": "VetAgro",
+              "owner": "Flávio Corá",
+              "id": "tf7bcaw0",
+              "tier": "Mid Tier Account"
+            },
+            {
+              "id": "r5tkodhm",
+              "owner": "",
+              "tier": "Mid Tier Account",
+              "name": "Oxen Currais"
+            },
+            {
+              "tier": "Mid Tier Account",
+              "name": "Narah Lopes",
+              "id": "hnzh6kw3",
+              "owner": "Flávio Corá"
+            },
+            {
+              "tier": "Mid Tier Account",
+              "id": "hl77a01f",
+              "owner": "",
+              "name": "Nutrifol"
+            },
+            {
+              "id": "gz6ah6wc",
+              "tier": "Low Tier Account",
+              "name": "Adpill",
+              "owner": "Flávio Corá"
+            },
+            {
+              "owner": "Flávio Corá",
+              "name": "Flávio Corá",
+              "id": "to3mldlm",
+              "tier": "Mid Tier Account"
+            },
+            {
+              "tier": "Key Account",
+              "owner": "Daniel dos Anjos",
+              "id": "7sopbepz",
+              "name": "Duro PVC"
+            },
+            {
+              "tier": "Mid Tier Account",
+              "name": "Agromoto",
+              "owner": "Daniel dos Anjos",
+              "id": "vwzw170z"
+            },
+            {
+              "id": "1f7ap3fx",
+              "owner": "Flávio Corá",
+              "tier": "Low Tier Account",
+              "name": "Profarm"
+            },
+            {
+              "name": "Cria Fértil",
+              "owner": "",
+              "tier": "Low Tier Account",
+              "id": "6ihbxxz9"
+            }
+          ]
+        }
+      },
+      {
+        "id": "owners",
+        "data": {
+          "names": [
+            "Flávio Corá",
+            "Fernanda Corá",
+            "Daniel dos Anjos"
+          ]
+        }
+      }
+    ]
+  }
+}

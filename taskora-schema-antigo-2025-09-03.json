@@ -1,0 +1,1099 @@
+{
+  "clients": {
+    "total": 10,
+    "fields": [
+      "activePlatforms",
+      "balanceControl",
+      "billingGoal",
+      "budgets",
+      "conversionRate",
+      "createdAt",
+      "currentROI",
+      "defaultAssigneeRef",
+      "displayName",
+      "documentLinks",
+      "email",
+      "entryDate",
+      "instagram",
+      "monthlyLeads",
+      "notes",
+      "orgId",
+      "paymentMethod",
+      "phone",
+      "realBilling",
+      "realLeads",
+      "responsible",
+      "status",
+      "tags",
+      "tier",
+      "updatedAt",
+      "website"
+    ],
+    "fieldTypes": {
+      "conversionRate": [
+        "null"
+      ],
+      "instagram": [
+        "string"
+      ],
+      "displayName": [
+        "string"
+      ],
+      "website": [
+        "string"
+      ],
+      "activePlatforms": [
+        "array"
+      ],
+      "billingGoal": [
+        "number",
+        "null"
+      ],
+      "tags": [
+        "array"
+      ],
+      "notes": [
+        "string"
+      ],
+      "updatedAt": [
+        "object"
+      ],
+      "budgets": [
+        "object"
+      ],
+      "tier": [
+        "string"
+      ],
+      "createdAt": [
+        "object"
+      ],
+      "responsible": [
+        "string"
+      ],
+      "entryDate": [
+        "null"
+      ],
+      "realLeads": [
+        "number",
+        "null"
+      ],
+      "orgId": [
+        "string"
+      ],
+      "monthlyLeads": [
+        "number",
+        "null"
+      ],
+      "defaultAssigneeRef": [
+        "object"
+      ],
+      "realBilling": [
+        "number",
+        "null"
+      ],
+      "phone": [
+        "string"
+      ],
+      "currentROI": [
+        "null"
+      ],
+      "documentLinks": [
+        "string"
+      ],
+      "status": [
+        "string"
+      ],
+      "balanceControl": [
+        "object"
+      ],
+      "email": [
+        "string"
+      ],
+      "paymentMethod": [
+        "string"
+      ]
+    },
+    "samples": [
+      {
+        "id": "1gHXLaN2lIDwpZyg86WH",
+        "conversionRate": null,
+        "instagram": "@allgrotech",
+        "displayName": "Allgrotech Agência",
+        "website": "",
+        "activePlatforms": [
+          "META_ADS"
+        ],
+        "billingGoal": 1000,
+        "tags": [],
+        "notes": "",
+        "updatedAt": {
+          "seconds": 1756771780,
+          "nanoseconds": 67000000
+        },
+        "budgets": {
+          "META_ADS": 500
+        },
+        "tier": "MID_TIER",
+        "createdAt": {
+          "seconds": 1756771780,
+          "nanoseconds": 67000000
+        },
+        "responsible": "Fernanda Corá",
+        "entryDate": null,
+        "realLeads": 10,
+        "orgId": "dacora",
+        "monthlyLeads": 20,
+        "defaultAssigneeRef": {
+          "firestore": {
+            "_delegate": {
+              "app": {
+                "_isDeleted": false,
+                "_options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                },
+                "_config": {
+                  "name": "[DEFAULT]",
+                  "automaticDataCollectionEnabled": false
+                },
+                "_name": "[DEFAULT]",
+                "_automaticDataCollectionEnabled": false,
+                "_container": {
+                  "name": "[DEFAULT]",
+                  "providers": {}
+                }
+              },
+              "databaseId": {
+                "projectId": "taskora-39404",
+                "database": "(default)"
+              },
+              "settings": {
+                "host": "firestore.googleapis.com",
+                "ssl": true,
+                "ignoreUndefinedProperties": false,
+                "cacheSizeBytes": 41943040,
+                "experimentalForceLongPolling": false,
+                "experimentalAutoDetectLongPolling": true,
+                "experimentalLongPollingOptions": {},
+                "useFetchStreams": true
+              }
+            },
+            "_persistenceProvider": {},
+            "INTERNAL": {},
+            "_appCompat": {
+              "name": "[DEFAULT]",
+              "automaticDataCollectionEnabled": false,
+              "options": {
+                "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                "authDomain": "taskora-39404.firebaseapp.com",
+                "projectId": "taskora-39404",
+                "storageBucket": "taskora-39404.firebasestorage.app",
+                "messagingSenderId": "650011927392",
+                "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+              }
+            }
+          },
+          "_delegate": {
+            "converter": null,
+            "_key": {
+              "path": {
+                "segments": [
+                  "projects",
+                  "taskora-39404",
+                  "databases",
+                  "(default)",
+                  "documents",
+                  "orgUsers",
+                  "dacora",
+                  "users",
+                  "C2gABsTrR6aZS5ZkRoIQRDPoT4I2"
+                ],
+                "offset": 5,
+                "len": 4
+              }
+            },
+            "type": "document",
+            "firestore": {
+              "app": {
+                "_isDeleted": false,
+                "_options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                },
+                "_config": {
+                  "name": "[DEFAULT]",
+                  "automaticDataCollectionEnabled": false
+                },
+                "_name": "[DEFAULT]",
+                "_automaticDataCollectionEnabled": false,
+                "_container": {
+                  "name": "[DEFAULT]",
+                  "providers": {}
+                }
+              },
+              "databaseId": {
+                "projectId": "taskora-39404",
+                "database": "(default)"
+              },
+              "settings": {
+                "host": "firestore.googleapis.com",
+                "ssl": true,
+                "ignoreUndefinedProperties": false,
+                "cacheSizeBytes": 41943040,
+                "experimentalForceLongPolling": false,
+                "experimentalAutoDetectLongPolling": true,
+                "experimentalLongPollingOptions": {},
+                "useFetchStreams": true
+              }
+            }
+          },
+          "_userDataWriter": {
+            "firestore": {
+              "_delegate": {
+                "app": {
+                  "_isDeleted": false,
+                  "_options": {
+                    "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                    "authDomain": "taskora-39404.firebaseapp.com",
+                    "projectId": "taskora-39404",
+                    "storageBucket": "taskora-39404.firebasestorage.app",
+                    "messagingSenderId": "650011927392",
+                    "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                  },
+                  "_config": {
+                    "name": "[DEFAULT]",
+                    "automaticDataCollectionEnabled": false
+                  },
+                  "_name": "[DEFAULT]",
+                  "_automaticDataCollectionEnabled": false,
+                  "_container": {
+                    "name": "[DEFAULT]",
+                    "providers": {}
+                  }
+                },
+                "databaseId": {
+                  "projectId": "taskora-39404",
+                  "database": "(default)"
+                },
+                "settings": {
+                  "host": "firestore.googleapis.com",
+                  "ssl": true,
+                  "ignoreUndefinedProperties": false,
+                  "cacheSizeBytes": 41943040,
+                  "experimentalForceLongPolling": false,
+                  "experimentalAutoDetectLongPolling": true,
+                  "experimentalLongPollingOptions": {},
+                  "useFetchStreams": true
+                }
+              },
+              "_persistenceProvider": {},
+              "INTERNAL": {},
+              "_appCompat": {
+                "name": "[DEFAULT]",
+                "automaticDataCollectionEnabled": false,
+                "options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                }
+              }
+            }
+          }
+        },
+        "realBilling": 2000,
+        "phone": "",
+        "currentROI": null,
+        "documentLinks": "",
+        "status": "ATIVO",
+        "balanceControl": {
+          "tiktokAds": {
+            "realBalance": 0,
+            "lastDeposit": 0,
+            "dailyBudget": 0,
+            "depositDate": null
+          },
+          "googleAds": {
+            "lastDeposit": 0,
+            "realBalance": 0,
+            "depositDate": null,
+            "dailyBudget": 0
+          },
+          "pinterestAds": {
+            "realBalance": 0,
+            "depositDate": null,
+            "lastDeposit": 0,
+            "dailyBudget": 0
+          },
+          "metaAds": {
+            "depositDate": "2025-08-15",
+            "lastDeposit": 500,
+            "realBalance": 0,
+            "dailyBudget": 15
+          }
+        },
+        "email": ""
+      },
+      {
+        "id": "7FgpayIe8Y4U6eHpj5hD",
+        "tags": [],
+        "status": "ATIVO",
+        "documentLinks": "",
+        "responsible": "Flávio Corá",
+        "updatedAt": {
+          "seconds": 1756496056,
+          "nanoseconds": 839000000
+        },
+        "budgets": {
+          "META_ADS": 750
+        },
+        "email": "",
+        "createdAt": {
+          "seconds": 1756496056,
+          "nanoseconds": 839000000
+        },
+        "entryDate": null,
+        "orgId": "dacora",
+        "instagram": "",
+        "website": "",
+        "displayName": "La Belle Loja",
+        "phone": "",
+        "tier": "LOW_TIER",
+        "activePlatforms": [
+          "META_ADS"
+        ],
+        "notes": ""
+      },
+      {
+        "id": "C1etlJKFUr5TQGxgE5wB",
+        "currentROI": null,
+        "notes": "",
+        "activePlatforms": [
+          "GOOGLE_ADS"
+        ],
+        "budgets": {
+          "GOOGLE_ADS": 500
+        },
+        "realBilling": null,
+        "status": "ATIVO",
+        "orgId": "dacora",
+        "tags": [],
+        "responsible": "Flávio Corá",
+        "documentLinks": "",
+        "website": "",
+        "instagram": "",
+        "displayName": "Dr. Flávio Zenun",
+        "updatedAt": {
+          "seconds": 1756775305,
+          "nanoseconds": 669000000
+        },
+        "createdAt": {
+          "seconds": 1756775305,
+          "nanoseconds": 669000000
+        },
+        "conversionRate": null,
+        "paymentMethod": "CREDIT_CARD",
+        "email": "",
+        "monthlyLeads": null,
+        "entryDate": null,
+        "phone": "",
+        "billingGoal": null,
+        "tier": "LOW_TIER",
+        "balanceControl": {
+          "tiktokAds": {
+            "depositDate": null,
+            "lastDeposit": 0,
+            "realBalance": 0,
+            "dailyBudget": 0
+          },
+          "pinterestAds": {
+            "dailyBudget": 0,
+            "lastDeposit": 0,
+            "depositDate": null,
+            "realBalance": 0
+          },
+          "googleAds": {
+            "lastDeposit": 0,
+            "dailyBudget": 0,
+            "realBalance": 0,
+            "depositDate": null
+          },
+          "metaAds": {
+            "lastDeposit": 0,
+            "realBalance": 0,
+            "depositDate": null,
+            "dailyBudget": 0
+          }
+        },
+        "realLeads": null
+      }
+    ]
+  },
+  "tasks": {
+    "total": 6,
+    "fields": [
+      "assigneeRef",
+      "client",
+      "clientRef",
+      "createdAt",
+      "createdBy",
+      "date",
+      "description",
+      "dueAt",
+      "dueDate",
+      "estimatedMinutes",
+      "hours",
+      "orgId",
+      "owner",
+      "priority",
+      "recurrence",
+      "recurrenceDays",
+      "recurrenceType",
+      "recurrenceUntil",
+      "reminderAt",
+      "spentMinutes",
+      "startAt",
+      "status",
+      "tags",
+      "title",
+      "updatedAt"
+    ],
+    "fieldTypes": {
+      "recurrenceUntil": [
+        "null"
+      ],
+      "orgId": [
+        "string"
+      ],
+      "recurrenceDays": [
+        "null"
+      ],
+      "spentMinutes": [
+        "number"
+      ],
+      "title": [
+        "string"
+      ],
+      "tags": [
+        "array"
+      ],
+      "startAt": [
+        "null"
+      ],
+      "assigneeRef": [
+        "null"
+      ],
+      "estimatedMinutes": [
+        "number"
+      ],
+      "updatedAt": [
+        "object"
+      ],
+      "priority": [
+        "string"
+      ],
+      "owner": [
+        "string"
+      ],
+      "date": [
+        "string"
+      ],
+      "clientRef": [
+        "object"
+      ],
+      "dueAt": [
+        "object"
+      ],
+      "recurrenceType": [
+        "string"
+      ],
+      "hours": [
+        "number"
+      ],
+      "createdBy": [
+        "null"
+      ],
+      "client": [
+        "string"
+      ],
+      "description": [
+        "string"
+      ],
+      "reminderAt": [
+        "null"
+      ],
+      "createdAt": [
+        "object"
+      ],
+      "status": [
+        "string"
+      ],
+      "recurrence": [
+        "object"
+      ],
+      "dueDate": [
+        "string"
+      ]
+    },
+    "samples": [
+      {
+        "id": "HN975YsGU3YYP34sT257",
+        "recurrenceUntil": null,
+        "orgId": "dacora",
+        "recurrenceDays": null,
+        "spentMinutes": 0,
+        "title": "",
+        "tags": [],
+        "startAt": null,
+        "assigneeRef": null,
+        "estimatedMinutes": 180,
+        "updatedAt": {
+          "seconds": 1756532952,
+          "nanoseconds": 802000000
+        },
+        "priority": "MEDIUM",
+        "owner": "Flávio Corá",
+        "date": "2025-08-30",
+        "clientRef": {
+          "firestore": {
+            "_delegate": {
+              "app": {
+                "_isDeleted": false,
+                "_options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                },
+                "_config": {
+                  "name": "[DEFAULT]",
+                  "automaticDataCollectionEnabled": false
+                },
+                "_name": "[DEFAULT]",
+                "_automaticDataCollectionEnabled": false,
+                "_container": {
+                  "name": "[DEFAULT]",
+                  "providers": {}
+                }
+              },
+              "databaseId": {
+                "projectId": "taskora-39404",
+                "database": "(default)"
+              },
+              "settings": {
+                "host": "firestore.googleapis.com",
+                "ssl": true,
+                "ignoreUndefinedProperties": false,
+                "cacheSizeBytes": 41943040,
+                "experimentalForceLongPolling": false,
+                "experimentalAutoDetectLongPolling": true,
+                "experimentalLongPollingOptions": {},
+                "useFetchStreams": true
+              }
+            },
+            "_persistenceProvider": {},
+            "INTERNAL": {},
+            "_appCompat": {
+              "name": "[DEFAULT]",
+              "automaticDataCollectionEnabled": false,
+              "options": {
+                "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                "authDomain": "taskora-39404.firebaseapp.com",
+                "projectId": "taskora-39404",
+                "storageBucket": "taskora-39404.firebasestorage.app",
+                "messagingSenderId": "650011927392",
+                "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+              }
+            }
+          },
+          "_delegate": {
+            "converter": null,
+            "_key": {
+              "path": {
+                "segments": [
+                  "projects",
+                  "taskora-39404",
+                  "databases",
+                  "(default)",
+                  "documents",
+                  "clients",
+                  "1gHXLaN2lIDwpZyg86WH"
+                ],
+                "offset": 5,
+                "len": 2
+              }
+            },
+            "type": "document",
+            "firestore": {
+              "app": {
+                "_isDeleted": false,
+                "_options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                },
+                "_config": {
+                  "name": "[DEFAULT]",
+                  "automaticDataCollectionEnabled": false
+                },
+                "_name": "[DEFAULT]",
+                "_automaticDataCollectionEnabled": false,
+                "_container": {
+                  "name": "[DEFAULT]",
+                  "providers": {}
+                }
+              },
+              "databaseId": {
+                "projectId": "taskora-39404",
+                "database": "(default)"
+              },
+              "settings": {
+                "host": "firestore.googleapis.com",
+                "ssl": true,
+                "ignoreUndefinedProperties": false,
+                "cacheSizeBytes": 41943040,
+                "experimentalForceLongPolling": false,
+                "experimentalAutoDetectLongPolling": true,
+                "experimentalLongPollingOptions": {},
+                "useFetchStreams": true
+              }
+            }
+          },
+          "_userDataWriter": {
+            "firestore": {
+              "_delegate": {
+                "app": {
+                  "_isDeleted": false,
+                  "_options": {
+                    "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                    "authDomain": "taskora-39404.firebaseapp.com",
+                    "projectId": "taskora-39404",
+                    "storageBucket": "taskora-39404.firebasestorage.app",
+                    "messagingSenderId": "650011927392",
+                    "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                  },
+                  "_config": {
+                    "name": "[DEFAULT]",
+                    "automaticDataCollectionEnabled": false
+                  },
+                  "_name": "[DEFAULT]",
+                  "_automaticDataCollectionEnabled": false,
+                  "_container": {
+                    "name": "[DEFAULT]",
+                    "providers": {}
+                  }
+                },
+                "databaseId": {
+                  "projectId": "taskora-39404",
+                  "database": "(default)"
+                },
+                "settings": {
+                  "host": "firestore.googleapis.com",
+                  "ssl": true,
+                  "ignoreUndefinedProperties": false,
+                  "cacheSizeBytes": 41943040,
+                  "experimentalForceLongPolling": false,
+                  "experimentalAutoDetectLongPolling": true,
+                  "experimentalLongPollingOptions": {},
+                  "useFetchStreams": true
+                }
+              },
+              "_persistenceProvider": {},
+              "INTERNAL": {},
+              "_appCompat": {
+                "name": "[DEFAULT]",
+                "automaticDataCollectionEnabled": false,
+                "options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                }
+              }
+            }
+          }
+        },
+        "dueAt": {
+          "seconds": 1756512000,
+          "nanoseconds": 0
+        },
+        "recurrenceType": "none",
+        "hours": 3,
+        "createdBy": null,
+        "client": "Allgrotech Agência",
+        "description": "444",
+        "reminderAt": null,
+        "createdAt": {
+          "seconds": 1756532952,
+          "nanoseconds": 802000000
+        },
+        "status": "concluída"
+      },
+      {
+        "id": "MfuFuyM3qGeW75042BWn",
+        "date": "2025-08-30",
+        "client": "Dácora",
+        "recurrenceType": "none",
+        "createdAt": {
+          "seconds": 1756532261,
+          "nanoseconds": 490000000
+        },
+        "description": "teste banco",
+        "hours": 1.5,
+        "recurrence": {
+          "type": "none"
+        },
+        "owner": "Fernanda Corá",
+        "status": "concluída",
+        "dueDate": "2025-08-30"
+      },
+      {
+        "id": "iyRr3vHGAOsomcOtRp0q",
+        "orgId": "dacora",
+        "status": "concluída",
+        "recurrenceType": "none",
+        "spentMinutes": 0,
+        "recurrenceDays": null,
+        "owner": "Fernanda Corá",
+        "description": "333",
+        "date": "2025-08-30",
+        "tags": [],
+        "createdBy": null,
+        "recurrenceUntil": null,
+        "assigneeRef": null,
+        "estimatedMinutes": 120,
+        "client": "Allgrotech Agência",
+        "priority": "MEDIUM",
+        "clientRef": {
+          "firestore": {
+            "_delegate": {
+              "app": {
+                "_isDeleted": false,
+                "_options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                },
+                "_config": {
+                  "name": "[DEFAULT]",
+                  "automaticDataCollectionEnabled": false
+                },
+                "_name": "[DEFAULT]",
+                "_automaticDataCollectionEnabled": false,
+                "_container": {
+                  "name": "[DEFAULT]",
+                  "providers": {}
+                }
+              },
+              "databaseId": {
+                "projectId": "taskora-39404",
+                "database": "(default)"
+              },
+              "settings": {
+                "host": "firestore.googleapis.com",
+                "ssl": true,
+                "ignoreUndefinedProperties": false,
+                "cacheSizeBytes": 41943040,
+                "experimentalForceLongPolling": false,
+                "experimentalAutoDetectLongPolling": true,
+                "experimentalLongPollingOptions": {},
+                "useFetchStreams": true
+              }
+            },
+            "_persistenceProvider": {},
+            "INTERNAL": {},
+            "_appCompat": {
+              "name": "[DEFAULT]",
+              "automaticDataCollectionEnabled": false,
+              "options": {
+                "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                "authDomain": "taskora-39404.firebaseapp.com",
+                "projectId": "taskora-39404",
+                "storageBucket": "taskora-39404.firebasestorage.app",
+                "messagingSenderId": "650011927392",
+                "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+              }
+            }
+          },
+          "_delegate": {
+            "converter": null,
+            "_key": {
+              "path": {
+                "segments": [
+                  "projects",
+                  "taskora-39404",
+                  "databases",
+                  "(default)",
+                  "documents",
+                  "clients",
+                  "1gHXLaN2lIDwpZyg86WH"
+                ],
+                "offset": 5,
+                "len": 2
+              }
+            },
+            "type": "document",
+            "firestore": {
+              "app": {
+                "_isDeleted": false,
+                "_options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                },
+                "_config": {
+                  "name": "[DEFAULT]",
+                  "automaticDataCollectionEnabled": false
+                },
+                "_name": "[DEFAULT]",
+                "_automaticDataCollectionEnabled": false,
+                "_container": {
+                  "name": "[DEFAULT]",
+                  "providers": {}
+                }
+              },
+              "databaseId": {
+                "projectId": "taskora-39404",
+                "database": "(default)"
+              },
+              "settings": {
+                "host": "firestore.googleapis.com",
+                "ssl": true,
+                "ignoreUndefinedProperties": false,
+                "cacheSizeBytes": 41943040,
+                "experimentalForceLongPolling": false,
+                "experimentalAutoDetectLongPolling": true,
+                "experimentalLongPollingOptions": {},
+                "useFetchStreams": true
+              }
+            }
+          },
+          "_userDataWriter": {
+            "firestore": {
+              "_delegate": {
+                "app": {
+                  "_isDeleted": false,
+                  "_options": {
+                    "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                    "authDomain": "taskora-39404.firebaseapp.com",
+                    "projectId": "taskora-39404",
+                    "storageBucket": "taskora-39404.firebasestorage.app",
+                    "messagingSenderId": "650011927392",
+                    "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                  },
+                  "_config": {
+                    "name": "[DEFAULT]",
+                    "automaticDataCollectionEnabled": false
+                  },
+                  "_name": "[DEFAULT]",
+                  "_automaticDataCollectionEnabled": false,
+                  "_container": {
+                    "name": "[DEFAULT]",
+                    "providers": {}
+                  }
+                },
+                "databaseId": {
+                  "projectId": "taskora-39404",
+                  "database": "(default)"
+                },
+                "settings": {
+                  "host": "firestore.googleapis.com",
+                  "ssl": true,
+                  "ignoreUndefinedProperties": false,
+                  "cacheSizeBytes": 41943040,
+                  "experimentalForceLongPolling": false,
+                  "experimentalAutoDetectLongPolling": true,
+                  "experimentalLongPollingOptions": {},
+                  "useFetchStreams": true
+                }
+              },
+              "_persistenceProvider": {},
+              "INTERNAL": {},
+              "_appCompat": {
+                "name": "[DEFAULT]",
+                "automaticDataCollectionEnabled": false,
+                "options": {
+                  "apiKey": "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+                  "authDomain": "taskora-39404.firebaseapp.com",
+                  "projectId": "taskora-39404",
+                  "storageBucket": "taskora-39404.firebasestorage.app",
+                  "messagingSenderId": "650011927392",
+                  "appId": "1:650011927392:web:26d75b732ecbb21dacf405"
+                }
+              }
+            }
+          }
+        },
+        "reminderAt": null,
+        "dueAt": {
+          "seconds": 1756512000,
+          "nanoseconds": 0
+        },
+        "createdAt": {
+          "seconds": 1756532833,
+          "nanoseconds": 163000000
+        },
+        "startAt": null,
+        "title": "",
+        "updatedAt": {
+          "seconds": 1756741980,
+          "nanoseconds": 11000000
+        },
+        "hours": 2
+      }
+    ]
+  },
+  "team": {
+    "total": 3,
+    "fields": [
+      "averageRating",
+      "createdAt",
+      "email",
+      "level",
+      "name",
+      "notes",
+      "phone",
+      "specialty",
+      "status",
+      "totalHours",
+      "totalTasks",
+      "updatedAt"
+    ],
+    "fieldTypes": {
+      "averageRating": [
+        "number"
+      ],
+      "totalTasks": [
+        "number"
+      ],
+      "notes": [
+        "string"
+      ],
+      "updatedAt": [
+        "object"
+      ],
+      "specialty": [
+        "array"
+      ],
+      "status": [
+        "string"
+      ],
+      "totalHours": [
+        "number"
+      ],
+      "createdAt": [
+        "object"
+      ],
+      "name": [
+        "string"
+      ],
+      "email": [
+        "string"
+      ],
+      "level": [
+        "string"
+      ],
+      "phone": [
+        "string"
+      ]
+    },
+    "samples": [
+      {
+        "id": "p1Iq64rcoxwebmAfpACL",
+        "averageRating": 0,
+        "totalTasks": 0,
+        "notes": "",
+        "updatedAt": {
+          "seconds": 1756525182,
+          "nanoseconds": 90000000
+        },
+        "specialty": [
+          "Gestor de Tráfego"
+        ],
+        "status": "Ativo",
+        "totalHours": 0,
+        "createdAt": {
+          "seconds": 1756525182,
+          "nanoseconds": 90000000
+        },
+        "name": "Daniel dos Anjos",
+        "email": "daniel@gmail.com",
+        "level": "Pleno",
+        "phone": ""
+      },
+      {
+        "id": "wgGBIYQBNbKLNEVRRBQD",
+        "createdAt": {
+          "seconds": 1756525146,
+          "nanoseconds": 141000000
+        },
+        "notes": "",
+        "email": "flacora@gmail.com",
+        "specialty": [
+          "Gestor de Tráfego"
+        ],
+        "totalHours": 5,
+        "phone": "62999465725",
+        "status": "Ativo",
+        "level": "Sênior",
+        "updatedAt": {
+          "seconds": 1756532953,
+          "nanoseconds": 122000000
+        },
+        "name": "Flávio Corá",
+        "totalTasks": 0,
+        "averageRating": 0
+      },
+      {
+        "id": "yhXeZlVDSJNzhNR6aAxr",
+        "name": "Fernanda Corá",
+        "createdAt": {
+          "seconds": 1756525132,
+          "nanoseconds": 243000000
+        },
+        "updatedAt": {
+          "seconds": 1756532833,
+          "nanoseconds": 491000000
+        },
+        "totalHours": 7.5,
+        "notes": "",
+        "totalTasks": 0,
+        "level": "Diretor",
+        "status": "Ativo",
+        "phone": "(11) 99999-9999",
+        "specialty": [
+          "Desenvolvimento",
+          "Marketing",
+          "Gestão de Projetos",
+          "Gestor de Tráfego",
+          "Estratégia"
+        ],
+        "averageRating": 0,
+        "email": "nanda@nandacora.com.br"
+      }
+    ]
+  }
+}

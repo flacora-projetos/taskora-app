@@ -6,24 +6,23 @@ import { getAuth, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs
 import { getStorage, connectStorageEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { getFunctions, connectFunctionsEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
 
-// Configuração do Firebase
+// Configuração do Firebase - Dácora
 const firebaseConfig = {
-  apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain: "taskora-39404.firebaseapp.com",
-  projectId: "taskora-39404",
-  storageBucket: "taskora-39404.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdefghijklmnopqr",
-  measurementId: "G-XXXXXXXXXX"
+  apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
+  authDomain: "dacora---tarefas.firebaseapp.com",
+  projectId: "dacora---tarefas",
+  storageBucket: "dacora---tarefas.firebasestorage.app",
+  messagingSenderId: "406318974539",
+  appId: "1:406318974539:web:d842997c1b064c0ba56fce"
 };
 
 // Inicializa o Firebase
 let app;
 try {
   app = initializeApp(firebaseConfig);
-  console.log('[Taskora] Firebase inicializado com sucesso');
+  console.log('[Dácora] Firebase inicializado com sucesso');
 } catch (error) {
-  console.error('[Taskora] Erro ao inicializar Firebase:', error);
+  console.error('[Dácora] Erro ao inicializar Firebase:', error);
   throw error;
 }
 
@@ -37,7 +36,7 @@ export const functions = getFunctions(app);
 const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 if (isDevelopment) {
-  console.log('[Taskora] Modo desenvolvimento detectado');
+  console.log('[Dácora] Modo desenvolvimento detectado');
   
   // Conecta aos emuladores se estiver em desenvolvimento
   try {
@@ -60,7 +59,7 @@ if (isDevelopment) {
     console.log('[Taskora] Conectado ao Functions Emulator');
     
   } catch (error) {
-    console.warn('[Taskora] Emuladores não disponíveis, usando Firebase produção:', error.message);
+    console.warn('[Dácora] Emuladores não disponíveis, usando Firebase produção:', error.message);
   }
 }
 
@@ -168,7 +167,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Log de inicialização
-console.log('[Taskora] Firebase configurado:', {
+console.log('[Dácora] Firebase configurado:', {
   projectId: firebaseConfig.projectId,
   isDevelopment,
   timestamp: new Date().toISOString()

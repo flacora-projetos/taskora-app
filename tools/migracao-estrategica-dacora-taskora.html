@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Migração Estratégica Dácora → Taskora v5.5</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+        }
+        .info {
+            background: #e8f4fd;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #1565c0;
+        }
+        .warning {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #e65100;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+        .btn.danger {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 20px 0;
+        }
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 25px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .phase-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+        .status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.processing { background: #cce5ff; color: #0066cc; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .file-input {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            text-align: center;
+            background: #f8f9ff;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .config-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .db-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .db-card {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid;
+        }
+        .db-source {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+            color: #2e7d32;
+        }
+        .db-target {
+            background: #e8f4fd;
+            border-color: #667eea;
+            color: #1565c0;
+        }
+        .mapping-preview {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Migração Estratégica Dácora → Taskora v5.5</h1>
+            <p>Extração e sincronização inteligente de dados para o novo schema</p>
+        </div>
+        
+        <div class="content">
+            <div class="info">
+                <h3>🎯 Estratégia de Migração</h3>
+                <p><strong>Esta ferramenta implementa a migração estratégica:</strong></p>
+                <ul>
+                    <li>📁 <strong>Extração</strong>: Dados do backup Dácora (tarefas, clientes, responsáveis)</li>
+                    <li>🔄 <strong>Transformação</strong>: Mapeamento para schema Taskora v5.5</li>
+                    <li>🎯 <strong>Destino</strong>: Banco separado (taskora-39404) - sem interferir no Dácora</li>
+                    <li>✅ <strong>Validação</strong>: Integridade e referências dos dados migrados</li>
+                </ul>
+            </div>
+
+            <div class="db-info">
+                <div class="db-card db-source">
+                    <h4>📊 ORIGEM: Dácora</h4>
+                    <p><strong>Projeto:</strong> dacora---tarefas</p>
+                    <p><strong>Fonte:</strong> dacora-export-2025-09-02.json</p>
+                    <p><strong>Schema:</strong> Legado Dácora</p>
+                </div>
+                <div class="db-card db-target">
+                    <h4>🎯 DESTINO: Taskora</h4>
+                    <p><strong>Projeto:</strong> taskora-39404</p>
+                    <p><strong>Schema:</strong> Taskora v5.5</p>
+                    <p><strong>Status:</strong> Ambiente isolado</p>
+                </div>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Importante</h4>
+                <p>Esta migração será feita para o banco <strong>taskora-39404</strong>, mantendo o banco Dácora original intacto. Foco especial nas <strong>tarefas</strong> que representam o maior volume de dados.</p>
+            </div>
+
+            <div class="file-input">
+                <h4>📁 Selecionar Backup Dácora</h4>
+                <input type="file" id="fileInput" accept=".json" style="margin: 10px;">
+                <p><small>Selecione: <strong>dacora-export-2025-09-02.json</strong></small></p>
+            </div>
+
+            <div class="stats" id="statsContainer" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-number" id="tasksCount">0</div>
+                    <div>Tarefas Dácora</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="clientsCount">0</div>
+                    <div>Clientes Únicos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="ownersCount">0</div>
+                    <div>Responsáveis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="migratedCount">0</div>
+                    <div>Migrados</div>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div id="progressBar" class="progress-bar">0%</div>
+            </div>
+
+            <div id="phasesStatus">
+                <div class="phase-item">
+                    <span><strong>📁 FASE 1: Extração de Dados</strong></span>
+                    <span id="status-extraction" class="status pending">Aguardando</span>
+                </div>
+                <div class="phase-item">
+                    <span><strong>🏗️ FASE 2: Criação Schema Taskora v5.5</strong></span>
+                    <span id="status-schema" class="status pending">Aguardando</span>
+                </div>
+                <div class="phase-item">
+                    <span><strong>👥 FASE 3: Migração Clientes</strong></span>
+                    <span id="status-clients" class="status pending">Aguardando</span>
+                </div>
+                <div class="phase-item">
+                    <span><strong>👤 FASE 4: Migração Responsáveis</strong></span>
+                    <span id="status-team" class="status pending">Aguardando</span>
+                </div>
+                <div class="phase-item">
+                    <span><strong>📋 FASE 5: Migração Tarefas (CRÍTICO)</strong></span>
+                    <span id="status-tasks" class="status pending">Aguardando</span>
+                </div>
+                <div class="phase-item">
+                    <span><strong>✅ FASE 6: Validação e Integridade</strong></span>
+                    <span id="status-validation" class="status pending">Aguardando</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button id="migrateBtn" onclick="startStrategicMigration()" class="btn" disabled>
+                    🚀 INICIAR MIGRAÇÃO ESTRATÉGICA
+                </button>
+                <button onclick="clearLog()" class="btn" style="background: #6c757d;">
+                    🧹 Limpar Log
+                </button>
+                <button id="validateBtn" onclick="validateMigration()" class="btn success" disabled>
+                    ✅ VALIDAR MIGRAÇÃO
+                </button>
+            </div>
+
+            <div id="logContainer" class="log">
+                <div>[INFO] Ferramenta de migração estratégica carregada</div>
+                <div>[INFO] Aguardando seleção do backup Dácora...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK v9 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, doc, setDoc, writeBatch, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Configuração do Firebase TASKORA (destino)
+        const taskoraConfig = {
+            apiKey: "AIzaSyBQt2qBnUR4P3Wd3CPl3c6W9xMCz2yf6-4",
+            authDomain: "taskora-39404.firebaseapp.com",
+            projectId: "taskora-39404",
+            storageBucket: "taskora-39404.firebasestorage.app",
+            messagingSenderId: "650011927392",
+            appId: "1:650011927392:web:26d75b732ecbb21dacf405"
+        };
+
+        // Inicializar Firebase Taskora
+        const taskoraApp = initializeApp(taskoraConfig);
+        const taskoraDb = getFirestore(taskoraApp);
+
+        let backupData = null;
+        let isProcessing = false;
+        let extractedData = {
+            tasks: [],
+            clients: [],
+            owners: []
+        };
+
+        // Schema Taskora v5.5
+        const TASKORA_SCHEMA = {
+            clients: {
+                id: 'string',
+                name: 'string',
+                tier: 'string', // 'premium', 'standard', 'basic'
+                status: 'string', // 'active', 'inactive', 'suspended'
+                owner: 'string',
+                createdAt: 'timestamp',
+                updatedAt: 'timestamp',
+                billing: {
+                    plan: 'string',
+                    lastPayment: 'timestamp',
+                    nextPayment: 'timestamp'
+                },
+                settings: {
+                    notifications: 'boolean',
+                    theme: 'string'
+                }
+            },
+            tasks: {
+                id: 'string',
+                title: 'string',
+                description: 'string',
+                status: 'string', // 'pending', 'in_progress', 'completed', 'cancelled'
+                priority: 'string', // 'low', 'medium', 'high', 'urgent'
+                clientId: 'string',
+                assignedTo: 'string',
+                createdBy: 'string',
+                createdAt: 'timestamp',
+                updatedAt: 'timestamp',
+                dueDate: 'timestamp',
+                completedAt: 'timestamp',
+                estimatedHours: 'number',
+                actualHours: 'number',
+                tags: 'array',
+                recurrence: {
+                    enabled: 'boolean',
+                    pattern: 'string',
+                    interval: 'number'
+                },
+                metadata: {
+                    source: 'string',
+                    migrationDate: 'timestamp'
+                }
+            },
+            team: {
+                id: 'string',
+                name: 'string',
+                email: 'string',
+                role: 'string', // 'admin', 'manager', 'member'
+                status: 'string', // 'active', 'inactive'
+                createdAt: 'timestamp',
+                updatedAt: 'timestamp',
+                permissions: 'array'
+            }
+        };
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            const typeColor = {
+                'info': '#17a2b8',
+                'success': '#28a745',
+                'error': '#dc3545',
+                'warning': '#ffc107'
+            };
+            logEntry.innerHTML = `<span style="color: ${typeColor[type] || '#17a2b8'}">[${timestamp}] [${type.toUpperCase()}] ${message}</span>`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function updateStatus(phase, status, message = '') {
+            const statusElement = document.getElementById(`status-${phase}`);
+            if (statusElement) {
+                statusElement.textContent = message || status;
+                statusElement.className = `status ${status}`;
+            }
+        }
+
+        function updateProgress(percentage, text = '') {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = text || `${Math.round(percentage)}%`;
+        }
+
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            log('Log limpo', 'info');
+        }
+
+        function updateStats() {
+            document.getElementById('tasksCount').textContent = extractedData.tasks.length;
+            document.getElementById('clientsCount').textContent = extractedData.clients.length;
+            document.getElementById('ownersCount').textContent = extractedData.owners.length;
+            document.getElementById('statsContainer').style.display = 'grid';
+        }
+
+        // Manipulador de arquivo
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                log(`📁 Arquivo selecionado: ${file.name}`, 'info');
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        backupData = JSON.parse(e.target.result);
+                        log('✅ Backup Dácora carregado com sucesso', 'success');
+                        log(`📊 Data do backup: ${backupData.exportDate}`, 'info');
+                        
+                        document.getElementById('migrateBtn').disabled = false;
+                        
+                    } catch (error) {
+                        log(`❌ Erro ao ler backup: ${error.message}`, 'error');
+                        backupData = null;
+                        document.getElementById('migrateBtn').disabled = true;
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // FASE 1: Extração de dados
+        async function extractDataFromBackup() {
+            try {
+                updateStatus('extraction', 'processing', 'Extraindo...');
+                log('📁 FASE 1: Iniciando extração de dados do backup Dácora', 'info');
+                
+                const collections = backupData.collections || {};
+                
+                // Extrair tarefas
+                if (collections.tasks) {
+                    extractedData.tasks = collections.tasks.map(task => ({
+                        id: task.id,
+                        data: task.data
+                    }));
+                    log(`📋 Extraídas ${extractedData.tasks.length} tarefas`, 'success');
+                }
+                
+                // Extrair clientes únicos
+                if (collections.clients && collections.clients[0]?.data?.clients) {
+                    const clientsData = collections.clients[0].data.clients;
+                    extractedData.clients = clientsData.map(client => ({
+                        id: client.id || client.name.toLowerCase().replace(/\s+/g, '-'),
+                        name: client.name,
+                        tier: client.tier || 'standard',
+                        owner: client.owner || 'unknown'
+                    }));
+                    log(`👥 Extraídos ${extractedData.clients.length} clientes únicos`, 'success');
+                }
+                
+                // Extrair responsáveis
+                if (collections.owners && collections.owners[0]?.data?.names) {
+                    const ownersData = collections.owners[0].data.names;
+                    extractedData.owners = ownersData.map((name, index) => ({
+                        id: name.toLowerCase().replace(/\s+/g, '-'),
+                        name: name,
+                        role: 'member',
+                        status: 'active'
+                    }));
+                    log(`👤 Extraídos ${extractedData.owners.length} responsáveis`, 'success');
+                }
+                
+                updateStats();
+                updateStatus('extraction', 'success', 'Concluída');
+                log('✅ FASE 1: Extração concluída com sucesso', 'success');
+                return true;
+                
+            } catch (error) {
+                log(`❌ FASE 1: Erro na extração: ${error.message}`, 'error');
+                updateStatus('extraction', 'error', 'Erro');
+                return false;
+            }
+        }
+
+        // FASE 2: Criar schema Taskora v5.5
+        async function createTaskoraSchema() {
+            try {
+                updateStatus('schema', 'processing', 'Criando...');
+                log('🏗️ FASE 2: Criando schema Taskora v5.5 no banco destino', 'info');
+                
+                // Criar documento de configuração do schema
+                const schemaDoc = {
+                    version: '5.5',
+                    createdAt: new Date(),
+                    collections: ['clients', 'tasks', 'team'],
+                    migrationSource: 'dacora-export-2025-09-02',
+                    migrationDate: new Date()
+                };
+                
+                await setDoc(doc(taskoraDb, 'system', 'schema'), schemaDoc);
+                log('✅ Schema Taskora v5.5 configurado', 'success');
+                
+                updateStatus('schema', 'success', 'Criado');
+                log('✅ FASE 2: Schema criado com sucesso', 'success');
+                return true;
+                
+            } catch (error) {
+                log(`❌ FASE 2: Erro ao criar schema: ${error.message}`, 'error');
+                updateStatus('schema', 'error', 'Erro');
+                return false;
+            }
+        }
+
+        // FASE 3: Migrar clientes
+        async function migrateClients() {
+            try {
+                updateStatus('clients', 'processing', 'Migrando...');
+                log('👥 FASE 3: Migrando clientes para schema Taskora v5.5', 'info');
+                
+                const batch = writeBatch(taskoraDb);
+                let migratedCount = 0;
+                
+                for (const client of extractedData.clients) {
+                    const clientDoc = {
+                        id: client.id,
+                        name: client.name,
+                        tier: client.tier,
+                        status: 'active',
+                        owner: client.owner,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        billing: {
+                            plan: client.tier,
+                            lastPayment: null,
+                            nextPayment: null
+                        },
+                        settings: {
+                            notifications: true,
+                            theme: 'default'
+                        },
+                        metadata: {
+                            source: 'dacora-migration',
+                            migrationDate: new Date()
+                        }
+                    };
+                    
+                    const docRef = doc(taskoraDb, 'clients', client.id);
+                    batch.set(docRef, clientDoc);
+                    migratedCount++;
+                }
+                
+                await batch.commit();
+                log(`✅ ${migratedCount} clientes migrados com sucesso`, 'success');
+                
+                updateStatus('clients', 'success', `${migratedCount} migrados`);
+                log('✅ FASE 3: Migração de clientes concluída', 'success');
+                return true;
+                
+            } catch (error) {
+                log(`❌ FASE 3: Erro na migração de clientes: ${error.message}`, 'error');
+                updateStatus('clients', 'error', 'Erro');
+                return false;
+            }
+        }
+
+        // FASE 4: Migrar responsáveis (team)
+        async function migrateTeam() {
+            try {
+                updateStatus('team', 'processing', 'Migrando...');
+                log('👤 FASE 4: Migrando responsáveis para schema Taskora v5.5', 'info');
+                
+                const batch = writeBatch(taskoraDb);
+                let migratedCount = 0;
+                
+                for (const owner of extractedData.owners) {
+                    const teamDoc = {
+                        id: owner.id,
+                        name: owner.name,
+                        email: `${owner.id}@taskora.com`, // Email placeholder
+                        role: owner.role,
+                        status: owner.status,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        permissions: ['read', 'write'],
+                        metadata: {
+                            source: 'dacora-migration',
+                            migrationDate: new Date()
+                        }
+                    };
+                    
+                    const docRef = doc(taskoraDb, 'team', owner.id);
+                    batch.set(docRef, teamDoc);
+                    migratedCount++;
+                }
+                
+                await batch.commit();
+                log(`✅ ${migratedCount} responsáveis migrados com sucesso`, 'success');
+                
+                updateStatus('team', 'success', `${migratedCount} migrados`);
+                log('✅ FASE 4: Migração de responsáveis concluída', 'success');
+                return true;
+                
+            } catch (error) {
+                log(`❌ FASE 4: Erro na migração de responsáveis: ${error.message}`, 'error');
+                updateStatus('team', 'error', 'Erro');
+                return false;
+            }
+        }
+
+        // FASE 5: Migrar tarefas (CRÍTICO)
+        async function migrateTasks() {
+            try {
+                updateStatus('tasks', 'processing', 'Migrando...');
+                log('📋 FASE 5: Migrando tarefas (VOLUME CRÍTICO) para schema Taskora v5.5', 'info');
+                
+                let migratedCount = 0;
+                const batchSize = 500;
+                
+                // Processar em lotes
+                for (let i = 0; i < extractedData.tasks.length; i += batchSize) {
+                    const batch = writeBatch(taskoraDb);
+                    const batchTasks = extractedData.tasks.slice(i, i + batchSize);
+                    
+                    for (const task of batchTasks) {
+                        const taskData = task.data;
+                        
+                        // Mapear status Dácora → Taskora
+                        const statusMapping = {
+                            'Pendente': 'pending',
+                            'Em Andamento': 'in_progress',
+                            'Concluída': 'completed',
+                            'Cancelada': 'cancelled'
+                        };
+                        
+                        // Mapear prioridade
+                        const priorityMapping = {
+                            'Baixa': 'low',
+                            'Média': 'medium',
+                            'Alta': 'high',
+                            'Urgente': 'urgent'
+                        };
+                        
+                        const taskDoc = {
+                            id: task.id,
+                            title: taskData.description || 'Tarefa sem título',
+                            description: taskData.description || '',
+                            status: statusMapping[taskData.status] || 'pending',
+                            priority: priorityMapping[taskData.priority] || 'medium',
+                            clientId: taskData.client || 'unknown-client',
+                            assignedTo: taskData.owner || 'unassigned',
+                            createdBy: taskData.owner || 'system',
+                            createdAt: taskData.createdAt ? new Date(taskData.createdAt) : new Date(),
+                            updatedAt: taskData.updatedAt ? new Date(taskData.updatedAt) : new Date(),
+                            dueDate: taskData.dueDate ? new Date(taskData.dueDate) : null,
+                            completedAt: taskData.completedAt ? new Date(taskData.completedAt) : null,
+                            estimatedHours: taskData.estimatedHours || 0,
+                            actualHours: taskData.actualHours || 0,
+                            tags: taskData.tags || [],
+                            recurrence: {
+                                enabled: taskData.recurrence?.enabled || false,
+                                pattern: taskData.recurrence?.pattern || 'none',
+                                interval: taskData.recurrence?.interval || 0
+                            },
+                            metadata: {
+                                source: 'dacora-migration',
+                                migrationDate: new Date(),
+                                originalId: task.id
+                            }
+                        };
+                        
+                        const docRef = doc(taskoraDb, 'tasks', task.id);
+                        batch.set(docRef, taskDoc);
+                        migratedCount++;
+                    }
+                    
+                    await batch.commit();
+                    log(`✅ Lote ${Math.ceil((i + batchSize) / batchSize)}: ${Math.min(i + batchSize, extractedData.tasks.length)}/${extractedData.tasks.length} tarefas`, 'info');
+                    
+                    // Pequena pausa entre lotes
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                log(`🎉 ${migratedCount} tarefas migradas com sucesso!`, 'success');
+                document.getElementById('migratedCount').textContent = migratedCount;
+                
+                updateStatus('tasks', 'success', `${migratedCount} migradas`);
+                log('✅ FASE 5: Migração de tarefas (CRÍTICA) concluída', 'success');
+                return true;
+                
+            } catch (error) {
+                log(`❌ FASE 5: Erro na migração de tarefas: ${error.message}`, 'error');
+                updateStatus('tasks', 'error', 'Erro');
+                return false;
+            }
+        }
+
+        // FASE 6: Validação e integridade
+        async function validateMigration() {
+            try {
+                updateStatus('validation', 'processing', 'Validando...');
+                log('✅ FASE 6: Validando integridade dos dados migrados', 'info');
+                
+                // Validar contagens
+                const clientsSnapshot = await getDocs(collection(taskoraDb, 'clients'));
+                const tasksSnapshot = await getDocs(collection(taskoraDb, 'tasks'));
+                const teamSnapshot = await getDocs(collection(taskoraDb, 'team'));
+                
+                log(`📊 Validação de contagens:`, 'info');
+                log(`   - Clientes: ${clientsSnapshot.size} documentos`, 'info');
+                log(`   - Tarefas: ${tasksSnapshot.size} documentos`, 'info');
+                log(`   - Responsáveis: ${teamSnapshot.size} documentos`, 'info');
+                
+                // Validar referências órfãs
+                let orphanTasks = 0;
+                const clientIds = new Set();
+                clientsSnapshot.forEach(doc => clientIds.add(doc.id));
+                
+                tasksSnapshot.forEach(doc => {
+                    const taskData = doc.data();
+                    if (taskData.clientId && !clientIds.has(taskData.clientId)) {
+                        orphanTasks++;
+                    }
+                });
+                
+                if (orphanTasks > 0) {
+                    log(`⚠️ Encontradas ${orphanTasks} tarefas com referências órfãs`, 'warning');
+                } else {
+                    log('✅ Todas as referências cliente-tarefa estão íntegras', 'success');
+                }
+                
+                updateStatus('validation', 'success', 'Validada');
+                log('✅ FASE 6: Validação concluída com sucesso', 'success');
+                document.getElementById('validateBtn').disabled = false;
+                return true;
+                
+            } catch (error) {
+                log(`❌ FASE 6: Erro na validação: ${error.message}`, 'error');
+                updateStatus('validation', 'error', 'Erro');
+                return false;
+            }
+        }
+
+        // Função principal de migração
+        window.startStrategicMigration = async function() {
+            if (isProcessing) {
+                log('⚠️ Migração já está em andamento!', 'warning');
+                return;
+            }
+
+            if (!backupData) {
+                log('❌ Nenhum backup carregado!', 'error');
+                return;
+            }
+
+            // Confirmação
+            if (!confirm('🚀 Confirma a migração estratégica Dácora → Taskora v5.5?\n\nEsta operação criará o novo schema no banco taskora-39404.')) {
+                log('❌ Migração cancelada pelo usuário', 'info');
+                return;
+            }
+
+            isProcessing = true;
+            document.getElementById('migrateBtn').disabled = true;
+            
+            try {
+                log('🚀 INICIANDO MIGRAÇÃO ESTRATÉGICA DÁCORA → TASKORA V5.5', 'info');
+                log('🎯 Destino: taskora-39404.firebaseapp.com', 'info');
+                updateProgress(0, 'Iniciando...');
+                
+                // Executar todas as fases
+                const phases = [
+                    { name: 'Extração', func: extractDataFromBackup, weight: 10 },
+                    { name: 'Schema', func: createTaskoraSchema, weight: 15 },
+                    { name: 'Clientes', func: migrateClients, weight: 20 },
+                    { name: 'Responsáveis', func: migrateTeam, weight: 15 },
+                    { name: 'Tarefas', func: migrateTasks, weight: 30 },
+                    { name: 'Validação', func: validateMigration, weight: 10 }
+                ];
+                
+                let currentProgress = 0;
+                
+                for (const phase of phases) {
+                    updateProgress(currentProgress, `${phase.name}...`);
+                    const success = await phase.func();
+                    
+                    if (!success) {
+                        throw new Error(`Falha na fase: ${phase.name}`);
+                    }
+                    
+                    currentProgress += phase.weight;
+                    updateProgress(currentProgress, `${phase.name} ✅`);
+                    
+                    // Pausa entre fases
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                updateProgress(100, '🎉 MIGRAÇÃO CONCLUÍDA!');
+                log('🎉 MIGRAÇÃO ESTRATÉGICA CONCLUÍDA COM SUCESSO!', 'success');
+                log('✅ Dados Dácora migrados para Taskora v5.5', 'success');
+                log('🎯 Banco destino: taskora-39404', 'info');
+                
+            } catch (error) {
+                log(`❌ Erro durante a migração: ${error.message}`, 'error');
+                updateProgress(0, 'Erro na migração');
+            } finally {
+                isProcessing = false;
+                document.getElementById('migrateBtn').disabled = false;
+            }
+        };
+
+        window.validateMigration = validateMigration;
+
+        // Log inicial
+        log('🚀 Ferramenta de migração estratégica inicializada', 'info');
+        log('🎯 Destino: Firebase Taskora (taskora-39404)', 'info');
+        log('📁 Aguardando backup Dácora...', 'info');
+    </script>
+</body>
+</html>

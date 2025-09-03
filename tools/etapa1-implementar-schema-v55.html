@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETAPA 1: Implementar Schema Taskora v5.5</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .header p {
+            color: #666;
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .status.info { background: #e3f2fd; color: #1976d2; border-left: 4px solid #2196f3; }
+        .status.success { background: #e8f5e8; color: #2e7d32; border-left: 4px solid #4caf50; }
+        .status.warning { background: #fff3e0; color: #f57c00; border-left: 4px solid #ff9800; }
+        .status.error { background: #ffebee; color: #c62828; border-left: 4px solid #f44336; }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .schema-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .schema-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .field-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .field-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ ETAPA 1: Implementar Schema Taskora v5.5</h1>
+            <p>Criação das coleções clients, tasks e team com estrutura oficial</p>
+        </div>
+
+        <div id="status" class="status info">
+            ⏳ Aguardando início da implementação do schema...
+        </div>
+
+        <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <!-- Schema Clients -->
+        <div class="schema-section">
+            <h3>📋 Coleção: clients/{clientId}</h3>
+            <div class="field-list">
+                <div class="field-item">orgId: string</div>
+                <div class="field-item">displayName: string (obrigatório)</div>
+                <div class="field-item">email: string</div>
+                <div class="field-item">phone: string</div>
+                <div class="field-item">website: string</div>
+                <div class="field-item">instagram: string</div>
+                <div class="field-item">status: ATIVO|INATIVO|PROSPECT</div>
+                <div class="field-item">tier: KEY_ACCOUNT|MID_TIER|LOW_TIER</div>
+                <div class="field-item">defaultAssigneeRef: DocumentReference</div>
+                <div class="field-item">entryDate: YYYY-MM-DD</div>
+                <div class="field-item">responsible: string</div>
+                <div class="field-item">paymentMethod: string</div>
+                <div class="field-item">documents: string</div>
+                <div class="field-item">notes: string</div>
+                <div class="field-item">budgets: object (META_ADS, GOOGLE_ADS, etc)</div>
+                <div class="field-item">activePlatforms: array (strings)</div>
+                <div class="field-item">billingGoal: number</div>
+                <div class="field-item">realBilling: number</div>
+                <div class="field-item">monthlyLeads: number</div>
+                <div class="field-item">realLeads: number</div>
+                <div class="field-item">conversionRate: number</div>
+                <div class="field-item">currentROI: number</div>
+                <div class="field-item">documentLinks: string</div>
+                <div class="field-item">tags: array</div>
+                <div class="field-item">balanceControl: object</div>
+                <div class="field-item">createdAt: Timestamp</div>
+                <div class="field-item">updatedAt: Timestamp</div>
+            </div>
+        </div>
+
+        <!-- Schema Tasks -->
+        <div class="schema-section">
+            <h3>✅ Coleção: tasks/{taskId}</h3>
+            <div class="field-list">
+                <div class="field-item">orgId: string</div>
+                <div class="field-item">clientRef: DocumentReference (obrigatório)</div>
+                <div class="field-item">title: string (obrigatório)</div>
+                <div class="field-item">description: string</div>
+                <div class="field-item">status: não realizada|em progresso|concluída|cancelada</div>
+                <div class="field-item">assigneeRef: DocumentReference (obrigatório)</div>
+                <div class="field-item">owner: string (Team v5.5)</div>
+                <div class="field-item">priority: low|medium|high|urgent</div>
+                <div class="field-item">startAt: Timestamp</div>
+                <div class="field-item">dueAt: Timestamp</div>
+                <div class="field-item">reminderAt: Timestamp</div>
+                <div class="field-item">hours: number (decimal)</div>
+                <div class="field-item">estimatedMinutes: number (legado)</div>
+                <div class="field-item">spentMinutes: number (legado)</div>
+                <div class="field-item">date: YYYY-MM-DD</div>
+                <div class="field-item">createdBy: DocumentReference</div>
+                <div class="field-item">createdAt: Timestamp</div>
+                <div class="field-item">updatedAt: Timestamp</div>
+                <div class="field-item">deletedAt: Timestamp</div>
+            </div>
+        </div>
+
+        <!-- Schema Team -->
+        <div class="schema-section">
+            <h3>👥 Coleção: team/{memberId}</h3>
+            <div class="field-list">
+                <div class="field-item">orgId: string</div>
+                <div class="field-item">name: string (obrigatório)</div>
+                <div class="field-item">email: string</div>
+                <div class="field-item">role: string</div>
+                <div class="field-item">isActive: boolean</div>
+                <div class="field-item">createdAt: Timestamp</div>
+                <div class="field-item">updatedAt: Timestamp</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="implementBtn" class="btn">🚀 Implementar Schema v5.5</button>
+            <button id="validateBtn" class="btn" disabled>✅ Validar Implementação</button>
+        </div>
+
+        <div id="log" class="log" style="display: none;"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+
+    <script>
+        let db;
+        let currentStep = 0;
+        const totalSteps = 6;
+
+        // Inicializar Firebase
+        async function initFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.firestore();
+                
+                // Autenticação anônima
+                await firebase.auth().signInAnonymously();
+                log('✅ Firebase inicializado com sucesso');
+                return true;
+            } catch (error) {
+                log('❌ Erro ao inicializar Firebase: ' + error.message);
+                return false;
+            }
+        }
+
+        // Função de log
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.style.display = 'block';
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Atualizar status
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+
+        // Atualizar progresso
+        function updateProgress(step) {
+            currentStep = step;
+            const percentage = (step / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        // Constantes REAIS do clientsRepo.js ativo
+        const MARKETING_PLATFORMS = {
+            META_ADS: 'Meta Ads (Facebook/Instagram)',
+            GOOGLE_ADS: 'Google Ads',
+            TIKTOK_ADS: 'TikTok Ads',
+            LINKEDIN_ADS: 'LinkedIn Ads',
+            YOUTUBE_ADS: 'YouTube Ads',
+            PINTEREST_ADS: 'Pinterest Ads',
+            TWITTER_ADS: 'Twitter Ads',
+            SNAPCHAT_ADS: 'Snapchat Ads',
+            OTHER: 'Outras Plataformas'
+        };
+        
+        const CLIENT_TIERS = {
+            KEY_ACCOUNT: 'Key Account',
+            MID_TIER: 'Mid Tier',
+            LOW_TIER: 'Low Tier'
+        };
+        
+        const CLIENT_STATUS = {
+            ATIVO: 'Ativo',
+            INATIVO: 'Inativo',
+            PROSPECT: 'Prospect'
+        };
+        
+        const PAYMENT_METHODS = {
+            BOLETO: 'Boleto',
+            PIX: 'PIX',
+            CREDIT_CARD: 'Cartão de Crédito'
+        };
+
+        // Implementar schema completo
+        async function implementSchema() {
+            updateStatus('🚀 Iniciando implementação do schema Taskora v5.5...', 'info');
+            log('=== INICIANDO IMPLEMENTAÇÃO DO SCHEMA TASKORA v5.5 ===');
+            
+            try {
+                // Passo 1: Criar documento de exemplo para clients
+                updateProgress(1);
+                log('📋 Passo 1/6: Criando estrutura da coleção clients...');
+                
+                // Estrutura REAL dos clientes extraída do banco antigo do Taskora
+                const clientExample = {
+                    orgId: 'dacora',
+                    displayName: 'Cliente Exemplo - Schema v5.5',
+                    email: 'cliente@exemplo.com',
+                    phone: '(11) 99999-9999',
+                    website: 'https://exemplo.com',
+                    instagram: '@exemplo',
+                    status: 'ATIVO', // ATIVO, INATIVO, PROSPECT
+                    tier: 'MID_TIER', // KEY_ACCOUNT, MID_TIER, LOW_TIER
+                    responsible: 'João Silva',
+                    entryDate: null, // Pode ser null conforme banco antigo
+                    
+                    // Orçamentos por plataforma (objeto simples)
+                    budgets: {
+                        'META_ADS': 5000,
+                        'GOOGLE_ADS': 3000,
+                        'TIKTOK_ADS': 2000,
+                        'PINTEREST_ADS': 1000
+                    },
+                    
+                    // Plataformas ativas (array de strings)
+                    activePlatforms: ['META_ADS', 'GOOGLE_ADS'],
+                    
+                    // Metas e Performance
+                    billingGoal: 15000,
+                    realBilling: 12000,
+                    monthlyLeads: 150,
+                    realLeads: 120,
+                    conversionRate: null, // Pode ser null conforme banco antigo
+                    currentROI: null, // Pode ser null conforme banco antigo
+                    
+                    // Controle de saldo por plataforma
+                    balanceControl: {
+                        metaAds: {
+                            lastDeposit: 5000,
+                            depositDate: new Date(),
+                            dailyBudget: 200,
+                            realBalance: 3500
+                        },
+                        googleAds: {
+                            lastDeposit: 3000,
+                            depositDate: new Date(),
+                            dailyBudget: 150,
+                            realBalance: 2100
+                        },
+                        tiktokAds: {
+                            lastDeposit: 0,
+                            depositDate: null,
+                            dailyBudget: 0,
+                            realBalance: 0
+                        },
+                        pinterestAds: {
+                            lastDeposit: 0,
+                            depositDate: null,
+                            dailyBudget: 0,
+                            realBalance: 0
+                        }
+                    },
+                    
+                    defaultAssigneeRef: null, // Campo encontrado no banco antigo
+                    documentLinks: 'https://drive.google.com/folder/exemplo',
+                    notes: 'Cliente estratégico com foco em Meta Ads - Schema v5.5',
+                    tags: ['estrategico', 'meta-ads', 'ecommerce'],
+                    paymentMethod: 'PIX', // BOLETO, PIX, CREDIT_CARD
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                await db.collection('clients').doc('schema-example-v55').set(clientExample);
+                log('✅ Coleção clients criada com schema v5.5');
+                
+                // Passo 2: Criar documento de exemplo para team
+                updateProgress(2);
+                log('👥 Passo 2/6: Criando estrutura da coleção team...');
+                
+                const teamExample = {
+                    orgId: 'dacora',
+                    name: 'João Silva',
+                    email: 'joao@exemplo.com',
+                    phone: '(11) 99999-9999',
+                    role: 'Desenvolvedor',
+                    level: 'Sênior', // Valores encontrados: "Diretor", "Sênior", "Pleno", "Júnior"
+                    specialty: ['Gestor de Tráfego', 'Marketing'], // Array de especialidades
+                    status: 'Ativo', // Valores encontrados: "Ativo", "Inativo"
+                    notes: 'Especialista em campanhas de conversão',
+                    totalHours: 0, // Número total de horas trabalhadas
+                    totalTasks: 0, // Número total de tarefas
+                    averageRating: 0, // Avaliação média (número)
+                    isActive: true,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                const teamRef = await db.collection('team').add(teamExample);
+                log('✅ Coleção team criada com schema v5.5');
+                
+                // Passo 3: Criar documento de exemplo para tasks
+                updateProgress(3);
+                log('✅ Passo 3/6: Criando estrutura da coleção tasks...');
+                
+                const clientRef = db.collection('clients').doc('schema-example-v55');
+                
+                const taskExample = {
+                    orgId: 'dacora',
+                    clientRef: clientRef,
+                    title: 'Tarefa Exemplo - Schema v5.5',
+                    description: 'Documento de exemplo para validar schema v5.5 de tarefas',
+                    status: 'não realizada', // Valores do banco antigo: "não realizada", "em progresso", "concluída", "cancelada"
+                    assigneeRef: teamRef, // Pode ser null conforme banco antigo
+                    owner: 'Membro Exemplo - Schema v5.5', // Campo Team v5.5
+                    priority: 'medium', // Valores: low, medium, high, urgent
+                    startAt: firebase.firestore.FieldValue.serverTimestamp(), // Pode ser null
+                    dueAt: null, // Pode ser null conforme banco antigo
+                    reminderAt: null, // Pode ser null conforme banco antigo
+                    hours: 0, // Campo decimal para horas
+                    estimatedMinutes: 0, // Campo legado mantido
+                    spentMinutes: 0, // Campo legado mantido
+                    date: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
+                    createdBy: teamRef, // DocumentReference, pode ser null
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    deletedAt: null // Para soft delete
+                };
+                
+                await db.collection('tasks').add(taskExample);
+                log('✅ Coleção tasks criada com schema v5.5');
+                
+                // Passo 4: Validar estruturas criadas
+                updateProgress(4);
+                log('🔍 Passo 4/6: Validando estruturas criadas...');
+                
+                const clientDoc = await db.collection('clients').doc('schema-example-v55').get();
+                const teamDocs = await db.collection('team').limit(1).get();
+                const taskDocs = await db.collection('tasks').limit(1).get();
+                
+                if (clientDoc.exists && !teamDocs.empty && !taskDocs.empty) {
+                    log('✅ Todas as coleções foram criadas com sucesso');
+                } else {
+                    throw new Error('Falha na validação das estruturas');
+                }
+                
+                // Passo 5: Criar índices necessários
+                updateProgress(5);
+                log('📊 Passo 5/6: Configurando índices (manual no Firebase Console)...');
+                log('ℹ️ Índices necessários:');
+                log('  - clients: orgId, status, tier');
+                log('  - tasks: orgId, clientRef, status, assigneeRef, date');
+                log('  - team: orgId, isActive');
+                
+                // Passo 6: Finalização
+                updateProgress(6);
+                log('🎉 Passo 6/6: Schema v5.5 implementado com sucesso!');
+                
+                updateStatus('✅ Schema Taskora v5.5 implementado com sucesso!', 'success');
+                document.getElementById('validateBtn').disabled = false;
+                
+                log('=== IMPLEMENTAÇÃO CONCLUÍDA ===');
+                log('📋 Coleções criadas: clients, tasks, team');
+                log('🔗 Referências configuradas corretamente');
+                log('📊 Campos obrigatórios implementados');
+                log('⚡ Pronto para ETAPA 2: Importar tarefas do Dacora');
+                
+            } catch (error) {
+                log('❌ Erro na implementação: ' + error.message);
+                updateStatus('❌ Erro na implementação do schema: ' + error.message, 'error');
+            }
+        }
+
+        // Validar implementação
+        async function validateImplementation() {
+            updateStatus('🔍 Validando implementação do schema...', 'info');
+            log('=== VALIDANDO IMPLEMENTAÇÃO DO SCHEMA ===');
+            
+            try {
+                // Verificar clients
+                const clientDoc = await db.collection('clients').doc('schema-example-v55').get();
+                if (clientDoc.exists) {
+                    const data = clientDoc.data();
+                    log('✅ Coleção clients: ' + Object.keys(data).length + ' campos');
+                    
+                    // Verificar campos obrigatórios
+                    const requiredFields = ['orgId', 'displayName', 'status', 'tier', 'balanceControl'];
+                    const missingFields = requiredFields.filter(field => !data.hasOwnProperty(field));
+                    
+                    if (missingFields.length === 0) {
+                        log('✅ Todos os campos obrigatórios presentes em clients');
+                    } else {
+                        log('⚠️ Campos ausentes em clients: ' + missingFields.join(', '));
+                    }
+                } else {
+                    log('❌ Coleção clients não encontrada');
+                }
+                
+                // Verificar tasks
+                const taskDocs = await db.collection('tasks').limit(1).get();
+                if (!taskDocs.empty) {
+                    const taskData = taskDocs.docs[0].data();
+                    log('✅ Coleção tasks: ' + Object.keys(taskData).length + ' campos');
+                    
+                    // Verificar campos obrigatórios
+                    const requiredTaskFields = ['orgId', 'clientRef', 'title', 'assigneeRef'];
+                    const missingTaskFields = requiredTaskFields.filter(field => !taskData.hasOwnProperty(field));
+                    
+                    if (missingTaskFields.length === 0) {
+                        log('✅ Todos os campos obrigatórios presentes em tasks');
+                    } else {
+                        log('⚠️ Campos ausentes em tasks: ' + missingTaskFields.join(', '));
+                    }
+                } else {
+                    log('❌ Coleção tasks não encontrada');
+                }
+                
+                // Verificar team
+                const teamDocs = await db.collection('team').limit(1).get();
+                if (!teamDocs.empty) {
+                    const teamData = teamDocs.docs[0].data();
+                    log('✅ Coleção team: ' + Object.keys(teamData).length + ' campos');
+                } else {
+                    log('❌ Coleção team não encontrada');
+                }
+                
+                updateStatus('✅ Validação concluída! Schema v5.5 está funcionando corretamente.', 'success');
+                log('=== VALIDAÇÃO CONCLUÍDA ===');
+                log('🎯 ETAPA 1 FINALIZADA COM SUCESSO!');
+                log('➡️ Próximo passo: ETAPA 2 - Importar tarefas do Dacora');
+                
+            } catch (error) {
+                log('❌ Erro na validação: ' + error.message);
+                updateStatus('❌ Erro na validação: ' + error.message, 'error');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('implementBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('implementBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Implementando...';
+            
+            const initialized = await initFirebase();
+            if (initialized) {
+                await implementSchema();
+            }
+            
+            btn.disabled = false;
+            btn.textContent = '🚀 Implementar Schema v5.5';
+        });
+
+        document.getElementById('validateBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('validateBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Validando...';
+            
+            await validateImplementation();
+            
+            btn.disabled = false;
+            btn.textContent = '✅ Validar Implementação';
+        });
+
+        // Inicializar ao carregar a página
+        window.addEventListener('load', () => {
+            updateStatus('⏳ Pronto para implementar o schema Taskora v5.5', 'info');
+            log('🏗️ Ferramenta de implementação do schema carregada');
+            log('📋 Schema v5.5 inclui: clients, tasks, team');
+            log('🔗 Referências DocumentReference configuradas');
+            log('⚡ Clique em "Implementar Schema v5.5" para começar');
+        });
+    </script>
+</body>
+</html>

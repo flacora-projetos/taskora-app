@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗑️ Limpeza Direta Firebase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .btn {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 20px 0;
+        }
+        .progress {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .collection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status.pending { background: #ffeaa7; color: #856404; }
+        .status.processing { background: #74b9ff; color: #0984e3; }
+        .status.success { background: #00b894; color: white; }
+        .status.error { background: #e17055; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗑️ Limpeza Direta Firebase</h1>
+            <p>Ferramenta de limpeza direta sem autenticação</p>
+        </div>
+        
+        <div class="content">
+            <div class="warning">
+                <h3>⚠️ ATENÇÃO - OPERAÇÃO IRREVERSÍVEL</h3>
+                <p><strong>Esta ferramenta irá APAGAR PERMANENTEMENTE todos os dados das seguintes coleções:</strong></p>
+                <ul>
+                    <li><code>clients</code> - Todos os clientes</li>
+                    <li><code>tasks</code> - Todas as tarefas</li>
+                    <li><code>team</code> - Toda a equipe</li>
+                    <li><code>owners</code> - Todos os proprietários</li>
+                    <li><code>calendarEvents</code> - Todos os eventos</li>
+                    <li><code>settings</code> - Todas as configurações</li>
+                </ul>
+                <p><strong>🔥 ESTA AÇÃO NÃO PODE SER DESFEITA!</strong></p>
+            </div>
+
+            <div class="progress">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <div id="collectionsStatus">
+                <div class="collection-item">
+                    <span>📁 clients</span>
+                    <span id="status-clients" class="status pending">Aguardando</span>
+                </div>
+                <div class="collection-item">
+                    <span>📋 tasks</span>
+                    <span id="status-tasks" class="status pending">Aguardando</span>
+                </div>
+                <div class="collection-item">
+                    <span>👥 team</span>
+                    <span id="status-team" class="status pending">Aguardando</span>
+                </div>
+                <div class="collection-item">
+                    <span>👤 owners</span>
+                    <span id="status-owners" class="status pending">Aguardando</span>
+                </div>
+                <div class="collection-item">
+                    <span>📅 calendarEvents</span>
+                    <span id="status-calendarEvents" class="status pending">Aguardando</span>
+                </div>
+                <div class="collection-item">
+                    <span>⚙️ settings</span>
+                    <span id="status-settings" class="status pending">Aguardando</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button id="cleanBtn" onclick="startDirectCleanup()" class="btn">
+                    🗑️ LIMPEZA DIRETA AGORA
+                </button>
+                <button onclick="clearLog()" class="btn" style="background: #6c757d;">
+                    🧹 Limpar Log
+                </button>
+            </div>
+
+            <div id="logContainer" class="log">
+                <div>[INFO] Ferramenta de limpeza direta carregada</div>
+                <div>[INFO] Clique em 'LIMPEZA DIRETA AGORA' para iniciar</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK v9 -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Configuração do Firebase da Dácora
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
+            authDomain: "dacora---tarefas.firebaseapp.com",
+            projectId: "dacora---tarefas",
+            storageBucket: "dacora---tarefas.firebasestorage.app",
+            messagingSenderId: "406318974539",
+            appId: "1:406318974539:web:d842997c1b064c0ba56fce"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let isProcessing = false;
+        const collections = ['clients', 'tasks', 'team', 'owners', 'calendarEvents', 'settings'];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            const typeColor = {
+                'info': '#17a2b8',
+                'success': '#28a745',
+                'error': '#dc3545',
+                'warning': '#ffc107'
+            };
+            logEntry.innerHTML = `<span style="color: ${typeColor[type] || '#17a2b8'}">[${timestamp}] [${type.toUpperCase()}] ${message}</span>`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function updateStatus(collectionName, status, message = '') {
+            const statusElement = document.getElementById(`status-${collectionName}`);
+            if (statusElement) {
+                statusElement.textContent = message || status;
+                statusElement.className = `status ${status}`;
+            }
+        }
+
+        function updateProgress(percentage) {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            log('Log limpo', 'info');
+        }
+
+        async function directDeleteCollection(collectionName) {
+            try {
+                updateStatus(collectionName, 'processing', 'Processando...');
+                log(`🔥 Iniciando limpeza direta da coleção: ${collectionName}`, 'info');
+                
+                const collectionRef = collection(db, collectionName);
+                const snapshot = await getDocs(collectionRef);
+                
+                if (snapshot.empty) {
+                    log(`📭 Coleção '${collectionName}' já está vazia`, 'info');
+                    updateStatus(collectionName, 'success', 'Vazia');
+                    return true;
+                }
+
+                log(`📊 Encontrados ${snapshot.size} documentos em '${collectionName}'`, 'info');
+                
+                // Deletar documentos em lotes pequenos para evitar problemas
+                const batchSize = 10;
+                const docs = snapshot.docs;
+                let deletedCount = 0;
+                
+                for (let i = 0; i < docs.length; i += batchSize) {
+                    const batch = docs.slice(i, i + batchSize);
+                    const deletePromises = batch.map(document => 
+                        deleteDoc(doc(db, collectionName, document.id))
+                    );
+                    
+                    await Promise.all(deletePromises);
+                    deletedCount += batch.length;
+                    
+                    log(`🗑️ Deletados ${deletedCount}/${docs.length} documentos de '${collectionName}'`, 'info');
+                    updateStatus(collectionName, 'processing', `${deletedCount}/${docs.length}`);
+                    
+                    // Pequena pausa entre lotes
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                log(`✅ Coleção '${collectionName}' limpa com sucesso! ${deletedCount} documentos removidos`, 'success');
+                updateStatus(collectionName, 'success', `${deletedCount} removidos`);
+                return true;
+                
+            } catch (error) {
+                log(`❌ Erro ao limpar '${collectionName}': ${error.message}`, 'error');
+                log(`❌ Código do erro: ${error.code}`, 'error');
+                updateStatus(collectionName, 'error', 'Erro');
+                return false;
+            }
+        }
+
+        window.startDirectCleanup = async function() {
+            if (isProcessing) {
+                log('⚠️ Limpeza já está em andamento!', 'warning');
+                return;
+            }
+
+            // Confirmação dupla
+            if (!confirm('⚠️ ATENÇÃO: Esta operação irá APAGAR PERMANENTEMENTE todos os dados do Firebase!\n\nTem certeza que deseja continuar?')) {
+                log('❌ Operação cancelada pelo usuário', 'info');
+                return;
+            }
+
+            if (!confirm('🔥 ÚLTIMA CONFIRMAÇÃO: Esta ação é IRREVERSÍVEL!\n\nConfirma a limpeza completa do banco de dados?')) {
+                log('❌ Operação cancelada pelo usuário', 'info');
+                return;
+            }
+
+            isProcessing = true;
+            document.getElementById('cleanBtn').disabled = true;
+            
+            try {
+                log('🚀 Iniciando limpeza direta de todas as coleções...', 'info');
+                log('🔥 Conectado ao projeto: dacora---tarefas', 'info');
+                updateProgress(0);
+                
+                let completedCollections = 0;
+                
+                for (const collectionName of collections) {
+                    const success = await directDeleteCollection(collectionName);
+                    completedCollections++;
+                    updateProgress((completedCollections / collections.length) * 100);
+                    
+                    // Pausa entre coleções
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+                log('🎉 LIMPEZA DIRETA FINALIZADA COM SUCESSO!', 'success');
+                log('✅ Todas as coleções foram processadas', 'success');
+                log('🔄 O banco está pronto para receber o novo schema v5.5', 'info');
+                
+            } catch (error) {
+                log(`❌ Erro durante a limpeza: ${error.message}`, 'error');
+                log(`❌ Stack trace: ${error.stack}`, 'error');
+            } finally {
+                isProcessing = false;
+                document.getElementById('cleanBtn').disabled = false;
+            }
+        };
+
+        // Log inicial
+        log('🚀 Ferramenta de limpeza direta inicializada', 'info');
+        log('🔥 Firebase conectado ao projeto: dacora---tarefas', 'info');
+        log('⚡ Modo direto: sem autenticação necessária', 'info');
+    </script>
+</body>
+</html>

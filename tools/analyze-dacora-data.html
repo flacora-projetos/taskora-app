@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Dados - Dácora → Taskora</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; 
+            margin: 50px auto; 
+            padding: 20px; 
+            background: #f8f9fa;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #014029;
+        }
+        .header h1 {
+            color: #014029;
+            margin: 0;
+            font-size: 28px;
+        }
+        .header p {
+            color: #666;
+            margin: 10px 0 0 0;
+        }
+        .warning { 
+            background: #fff3cd; 
+            border: 1px solid #ffeaa7; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button { 
+            background: #014029; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 8px; 
+            font-size: 14px;
+            font-weight: 500;
+        }
+        button:hover { background: #022d1f; }
+        button:disabled { 
+            background: #ccc; 
+            cursor: not-allowed; 
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.secondary:hover {
+            background: #5a6268;
+        }
+        .stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin: 30px 0;
+        }
+        .stat-card { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .stat-number { 
+            font-size: 32px; 
+            font-weight: bold; 
+            color: #014029; 
+            margin-bottom: 8px;
+        }
+        .stat-label { 
+            font-size: 14px; 
+            color: #666; 
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .log { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 30px; 
+            max-height: 500px; 
+            overflow-y: auto; 
+            font-family: 'Courier New', monospace; 
+            font-size: 13px;
+            border: 1px solid #dee2e6;
+        }
+        .success { color: #014029; font-weight: 500; }
+        .error { color: #dc3545; font-weight: 500; }
+        .warning-text { color: #856404; font-weight: 500; }
+        .info-text { color: #0c5460; font-weight: 500; }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #014029;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #014029;
+        }
+        .data-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border: 1px solid #dee2e6;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #014029;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Análise de Dados - Dácora</h1>
+            <p>Ferramenta para analisar a estrutura e conteúdo do banco de dados da Dácora antes da migração</p>
+        </div>
+        
+        <div class="info">
+            <h3>📋 Sobre esta Ferramenta</h3>
+            <p>Esta ferramenta analisa os dados existentes no Firebase da Dácora para:</p>
+            <ul>
+                <li><strong>Mapear a estrutura</strong> atual das coleções</li>
+                <li><strong>Contar registros</strong> e identificar padrões</li>
+                <li><strong>Extrair listas únicas</strong> de clientes e responsáveis</li>
+                <li><strong>Validar a qualidade</strong> dos dados para migração</li>
+                <li><strong>Gerar relatório</strong> detalhado para planejamento</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h3>⚠️ Configuração Necessária</h3>
+            <p><strong>Antes de usar esta ferramenta:</strong></p>
+            <ul>
+                <li>Configure o Firebase da <strong>Dácora</strong> (não do Taskora)</li>
+                <li>Certifique-se de ter <strong>permissões de leitura</strong></li>
+                <li>Esta ferramenta é <strong>somente leitura</strong> - não modifica dados</li>
+                <li>Execute em ambiente <strong>seguro e controlado</strong></li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h3>🎯 Configuração do Firebase</h3>
+            <p>Configure as credenciais do Firebase da Dácora:</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+                <input type="text" id="apiKey" placeholder="API Key" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="text" id="authDomain" placeholder="Auth Domain" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="text" id="projectId" placeholder="Project ID" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="text" id="storageBucket" placeholder="Storage Bucket" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <button onclick="initFirebase()">🔗 Conectar ao Firebase</button>
+            <button onclick="loadSampleConfig()" class="secondary">📝 Carregar Config de Exemplo</button>
+        </div>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="tasksCount">-</div>
+                <div class="stat-label">Tarefas Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="clientsCount">-</div>
+                <div class="stat-label">Clientes Únicos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="ownersCount">-</div>
+                <div class="stat-label">Responsáveis Únicos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="dateRange">-</div>
+                <div class="stat-label">Período dos Dados</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="analyzeBtn" onclick="analyzeData()" disabled>🔍 Analisar Dados da Dácora</button>
+            <button id="exportBtn" onclick="exportReport()" disabled>📊 Exportar Relatório</button>
+        </div>
+        
+        <div class="progress-bar" id="progressContainer" style="display: none;">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="section" id="clientsSection" style="display: none;">
+            <h3>👥 Clientes Identificados</h3>
+            <div class="data-preview" id="clientsPreview"></div>
+        </div>
+        
+        <div class="section" id="ownersSection" style="display: none;">
+            <h3>🧑‍💼 Responsáveis Identificados</h3>
+            <div class="data-preview" id="ownersPreview"></div>
+        </div>
+        
+        <div class="section" id="statusSection" style="display: none;">
+            <h3>📊 Status das Tarefas</h3>
+            <div class="data-preview" id="statusPreview"></div>
+        </div>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script type="module">
+        // Variáveis globais
+        let db = null;
+        let analysisData = {
+            tasks: [],
+            clients: new Set(),
+            owners: new Set(),
+            statusList: new Map(),
+            dateRange: { min: null, max: null },
+            totalTasks: 0
+        };
+
+        // Função para log
+        function log(message, type = 'info-text') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Função para atualizar progresso
+        function updateProgress(percent) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            
+            if (percent > 0) {
+                progressContainer.style.display = 'block';
+                progressFill.style.width = `${percent}%`;
+            } else {
+                progressContainer.style.display = 'none';
+            }
+        }
+
+        // Função para carregar configuração de exemplo
+        window.loadSampleConfig = function() {
+            document.getElementById('apiKey').value = 'AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ';
+            document.getElementById('authDomain').value = 'dacora---tarefas.firebaseapp.com';
+            document.getElementById('projectId').value = 'dacora---tarefas';
+            document.getElementById('storageBucket').value = 'dacora---tarefas.firebasestorage.app';
+            log('📝 Configuração de exemplo carregada. Substitua pelos valores reais da Dácora.', 'warning-text');
+        };
+
+        // Função para inicializar Firebase
+        window.initFirebase = async function() {
+            try {
+                const apiKey = document.getElementById('apiKey').value;
+                const authDomain = document.getElementById('authDomain').value;
+                const projectId = document.getElementById('projectId').value;
+                const storageBucket = document.getElementById('storageBucket').value;
+
+                if (!apiKey || !authDomain || !projectId || !storageBucket) {
+                    log('❌ Preencha todos os campos de configuração do Firebase', 'error');
+                    return;
+                }
+
+                log('🔗 Conectando ao Firebase da Dácora...', 'info-text');
+
+                const firebaseConfig = {
+                    apiKey,
+                    authDomain,
+                    projectId,
+                    storageBucket,
+                    messagingSenderId: "123456789",
+                    appId: "1:123456789:web:abcdef"
+                };
+
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+                const { getFirestore, connectFirestoreEmulator } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+                
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+
+                log('✅ Conectado ao Firebase da Dácora com sucesso!', 'success');
+                document.getElementById('analyzeBtn').disabled = false;
+
+            } catch (error) {
+                log(`❌ Erro ao conectar ao Firebase: ${error.message}`, 'error');
+                console.error('Erro completo:', error);
+            }
+        };
+
+        // Função principal de análise
+        window.analyzeData = async function() {
+            if (!db) {
+                log('❌ Firebase não inicializado. Configure primeiro.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.textContent = 'Analisando...';
+
+            try {
+                log('🚀 Iniciando análise dos dados da Dácora...', 'info-text');
+                updateProgress(10);
+
+                // Importar Firestore functions
+                const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+                
+                log('📊 Buscando dados da coleção "tasks"...', 'info-text');
+                updateProgress(20);
+
+                // Buscar todas as tarefas
+                const tasksRef = collection(db, 'tasks');
+                const tasksSnapshot = await getDocs(tasksRef);
+                
+                log(`📈 Encontradas ${tasksSnapshot.size} tarefas`, 'success');
+                updateProgress(40);
+
+                // Resetar dados de análise
+                analysisData = {
+                    tasks: [],
+                    clients: new Set(),
+                    owners: new Set(),
+                    statusList: new Map(),
+                    dateRange: { min: null, max: null },
+                    totalTasks: tasksSnapshot.size
+                };
+
+                log('🔍 Processando dados das tarefas...', 'info-text');
+                let processedCount = 0;
+
+                // Processar cada tarefa
+                tasksSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    analysisData.tasks.push({ id: doc.id, ...data });
+
+                    // Extrair clientes únicos
+                    if (data.client && typeof data.client === 'string') {
+                        analysisData.clients.add(data.client.trim());
+                    }
+
+                    // Extrair responsáveis únicos
+                    if (data.owner && typeof data.owner === 'string') {
+                        analysisData.owners.add(data.owner.trim());
+                    }
+
+                    // Contar status
+                    const status = data.status || 'sem status';
+                    analysisData.statusList.set(status, (analysisData.statusList.get(status) || 0) + 1);
+
+                    // Calcular range de datas
+                    if (data.date) {
+                        const date = new Date(data.date);
+                        if (!analysisData.dateRange.min || date < analysisData.dateRange.min) {
+                            analysisData.dateRange.min = date;
+                        }
+                        if (!analysisData.dateRange.max || date > analysisData.dateRange.max) {
+                            analysisData.dateRange.max = date;
+                        }
+                    }
+
+                    processedCount++;
+                    if (processedCount % 100 === 0) {
+                        const progress = 40 + (processedCount / tasksSnapshot.size) * 40;
+                        updateProgress(progress);
+                    }
+                });
+
+                updateProgress(80);
+                log('📊 Gerando estatísticas...', 'info-text');
+
+                // Atualizar estatísticas na UI
+                updateStats();
+                updateProgress(90);
+
+                // Mostrar seções de dados
+                showDataSections();
+                updateProgress(100);
+
+                log('🎉 Análise concluída com sucesso!', 'success');
+                log(`📈 Resumo: ${analysisData.totalTasks} tarefas, ${analysisData.clients.size} clientes, ${analysisData.owners.size} responsáveis`, 'success');
+                
+                document.getElementById('exportBtn').disabled = false;
+                
+                setTimeout(() => updateProgress(0), 2000);
+
+            } catch (error) {
+                log(`❌ Erro durante a análise: ${error.message}`, 'error');
+                console.error('Erro completo:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔍 Analisar Dados da Dácora';
+            }
+        };
+
+        // Função para atualizar estatísticas
+        function updateStats() {
+            document.getElementById('tasksCount').textContent = analysisData.totalTasks.toLocaleString();
+            document.getElementById('clientsCount').textContent = analysisData.clients.size.toLocaleString();
+            document.getElementById('ownersCount').textContent = analysisData.owners.size.toLocaleString();
+            
+            let dateRangeText = '-';
+            if (analysisData.dateRange.min && analysisData.dateRange.max) {
+                const minDate = analysisData.dateRange.min.toLocaleDateString('pt-BR');
+                const maxDate = analysisData.dateRange.max.toLocaleDateString('pt-BR');
+                dateRangeText = `${minDate} - ${maxDate}`;
+            }
+            document.getElementById('dateRange').textContent = dateRangeText;
+            
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        // Função para mostrar seções de dados
+        function showDataSections() {
+            // Mostrar clientes
+            const clientsList = Array.from(analysisData.clients).sort();
+            document.getElementById('clientsPreview').innerHTML = clientsList.map(client => 
+                `<div>• ${client}</div>`
+            ).join('');
+            document.getElementById('clientsSection').style.display = 'block';
+
+            // Mostrar responsáveis
+            const ownersList = Array.from(analysisData.owners).sort();
+            document.getElementById('ownersPreview').innerHTML = ownersList.map(owner => 
+                `<div>• ${owner}</div>`
+            ).join('');
+            document.getElementById('ownersSection').style.display = 'block';
+
+            // Mostrar status
+            const statusEntries = Array.from(analysisData.statusList.entries()).sort((a, b) => b[1] - a[1]);
+            document.getElementById('statusPreview').innerHTML = statusEntries.map(([status, count]) => 
+                `<div>• ${status}: ${count} tarefas</div>`
+            ).join('');
+            document.getElementById('statusSection').style.display = 'block';
+        }
+
+        // Função para exportar relatório
+        window.exportReport = function() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                summary: {
+                    totalTasks: analysisData.totalTasks,
+                    uniqueClients: analysisData.clients.size,
+                    uniqueOwners: analysisData.owners.size,
+                    dateRange: {
+                        min: analysisData.dateRange.min?.toISOString(),
+                        max: analysisData.dateRange.max?.toISOString()
+                    }
+                },
+                clients: Array.from(analysisData.clients).sort(),
+                owners: Array.from(analysisData.owners).sort(),
+                statusDistribution: Object.fromEntries(analysisData.statusList),
+                sampleTasks: analysisData.tasks.slice(0, 10) // Primeiras 10 tarefas como exemplo
+            };
+
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dacora-analysis-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            log('📊 Relatório exportado com sucesso!', 'success');
+        };
+
+        // Log inicial
+        log('🔍 Ferramenta de Análise da Dácora carregada', 'info-text');
+        log('📋 Configure o Firebase da Dácora para começar', 'info-text');
+    </script>
+</body>
+</html>
