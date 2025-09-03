@@ -11,6 +11,8 @@ import { createTask, updateTask } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
 import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 import { roundToDecimals } from "../utils/formatters.js";
+import { renderDescription } from "../utils/richTextRenderer.js";
+import { RichTextEditor } from "../components/richTextEditor.js";
 
 /* global TaskoraFilters */
 
@@ -441,11 +443,15 @@ import { roundToDecimals } from "../utils/formatters.js";
         const rowsHtml = slice.map(r=>{
           const dStart = formatToBrazilian(r.date || r.createdAt);
           const dDue   = formatToBrazilian(r.dueDate);
+          // Renderizar descrição separadamente para evitar escape do HTML
+          const descriptionHTML = renderDescription(r.description, { maxLength: 100, allowHTML: true });
+          const plainDescription = r.description || "";
+          
           return `
             <tr class="tk-row" data-row-id="${r.id}" data-task-row="true" style="cursor: grab;" title="Arraste para alterar o status">
               <td class="tk-cell">${statusView(r.status)}</td>
               <td class="tk-cell">${clientView(r.client)}</td>
-              <td class="tk-cell tk-desc" title="${escapeHtml(r.description || "")}">${escapeHtml(r.description || "—")}</td>
+              <td class="tk-cell tk-desc" title="${escapeHtml(plainDescription)}">${descriptionHTML}</td>
               <td class="tk-cell">${escapeHtml(r.owner || "—")}</td>
               <td class="tk-cell tk-hide-sm">${dStart || "—"}</td>
               <td class="tk-cell tk-hide-sm">${dDue || "—"}</td>
@@ -616,7 +622,7 @@ import { roundToDecimals } from "../utils/formatters.js";
                   </div>
                   <div class="nt-field" style="grid-column:span 12">
                     <label class="nt-label" for="nt-desc-input">Descrição da Tarefa *</label>
-                    <textarea id="nt-desc-input" class="nt-textarea" placeholder="O que precisa ser feito?"></textarea>
+                    <div id="nt-desc-input" class="nt-rich-editor"></div>
                   </div>
                   <div class="nt-field" style="grid-column:span 3">
                     <label class="nt-label" for="nt-status">Status</label>
@@ -723,11 +729,19 @@ import { roundToDecimals } from "../utils/formatters.js";
           btn.classList.add("is-on");
         });
 
+        // Initialize Rich Text Editor
+        const descContainer = backdrop.querySelector("#nt-desc-input");
+        const richEditor = new RichTextEditor(descContainer, {
+          placeholder: "O que precisa ser feito?",
+          maxLength: 2000,
+          toolbar: true
+        });
+
         // Pré‑preencher se for edição
         if(initial){
           selClient.value = initial.client || "";
           selOwner.value  = initial.owner  || "";
-          backdrop.querySelector("#nt-desc-input").value = initial.description || "";
+          richEditor.setContent(initial.description || "");
           backdrop.querySelector("#nt-status").value = canonStatus(initial.status || "não realizada");
           backdrop.querySelector("#nt-priority").value = initial.priority || "medium";
           backdrop.querySelector("#nt-hours").value  = decimalToTime(initial.hours);
@@ -747,7 +761,7 @@ import { roundToDecimals } from "../utils/formatters.js";
         }
 
         function getPayloadFromForm(){
-          const description=backdrop.querySelector("#nt-desc-input").value.trim();
+          const description=richEditor.getContent().trim();
           const status=backdrop.querySelector("#nt-status").value;
           const priority=backdrop.querySelector("#nt-priority").value;
           const hoursStr=backdrop.querySelector("#nt-hours").value.trim();
