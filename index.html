@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taskora v5.5.5 - Sistema de Gestão de Tarefas</title>
+    <title>Taskora - Sistema de Gestão de Tarefas</title>
     <script>
+        // Arquivo principal atual - ALTERE APENAS ESTA LINHA ao atualizar a versão
+        const CURRENT_VERSION_FILE = './taskora_v5.5.5_secure_firebase.html';
+        
         // Redirecionar para o arquivo principal
-        window.location.href = './taskora_v5.5.5_secure_firebase.html';
+        window.location.href = CURRENT_VERSION_FILE;
     </script>
 </head>
 <body>
     <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
         <h1>Carregando Taskora...</h1>
-        <p>Se não for redirecionado automaticamente, <a href="./taskora_v5.5.5_secure_firebase.html">clique aqui</a>.</p>
+        <p>Se não for redirecionado automaticamente, <a href="#" id="manual-link">clique aqui</a>.</p>
+        <script>
+            // Atualiza o link manual para usar a mesma versão definida acima
+            document.getElementById('manual-link').href = CURRENT_VERSION_FILE;
+        </script>
     </div>
 </body>
 </html>

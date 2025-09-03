@@ -4,6 +4,28 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.5] - 2025-01-31
+
+### 🔧 CORRIGIDO
+- **Status de Tarefas "Não Realizadas":** Correção das "bolinhas" de status que não ficavam vermelhas
+  - 🔴 **Classe CSS Adicionada:** `.hs-task-dot.not-done` com cor vermelha (#EF4444)
+  - 🔧 **Lógica Atualizada:** Condição para aplicar classe `not-done` quando status for "não realizada"
+  - 📍 **Arquivo:** `history.js` - linhas de CSS e lógica das bolinhas de status
+- **Botões de Exportação na Página de Tarefas:** Correção dos botões CSV e PDF que não funcionavam
+  - 🔗 **Event Listeners:** Adicionados event listeners para `#exportCsvBtn` e `#exportPdfBtn`
+  - 🌐 **Exposição Global:** Funções `exportCSV` e `exportPDF` expostas via `window.TaskoraExport`
+  - 📁 **Arquivos:** `GlobalFiltersBar.js` (exposição global) e `tasks.js` (event listeners)
+- **Exportação PDF de Tarefas:** Correção da funcionalidade que não abria janela de impressão
+  - 🪟 **Window.open:** Parâmetros alterados de `"noopener,noreferrer"` para `'width=800,height=600'`
+  - ⏱️ **Timeout:** Ajustado de 300ms para 500ms para consistência com página de clientes
+  - 💬 **Mensagem:** Atualizada para "Verifique se pop-ups estão habilitados"
+  - 📄 **Arquivo:** `GlobalFiltersBar.js` - função `exportPDF`
+
+### 📚 DOCUMENTADO
+- **Correções de Status:** Documentação da solução para bolinhas de status vermelhas
+- **Exportação:** Documentação das correções nos botões de exportação CSV/PDF
+- **Consistência:** Alinhamento da funcionalidade PDF entre páginas de tarefas e clientes
+
 ## [v5.5.4] - 2025-01-31
 
 ### 🔧 CORRIGIDO

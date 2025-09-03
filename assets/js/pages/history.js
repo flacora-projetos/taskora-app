@@ -1,6 +1,6 @@
 // assets/js/pages/history.js
 import { listClients } from '../data/clientsRepo.js';
-import { listTasks } from '../data/tasksRepo.js';
+import { listTasksRaw } from '../data/tasksRepo.js';
 
 (function(global) {
   // Utilitários
@@ -39,23 +39,60 @@ import { listTasks } from '../data/tasksRepo.js';
     return date.toLocaleString('pt-BR');
   }
   
+  // Normalização de status para compatibilidade com dados legados
+  function normalizeStatus(status) {
+    if (!status) return '';
+    const statusStr = status.toString().toLowerCase();
+    
+    // Mapeamento de valores legados para valores atuais
+    const legacyMapping = {
+      'nao_realizada': 'não realizada',  // Status legado NAO_REALIZADA mantém como não realizada
+      'em_progresso': 'em progresso', 
+      'concluida': 'concluída',
+      'cancelada': 'não realizada',  // Status legado CANCELADA mapeia para não realizada
+      'iniciadas': 'iniciada'  // Apenas INICIADAS mapeia para iniciada
+    };
+    
+    // Verificar se é um valor legado
+    if (legacyMapping[statusStr]) {
+      return legacyMapping[statusStr];
+    }
+    
+    // Retornar valor original se já estiver no formato atual
+    return status;
+  }
+  
   function getStatusColor(status) {
+    const normalizedStatus = normalizeStatus(status);
     const colors = {
       'concluída': { bg: '#DCFCE7', fg: '#166534', bd: '#BBF7D0' },
       'em progresso': { bg: '#DBEAFE', fg: '#1E40AF', bd: '#BFDBFE' },
       'iniciada': { bg: '#FEF3C7', fg: '#92400E', bd: '#FDE68A' },
-      'não realizada': { bg: '#FEE2E2', fg: '#DC2626', bd: '#FECACA' }
+      'não realizada': { bg: '#FEE2E2', fg: '#DC2626', bd: '#FECACA' },
+      'cancelada': { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' }
     };
-    return colors[status] || { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' };
+    return colors[normalizedStatus] || { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' };
+  }
+  
+  function translatePriority(priority) {
+    const translations = {
+      'low': 'baixa',
+      'medium': 'média', 
+      'high': 'alta',
+      'urgent': 'urgente'
+    };
+    return translations[priority?.toLowerCase()] || priority || 'média';
   }
   
   function getPriorityColor(priority) {
+    const translatedPriority = translatePriority(priority);
     const colors = {
       'alta': { bg: '#FEE2E2', fg: '#DC2626', bd: '#FECACA' },
+      'urgente': { bg: '#FEE2E2', fg: '#DC2626', bd: '#FECACA' },
       'média': { bg: '#FEF3C7', fg: '#92400E', bd: '#FDE68A' },
       'baixa': { bg: '#DCFCE7', fg: '#166534', bd: '#BBF7D0' }
     };
-    return colors[priority] || { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' };
+    return colors[translatedPriority] || { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' };
   }
   
   function getTimeAgo(dateStr) {
@@ -130,6 +167,7 @@ import { listTasks } from '../data/tasksRepo.js';
         .hs-task-dot.completed { background: #10B981; border-color: #10B981 }
         .hs-task-dot.in-progress { background: #3B82F6; border-color: #3B82F6 }
         .hs-task-dot.overdue { background: #EF4444; border-color: #EF4444 }
+        .hs-task-dot.not-done { background: #EF4444; border-color: #EF4444 }
         
         .hs-task-content { flex: 1 }
         .hs-task-header { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 8px }
@@ -285,7 +323,7 @@ import { listTasks } from '../data/tasksRepo.js';
         
         const [clients, tasks] = await Promise.all([
           listClients(),
-          listTasks()
+          listTasksRaw()
         ]);
         
         allClients = clients;
@@ -464,9 +502,9 @@ import { listTasks } from '../data/tasksRepo.js';
         });
       }
       
-      // Filtro por status
+      // Filtro por status (com normalização para compatibilidade com dados legados)
       if (elStatusFilter.value !== 'all') {
-        filtered = filtered.filter(task => task.status === elStatusFilter.value);
+        filtered = filtered.filter(task => normalizeStatus(task.status) === elStatusFilter.value);
       }
       
       // Filtro por cliente (só aplicar se "Todos" estiver selecionado)
@@ -505,7 +543,7 @@ import { listTasks } from '../data/tasksRepo.js';
     
     function updateStats() {
       const total = filteredTasks.length;
-      const completed = filteredTasks.filter(t => t.status === 'concluída').length;
+      const completed = filteredTasks.filter(t => normalizeStatus(t.status) === 'concluída').length;
       
       // Calcular horas usando o campo hours (decimal) do repositório
       const totalMinutes = filteredTasks.reduce((sum, t) => {
@@ -621,9 +659,11 @@ import { listTasks } from '../data/tasksRepo.js';
           const dateValue = task.createdAt || task.dueDate || task.date;
           const taskDate = dateValue ? new Date(dateValue) : null;
           
+          const normalizedStatus = normalizeStatus(task.status);
           let dotClass = 'hs-task-dot';
-          if (task.status === 'concluída') dotClass += ' completed';
-          else if (task.status === 'em progresso') dotClass += ' in-progress';
+          if (normalizedStatus === 'concluída') dotClass += ' completed';
+          else if (normalizedStatus === 'em progresso') dotClass += ' in-progress';
+          else if (normalizedStatus === 'não realizada') dotClass += ' not-done';
           else if (task.dueDate && new Date(task.dueDate) < new Date()) dotClass += ' overdue';
           
           const taskTitle = task.client || task.title || 'Tarefa sem título';
@@ -641,11 +681,11 @@ import { listTasks } from '../data/tasksRepo.js';
                     <div class="hs-task-title">${escapeHtml(taskTitle)}</div>
                     <div class="hs-task-meta">
                       <span class="hs-task-status" style="background: ${statusColor.bg}; color: ${statusColor.fg}; border: 1px solid ${statusColor.bd}">
-                        ${task.status}
+                        ${normalizedStatus}
                       </span>
                       ${task.priority ? `
                         <span class="hs-task-priority" style="background: ${priorityColor.bg}; color: ${priorityColor.fg}; border: 1px solid ${priorityColor.bd}">
-                          ${task.priority}
+                          ${translatePriority(task.priority)}
                         </span>
                       ` : ''}
                     </div>

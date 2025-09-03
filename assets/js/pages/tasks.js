@@ -74,10 +74,14 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
   function canonStatus(raw){
     const n = norm(raw);
     if(!n) return "";
-    if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog"].includes(n)) return "iniciada";
+    // Mapeamento para "iniciada" - incluindo status legados
+     if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog","iniciadas"].includes(n)) return "iniciada";
+    // Mapeamento para "em progresso"
     if(["emandamento","emprogresso","inprogress","doing","andamento","progresso"].includes(n)) return "em progresso";
+    // Mapeamento para "concluída"
     if(["concluida","concluido","finalizada","finalizado","done","completed","fechada","fechado"].includes(n)) return "concluída";
-    if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
+    // Mapeamento para "não realizada" - incluindo cancelada e naorealizada
+     if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
     if(STATUS_OFFICIAL.map(norm).includes(n)) return raw;
     return raw || "";
   }
@@ -245,6 +249,12 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
         .tk-icon--trash{ color:#8A1C12 }
         .tk-iconbtn svg{ width:14px; height:14px }
         @media (max-width: 900px){ .tk-hide-sm{ display:none } .tk-desc{ display:block; max-width:420px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap } }
+        
+        /* Animação de loading para scroll infinito */
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
       </style>
 
       <!-- Campo Sticky: Título + Cards + Filtros -->
@@ -323,6 +333,17 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
           </div>
 
           <div id="table-wrap"></div>
+          
+          <!-- Elemento sentinela para scroll infinito -->
+          <div id="scroll-sentinel" style="height: 20px; margin: 20px 0; display: flex; align-items: center; justify-content: center;">
+            <div id="loading-indicator" style="display: none; color: #6b7280; font-size: 13px; font-weight: 500;">
+              <svg style="width: 16px; height: 16px; margin-right: 8px; animation: spin 1s linear infinite; display: inline-block;" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-opacity="0.3"></circle>
+                <path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+              </svg>
+              Carregando mais tarefas...
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -334,8 +355,12 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
     const elStatHours = root.querySelector("#stat-hours");
     const elStatPending = root.querySelector("#stat-pending");
     const elStatCompleted = root.querySelector("#stat-completed");
+    const elScrollSentinel = root.querySelector("#scroll-sentinel");
+    const elLoadingIndicator = root.querySelector("#loading-indicator");
 
     let allRows=[]; let page=0;
+    let isLoadingMore = false;
+    let scrollObserver = null;
 
     const setLoading = on => elTableWrap.innerHTML = on ? `<div class="tk-card" style="text-align:center;color:#6b7280">Carregando…</div>` : '';
     
@@ -423,14 +448,26 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
       }
 
       const total=allRows.length, shown=Math.min((page+1)*PAGE_SIZE,total);
-      elMore.hidden = shown >= total;
+      const hasMore = shown < total;
+      
+      // Controlar visibilidade do botão e sentinela
+      elMore.hidden = hasMore; // Esconder botão quando há scroll infinito ativo
+      elScrollSentinel.style.display = hasMore ? 'flex' : 'none';
+      
+      // Configurar Intersection Observer para scroll infinito
+      if (hasMore && !scrollObserver) {
+        setupInfiniteScroll();
+      } else if (!hasMore && scrollObserver) {
+        scrollObserver.disconnect();
+        scrollObserver = null;
+      }
       
       // Atualizar estatísticas
       updateStats();
     }
 
     async function fetchFromFirestoreOrdered(){
-      const q = query(collection(db,"tasks"), orderBy("createdAt","desc"), limit(PREFETCH));
+      const q = query(collection(db,"tasks"), orderBy("date","desc"), limit(PREFETCH));
       const snap = await getDocs(q);
       return snap.docs.map(d=>({id:d.id, ...d.data()}));
     }
@@ -473,7 +510,49 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
       renderTableSlice();
     }
 
-    elMore.addEventListener("click", ()=>{ page+=1; renderTableSlice(); });
+    // Função para carregar mais itens (usada tanto pelo botão quanto pelo scroll infinito)
+    function loadMoreItems() {
+      if (isLoadingMore) return;
+      
+      const total = allRows.length;
+      const shown = Math.min((page + 1) * PAGE_SIZE, total);
+      
+      if (shown >= total) return; // Não há mais itens para carregar
+      
+      isLoadingMore = true;
+      elLoadingIndicator.style.display = 'flex';
+      
+      // Simular um pequeno delay para melhor UX
+      setTimeout(() => {
+        page += 1;
+        renderTableSlice();
+        isLoadingMore = false;
+        elLoadingIndicator.style.display = 'none';
+      }, 300);
+    }
+    
+    // Configurar Intersection Observer para scroll infinito
+    function setupInfiniteScroll() {
+      if (scrollObserver) {
+        scrollObserver.disconnect();
+      }
+      
+      scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !isLoadingMore) {
+            loadMoreItems();
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '100px', // Carregar quando estiver 100px antes do elemento
+        threshold: 0.1
+      });
+      
+      scrollObserver.observe(elScrollSentinel);
+    }
+
+    elMore.addEventListener("click", loadMoreItems);
 
     // ==================== NewTaskModal (UI) ====================
     const NewTaskModal = (()=>{
@@ -525,7 +604,7 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
                     <label class="nt-label" for="nt-desc-input">Descrição da Tarefa *</label>
                     <textarea id="nt-desc-input" class="nt-textarea" placeholder="O que precisa ser feito?"></textarea>
                   </div>
-                  <div class="nt-field" style="grid-column:span 4">
+                  <div class="nt-field" style="grid-column:span 3">
                     <label class="nt-label" for="nt-status">Status</label>
                     <select id="nt-status" class="nt-select">
                       <option value="não realizada">Não realizada</option>
@@ -534,7 +613,16 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
                       <option value="concluída">Concluída</option>
                     </select>
                   </div>
-                  <div class="nt-field" style="grid-column:span 4">
+                  <div class="nt-field" style="grid-column:span 3">
+                    <label class="nt-label" for="nt-priority">Prioridade</label>
+                    <select id="nt-priority" class="nt-select">
+                      <option value="low">Baixa</option>
+                      <option value="medium" selected>Média</option>
+                      <option value="high">Alta</option>
+                      <option value="urgent">Urgente</option>
+                    </select>
+                  </div>
+                  <div class="nt-field" style="grid-column:span 6">
                     <label class="nt-label" for="nt-hours">Horas (opcional)</label>
                     <input id="nt-hours" type="time" class="nt-input" value="00:00"/>
                   </div>
@@ -627,6 +715,7 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
           selOwner.value  = initial.owner  || "";
           backdrop.querySelector("#nt-desc-input").value = initial.description || "";
           backdrop.querySelector("#nt-status").value = canonStatus(initial.status || "não realizada");
+          backdrop.querySelector("#nt-priority").value = initial.priority || "medium";
           backdrop.querySelector("#nt-hours").value  = decimalToTime(initial.hours);
           backdrop.querySelector("#nt-date").value   = formatToAmerican(initial.date || initial.createdAt) || dToday;
           backdrop.querySelector("#nt-due").value    = formatToAmerican(initial.dueDate) || dToday;
@@ -646,6 +735,7 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
         function getPayloadFromForm(){
           const description=backdrop.querySelector("#nt-desc-input").value.trim();
           const status=backdrop.querySelector("#nt-status").value;
+          const priority=backdrop.querySelector("#nt-priority").value;
           const hoursStr=backdrop.querySelector("#nt-hours").value.trim();
           const date=backdrop.querySelector("#nt-date").value;
           const dueDate=backdrop.querySelector("#nt-due").value;
@@ -696,6 +786,7 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
             payload: {
               client, owner, description,
               status: canonStatus(status) || "não realizada",
+              priority: priority || "medium",
               hours, date, dueDate, endDate: endDate || undefined,
               recurrence: (recurrence.type==="none" ? {type:"none"} : recurrence),
               ...(recurrenceType!=="none" ? {recurrenceType} : {recurrenceType:"none"}),
@@ -855,6 +946,30 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 
     elNew.addEventListener("click", openNewTaskModal);
 
+    // Event listeners para botões de exportação
+    const elExportCsv = root.querySelector("#exportCsvBtn");
+    const elExportPdf = root.querySelector("#exportPdfBtn");
+    
+    if (elExportCsv) {
+      elExportCsv.addEventListener("click", () => {
+        if (window.TaskoraExport && window.TaskoraExport.exportCSV) {
+          window.TaskoraExport.exportCSV();
+        } else {
+          alert("Função de exportação CSV não disponível.");
+        }
+      });
+    }
+    
+    if (elExportPdf) {
+      elExportPdf.addEventListener("click", () => {
+        if (window.TaskoraExport && window.TaskoraExport.exportPDF) {
+          window.TaskoraExport.exportPDF();
+        } else {
+          alert("Função de exportação PDF não disponível.");
+        }
+      });
+    }
+
     // Inicializar drag & drop para tarefas
     let tasksDragDrop = null;
     
@@ -881,6 +996,17 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
         tasksDragDrop.enableForTasksTable(tableContainer);
       }
     }
+    
+    // Função de cleanup para desconectar observer
+    function cleanup() {
+      if (scrollObserver) {
+        scrollObserver.disconnect();
+        scrollObserver = null;
+      }
+    }
+    
+    // Adicionar cleanup quando a página for removida
+    root.addEventListener('DOMNodeRemoved', cleanup);
     
     // Primeira carga + filtros globais (mantido)
     fetchAndFilter(TaskoraFilters.get());

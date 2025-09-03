@@ -1,6 +1,6 @@
 # Configuração Segura do Firebase para Taskora
 
-## Introdução
+## 🔒 Introdução
 
 Este documento descreve as mudanças implementadas para proteger as chaves de API do Firebase no projeto Taskora. Anteriormente, as chaves de API estavam expostas diretamente no código-fonte, o que representava um risco de segurança, especialmente quando o código é versionado em repositórios públicos.
 
@@ -28,6 +28,28 @@ Implementamos uma solução que:
 - `assets/js/config/firebase-keys-example.js`: Modelo para o arquivo de chaves
 - `assets/js/config/firebase-keys.js`: Arquivo não versionado com as chaves reais
 - `.env.example`: Modelo para variáveis de ambiente (alternativa ao arquivo JS)
+- `docs/VERCEL_DEPLOY.md`: Documentação sobre o deploy no Vercel e links permanentes
+
+## 🔗 Links Permanentes no Vercel
+
+Implementamos uma solução para evitar a necessidade de compartilhar um novo link do Vercel toda vez que o nome do arquivo HTML principal é alterado:
+
+1. O arquivo `index.html` na raiz do projeto serve como **ponto de entrada fixo** para a aplicação
+2. Dentro do `index.html`, definimos uma constante `CURRENT_VERSION_FILE` que aponta para o arquivo HTML principal atual
+3. O redirecionamento é feito automaticamente para o arquivo principal definido nesta constante
+
+### 🤖 Atualização Automática
+
+Para facilitar ainda mais o processo, criamos scripts de automação que atualizam o `index.html` e outros arquivos de documentação automaticamente:
+
+- **PowerShell**: `tools/update-version.ps1`
+- **Batch (CMD)**: `tools/update-version.bat`
+
+Basta executar um desses scripts informando o nome do novo arquivo principal, e tudo será atualizado automaticamente. Não é necessário editar manualmente nenhum arquivo.
+
+Para mais detalhes sobre estas soluções, consulte os arquivos:
+- `docs/VERCEL_DEPLOY.md` - Informações sobre deploy no Vercel
+- `docs/ATUALIZACAO_AUTOMATICA.md` - Como usar os scripts de atualização automática
 
 ### Arquivos Modificados
 

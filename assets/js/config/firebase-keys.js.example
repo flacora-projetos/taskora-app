@@ -1,0 +1,10 @@
+// Taskora — Firebase Keys (EXEMPLO)
+// Este arquivo contém as chaves de API do Firebase.
+// IMPORTANTE: Este arquivo NÃO deve ser versionado no Git.
+// Crie uma cópia deste arquivo com o nome 'firebase-keys.js' (sem .example) e substitua a chave abaixo.
+
+// Chave de API do Firebase (substitua pelo valor real)
+export const FIREBASE_API_KEY = "SUA_CHAVE_API_AQUI";
+
+// Você pode adicionar outras chaves sensíveis aqui, se necessário
+// export const ANOTHER_SECRET_KEY = "OUTRO_VALOR_SECRETO";

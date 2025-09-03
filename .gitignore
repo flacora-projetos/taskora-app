@@ -29,6 +29,14 @@ node_modules/
 # Output of 'npm pack'
 *.tgz
 
+# Arquivos de configuração com chaves sensíveis
+.env
+assets/js/config/firebase-keys.js
+
+# Arquivos de build e distribuição
+dist/
+build/
+
 # Yarn Integrity file
 .yarn-integrity
 

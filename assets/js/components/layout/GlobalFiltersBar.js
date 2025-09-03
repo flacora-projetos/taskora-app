@@ -163,10 +163,14 @@ const _norm = s => (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/
 function _canonStatus(raw){
   const n = _norm(raw);
   if(!n) return "";
-  if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog"].includes(n)) return "iniciada";
+  // Mapeamento para "iniciada" - incluindo status legados
+   if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog","iniciadas"].includes(n)) return "iniciada";
+  // Mapeamento para "em progresso"
   if(["emandamento","emprogresso","inprogress","doing","andamento","progresso"].includes(n)) return "em progresso";
+  // Mapeamento para "concluída"
   if(["concluida","concluido","finalizada","finalizado","done","completed","fechada","fechado"].includes(n)) return "concluída";
-  if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
+  // Mapeamento para "não realizada" - incluindo cancelada e naorealizada
+   if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
   return raw || "";
 }
 
@@ -488,7 +492,7 @@ export function GlobalFiltersBar(rootEl) {
     </tbody>
   </table>
   <footer>Powered by Taskora</footer>
-  <script>setTimeout(()=>{ try{ window.print() }catch(e){} }, 300);</script>
+  <script>setTimeout(()=>{ try{ window.print() }catch(e){} }, 500);</script>
 </body>
 </html>`;
   }
@@ -496,17 +500,21 @@ export function GlobalFiltersBar(rootEl) {
   async function exportPDF() {
     const rows = await fetchTasksForExport();
     const html = buildPrintHTML(rows);
-    const w = window.open("", "_blank", "noopener,noreferrer");
-    if (!w) {
-      alert("Não foi possível abrir a janela de impressão. Libere pop-ups para este site.");
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!printWindow) {
+      alert('Não foi possível abrir a janela de impressão. Verifique se pop-ups estão habilitados.');
       return;
     }
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
   }
 
-  // Botões de exportação foram movidos para o header da página
+  // Expor funções de exportação globalmente
+  window.TaskoraExport = {
+    exportCSV,
+    exportPDF
+  };
 
   // Estado inicial
   setFromState(TaskoraFilters.get());

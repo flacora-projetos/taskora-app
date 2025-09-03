@@ -173,6 +173,24 @@ async function mapUiToDb(payload) {
   };
 }
 
+// ==== Normalização de status =======================================
+const STATUS_OFFICIAL = ["iniciada","em progresso","concluída","não realizada"];
+const norm = s => (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[_\s]+/g,"").toLowerCase();
+function canonStatus(raw){
+  const n = norm(raw);
+  if(!n) return "não realizada";
+  // Mapeamento para "iniciada" - incluindo status legados
+  if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog","iniciadas"].includes(n)) return "iniciada";
+  // Mapeamento para "em progresso"
+  if(["emandamento","emprogresso","inprogress","doing","andamento","progresso"].includes(n)) return "em progresso";
+  // Mapeamento para "concluída"
+  if(["concluida","concluido","finalizada","finalizado","done","completed","fechada","fechado"].includes(n)) return "concluída";
+  // Mapeamento para "não realizada" - incluindo cancelada e naorealizada
+  if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
+  if(STATUS_OFFICIAL.map(norm).includes(n)) return raw;
+  return raw || "não realizada";
+}
+
 // ==== Map DB → UI ===================================================
 async function mapDbToUi(docSnap) {
   const data = docSnap.data();
@@ -192,11 +210,15 @@ async function mapDbToUi(docSnap) {
     else if (dueDate)   dateStr = ymd(dueDate);
   }
 
+  // Normalizar status para garantir compatibilidade com dados legados
+  const rawStatus = data.status || 'NAO_REALIZADA';
+  const normalizedStatus = canonStatus(rawStatus);
+
   return {
     id: docSnap.id,
     title,
     description: data.description || '',
-    status: data.status || 'NAO_REALIZADA',
+    status: normalizedStatus,
     priority: data.priority || 'MEDIUM',
     client: firstNonEmpty(data.client, data.clientName, data.cliente) || null,
     owner:  firstNonEmpty(data.owner,  data.ownerName,  data.responsavel) || null,
@@ -254,6 +276,41 @@ async function updateTeamMemberHours(ownerName) {
 }
 
 // ==== API ============================================================
+
+/**
+ * Lista tarefas SEM aplicar filtros globais (para uso independente)
+ * @param {number} max - Máximo de tarefas a retornar
+ * @returns {Promise<Array>} Lista de tarefas sem filtros globais aplicados
+ */
+export async function listTasksRaw(max = 500) {
+  const db = await getDb();
+  const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+  const { collection, getDocs, limit } = fs;
+
+  const snap = await getDocs(limit ? (await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js')).query(
+    collection(db, 'tasks'), limit(max)
+  ) : collection(db,'tasks'));
+
+  let items = [];
+  for (const d of snap.docs) items.push(await mapDbToUi(d));
+
+  // prioriza org 'dacora' (ou sem orgId)
+  items = items.filter(t => t.orgId === 'dacora' || !t.orgId);
+
+  // ordenação estável - priorizar campo 'date' (início)
+  items.sort((a, b) => {
+    const ad = a.date ? new Date(a.date).getTime() : (a.startDate?.getTime?.() ?? a.dueDate?.getTime?.() ?? 0);
+    const bd = b.date ? new Date(b.date).getTime() : (b.startDate?.getTime?.() ?? b.dueDate?.getTime?.() ?? 0);
+    return bd - ad; // Ordem decrescente: mais recentes primeiro
+  });
+  return items;
+}
+
+/**
+ * Lista tarefas COM filtros globais aplicados (comportamento original)
+ * @param {number} max - Máximo de tarefas a retornar
+ * @returns {Promise<Array>} Lista de tarefas com filtros globais aplicados
+ */
 export async function listTasks(max = 500) {
   const db = await getDb();
   const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
@@ -393,7 +450,7 @@ export async function listTasksByDateRange(arg1, arg2, max = 1000) {
   rows.sort((a, b) => {
     const ad = a.date ? new Date(a.date).getTime() : (a.startDate?.getTime?.() ?? 0);
     const bd = b.date ? new Date(b.date).getTime() : (b.startDate?.getTime?.() ?? 0);
-    return ad - bd;
+    return bd - ad; // Ordem decrescente: mais recentes primeiro
   });
 
   return rows;
