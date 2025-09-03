@@ -226,8 +226,19 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
         .tk-num{ text-align:right; font-variant-numeric:tabular-nums }
         .tk-desc{ color:#1f2937; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
         .tk-chip{ display:inline-block; padding:3px 10px; border-radius:999px; font-weight:800; font-size:11px; line-height:1; border:1px solid var(--bd); color:var(--fg); background:var(--bg); white-space:nowrap }
-        .tk-chip--status{ letter-spacing:.2px }
+        .tk-chip--status{ letter-spacing:.2px; cursor:pointer; transition:all 0.2s ease; position:relative }
+        .tk-chip--status:hover{ transform:translateY(-1px); box-shadow:0 2px 4px rgba(0,0,0,0.1); filter:brightness(0.95) }
+        .tk-chip--status:active{ transform:translateY(0); box-shadow:0 1px 2px rgba(0,0,0,0.1) }
         .tk-chip--client{ font-weight:700 }
+        
+        /* Estilos do dropdown de status */
+        .status-dropdown{ position:fixed; z-index:1000; background:white; border:1px solid #e2e8f0; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); padding:4px; min-width:140px }
+        .status-dropdown-content{ display:flex; flex-direction:column; gap:2px }
+        .status-option{ padding:6px 8px; border-radius:6px; cursor:pointer; transition:background-color 0.2s ease; display:flex; align-items:center }
+        .status-option:hover{ background-color:#f8fafc }
+        .status-option.current{ background-color:#e2e8f0; position:relative }
+        .status-option.current::after{ content:'✓'; position:absolute; right:8px; color:#64748b; font-weight:bold }
+        .status-option .tk-chip{ pointer-events:none; margin:0 }
         /* Ajuste de larguras (reduzimos a descrição para caber ações) */
         .col-status{ width:130px }
         .col-client{ width:200px }
@@ -943,6 +954,112 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
       else if(act.hasAttribute("data-dup")) handleDuplicate(row);
       else if(act.hasAttribute("data-edit")) handleEdit(row);
     });
+
+    // Event listener para cliques nas pills de status
+    elTableWrap.addEventListener("click", (e)=>{
+      const statusChip = e.target.closest(".tk-chip--status");
+      if(!statusChip) return;
+      
+      const taskRow = statusChip.closest("[data-row-id]");
+      if(!taskRow) return;
+      
+      const taskId = taskRow.dataset.rowId;
+      const task = allRows.find(r => r.id === taskId);
+      if(!task) return;
+      
+      showStatusDropdown(statusChip, task);
+    });
+
+    // Função para mostrar dropdown de status
+    function showStatusDropdown(statusChip, task) {
+      // Remover dropdown existente se houver
+      const existingDropdown = document.querySelector('.status-dropdown');
+      if (existingDropdown) {
+        existingDropdown.remove();
+      }
+
+      const statusOptions = [
+        { value: 'iniciada', label: 'INICIADA', bg: '#EEF0F3', fg: '#334155', bd: '#E0E5EA' },
+        { value: 'em progresso', label: 'EM PROGRESSO', bg: '#FFF3D6', fg: '#8A5B00', bd: '#FFE4A6' },
+        { value: 'concluída', label: 'CONCLUÍDA', bg: '#E7F4EC', fg: '#0B6B2C', bd: '#C9E7D2' },
+        { value: 'não realizada', label: 'NÃO REALIZADA', bg: '#FDE9E7', fg: '#8A1C12', bd: '#F6C8C2' }
+      ];
+
+      const currentStatus = canonStatus(task.status || '').toLowerCase();
+
+      // Criar dropdown
+      const dropdown = document.createElement('div');
+      dropdown.className = 'status-dropdown';
+      dropdown.innerHTML = `
+        <div class="status-dropdown-content">
+          ${statusOptions.map(option => `
+            <div class="status-option ${option.value === currentStatus ? 'current' : ''}" 
+                 data-status="${option.value}"
+                 style="--bg:${option.bg};--fg:${option.fg};--bd:${option.bd}">
+              <span class="tk-chip tk-chip--status" style="--bg:${option.bg};--fg:${option.fg};--bd:${option.bd}">
+                ${option.label}
+              </span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Posicionar dropdown
+      const chipRect = statusChip.getBoundingClientRect();
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = `${chipRect.bottom + 5}px`;
+      dropdown.style.left = `${chipRect.left}px`;
+      dropdown.style.zIndex = '1000';
+
+      document.body.appendChild(dropdown);
+
+      // Event listeners para opções
+      dropdown.addEventListener('click', async (e) => {
+        const option = e.target.closest('.status-option');
+        if (!option) return;
+
+        const newStatus = option.dataset.status;
+        if (newStatus === currentStatus) {
+          dropdown.remove();
+          return;
+        }
+
+        try {
+          // Atualizar no Firebase
+          await updateTask(task.id, { ...task, status: newStatus });
+          
+          // Atualizar UI localmente
+          const taskIndex = allRows.findIndex(r => r.id === task.id);
+          if (taskIndex !== -1) {
+            allRows[taskIndex].status = newStatus;
+          }
+          
+          // Re-renderizar tabela
+          renderTableSlice();
+          
+          // Mostrar feedback
+          showCenterToast(`Status alterado para: ${option.querySelector('.tk-chip').textContent}`);
+          
+        } catch (error) {
+          console.error('Erro ao atualizar status:', error);
+          alert('Erro ao atualizar status. Tente novamente.');
+        }
+
+        dropdown.remove();
+      });
+
+      // Fechar dropdown ao clicar fora
+      const closeDropdown = (e) => {
+        if (!dropdown.contains(e.target) && !statusChip.contains(e.target)) {
+          dropdown.remove();
+          document.removeEventListener('click', closeDropdown);
+        }
+      };
+      
+      setTimeout(() => {
+        document.addEventListener('click', closeDropdown);
+      }, 100);
+    }
 
     elNew.addEventListener("click", openNewTaskModal);
 
