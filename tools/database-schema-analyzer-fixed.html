@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisador de Schema do Banco - Taskora (Corrigido)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .action-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39,174,96,0.3);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .btn.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #27ae60;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .log-info { background: rgba(52, 152, 219, 0.2); }
+        .log-success { background: rgba(39, 174, 96, 0.2); }
+        .log-warning { background: rgba(243, 156, 18, 0.2); }
+        .log-error { background: rgba(231, 76, 60, 0.2); }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .collection-result {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .problem-item {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        .problem-critical {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .connection-status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-connecting {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Analisador de Schema - Taskora</h1>
+            <p>Ferramenta de diagnóstico corrigida para análise do banco de dados Firebase</p>
+        </div>
+        
+        <div class="content">
+            <div id="connectionStatus" class="connection-status status-connecting">
+                🔄 Verificando conexão com Firebase...
+            </div>
+            
+            <div class="action-section">
+                <h3>🚀 Análise Completa do Banco</h3>
+                <p>Analisa todas as coleções, identifica problemas de schema e gera relatório detalhado.</p>
+                <button id="analyzeBtn" class="btn" onclick="startCompleteAnalysis()" disabled>
+                    Iniciar Análise Completa
+                </button>
+                <button id="testConnectionBtn" class="btn warning" onclick="testConnection()">
+                    Testar Conexão
+                </button>
+                <button id="quickFixBtn" class="btn danger" onclick="showQuickFixes()" disabled>
+                    Correções Rápidas
+                </button>
+            </div>
+
+            <div class="stats" id="statsContainer" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCollections">0</div>
+                    <div class="stat-label">Coleções</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDocuments">0</div>
+                    <div class="stat-label">Documentos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalProblems">0</div>
+                    <div class="stat-label">Problemas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="schemaInconsistencies">0</div>
+                    <div class="stat-label">Inconsistências</div>
+                </div>
+            </div>
+
+            <div class="log-container" id="logContainer">
+                <div class="log-entry log-info">🔧 Sistema iniciado. Aguardando comandos...</div>
+            </div>
+
+            <div class="results" id="resultsContainer" style="display: none;">
+                <!-- Resultados serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Configuração segura do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
+            authDomain: "dacora---tarefas.firebaseapp.com",
+            projectId: "dacora---tarefas",
+            storageBucket: "dacora---tarefas.firebasestorage.app",
+            messagingSenderId: "406318974539",
+            appId: "1:406318974539:web:d842997c1b064c0ba56fce"
+        };
+
+        // Importações do Firebase com tratamento de erro
+        let app, db;
+        let isConnected = false;
+        
+        async function initializeFirebase() {
+            try {
+                log('🔄 Inicializando Firebase...', 'info');
+                
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+                const { 
+                    getFirestore, 
+                    collection, 
+                    getDocs,
+                    doc,
+                    getDoc,
+                    enableNetwork,
+                    disableNetwork
+                } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+
+                // Inicializar Firebase
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                
+                // Configurar Firestore para modo offline-first
+                await enableNetwork(db);
+                
+                // Disponibilizar globalmente
+                window.db = db;
+                window.collection = collection;
+                window.getDocs = getDocs;
+                window.doc = doc;
+                window.getDoc = getDoc;
+                
+                isConnected = true;
+                updateConnectionStatus('connected');
+                log('✅ Firebase inicializado com sucesso!', 'success');
+                
+                // Habilitar botões
+                document.getElementById('analyzeBtn').disabled = false;
+                document.getElementById('quickFixBtn').disabled = false;
+                
+                return true;
+            } catch (error) {
+                console.error('Erro ao inicializar Firebase:', error);
+                updateConnectionStatus('error', error.message);
+                log(`❌ Erro ao conectar: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        function updateConnectionStatus(status, message = '') {
+            const statusEl = document.getElementById('connectionStatus');
+            
+            switch(status) {
+                case 'connected':
+                    statusEl.className = 'connection-status status-connected';
+                    statusEl.innerHTML = '✅ Conectado ao Firebase com sucesso!';
+                    break;
+                case 'error':
+                    statusEl.className = 'connection-status status-error';
+                    statusEl.innerHTML = `❌ Erro de conexão: ${message}`;
+                    break;
+                case 'connecting':
+                    statusEl.className = 'connection-status status-connecting';
+                    statusEl.innerHTML = '🔄 Conectando ao Firebase...';
+                    break;
+            }
+        }
+
+        // Variáveis globais
+        let analysisData = {
+            collections: {},
+            problems: [],
+            stats: {
+                totalCollections: 0,
+                totalDocuments: 0,
+                totalProblems: 0,
+                schemaInconsistencies: 0
+            }
+        };
+
+        // Função de log
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // Função para testar conexão
+        window.testConnection = async function() {
+            if (!isConnected) {
+                log('🔄 Testando conexão...', 'info');
+                await initializeFirebase();
+            } else {
+                try {
+                    // Teste simples de leitura
+                    const testCollection = window.collection(window.db, 'tasks');
+                    const snapshot = await window.getDocs(testCollection);
+                    log(`✅ Conexão OK! Encontradas ${snapshot.size} tarefas.`, 'success');
+                } catch (error) {
+                    log(`❌ Erro no teste: ${error.message}`, 'error');
+                }
+            }
+        };
+
+        // Função para obter tipo de campo
+        function getFieldType(value) {
+            if (value === null) return 'null';
+            if (value === undefined) return 'undefined';
+            if (typeof value === 'boolean') return 'boolean';
+            if (typeof value === 'number') return 'number';
+            if (typeof value === 'string') return 'string';
+            if (Array.isArray(value)) return 'array';
+            if (value instanceof Date) return 'date';
+            if (value && typeof value.toDate === 'function') return 'timestamp';
+            if (typeof value === 'object') return 'object';
+            return 'unknown';
+        }
+
+        // Função para contar casas decimais
+        function countDecimalPlaces(num) {
+            if (Math.floor(num) === num) return 0;
+            const str = num.toString();
+            if (str.indexOf('.') !== -1 && str.indexOf('e-') === -1) {
+                return str.split('.')[1].length;
+            } else if (str.indexOf('e-') !== -1) {
+                const parts = str.split('e-');
+                return parseInt(parts[1], 10) + (parts[0].split('.')[1] ? parts[0].split('.')[1].length : 0);
+            }
+            return 0;
+        }
+
+        // Função para analisar coleção
+        async function analyzeCollection(collectionName) {
+            try {
+                log(`🔍 Analisando coleção: ${collectionName}`, 'info');
+                
+                const collectionRef = window.collection(window.db, collectionName);
+                const snapshot = await window.getDocs(collectionRef);
+                
+                const schema = {
+                    name: collectionName,
+                    documentCount: snapshot.size,
+                    fields: {},
+                    inconsistencies: []
+                };
+
+                const documents = snapshot.docs;
+                analysisData.stats.totalDocuments += documents.length;
+
+                // Analisar cada documento
+                documents.forEach(doc => {
+                    const data = doc.data();
+                    
+                    Object.keys(data).forEach(fieldName => {
+                        const fieldValue = data[fieldName];
+                        const fieldType = getFieldType(fieldValue);
+                        
+                        if (!schema.fields[fieldName]) {
+                            schema.fields[fieldName] = {
+                                types: new Set(),
+                                occurrences: 0,
+                                samples: []
+                            };
+                        }
+                        
+                        schema.fields[fieldName].types.add(fieldType);
+                        schema.fields[fieldName].occurrences++;
+                        
+                        // Guardar amostras de valores
+                        if (schema.fields[fieldName].samples.length < 3) {
+                            schema.fields[fieldName].samples.push({
+                                value: fieldValue,
+                                type: fieldType,
+                                docId: doc.id
+                            });
+                        }
+                    });
+                });
+
+                // Detectar inconsistências
+                Object.keys(schema.fields).forEach(fieldName => {
+                    const field = schema.fields[fieldName];
+                    
+                    // Converter Set para Array
+                    field.types = Array.from(field.types);
+                    
+                    // Campo com múltiplos tipos
+                    if (field.types.length > 1) {
+                        schema.inconsistencies.push({
+                            type: 'mixed_types',
+                            field: fieldName,
+                            types: field.types,
+                            message: `Campo '${fieldName}' tem múltiplos tipos: ${field.types.join(', ')}`
+                        });
+                        analysisData.stats.schemaInconsistencies++;
+                    }
+                    
+                    // Problemas específicos com números
+                    if (field.types.includes('number')) {
+                        field.samples.forEach(sample => {
+                            if (typeof sample.value === 'number') {
+                                const decimalPlaces = countDecimalPlaces(sample.value);
+                                if (decimalPlaces > 10) {
+                                    schema.inconsistencies.push({
+                                        type: 'precision_issue',
+                                        field: fieldName,
+                                        value: sample.value,
+                                        docId: sample.docId,
+                                        message: `Campo '${fieldName}' tem precisão excessiva: ${sample.value} (${decimalPlaces} casas decimais)`
+                                    });
+                                    analysisData.stats.totalProblems++;
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Campo ausente em muitos documentos
+                    const presencePercentage = (field.occurrences / documents.length) * 100;
+                    if (presencePercentage < 50) {
+                        schema.inconsistencies.push({
+                            type: 'sparse_field',
+                            field: fieldName,
+                            percentage: presencePercentage.toFixed(1),
+                            message: `Campo '${fieldName}' está presente em apenas ${presencePercentage.toFixed(1)}% dos documentos`
+                        });
+                        analysisData.stats.totalProblems++;
+                    }
+                });
+
+                return schema;
+            } catch (error) {
+                log(`❌ Erro ao analisar ${collectionName}: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        // Função principal de análise
+        window.startCompleteAnalysis = async function() {
+            if (!isConnected) {
+                log('❌ Firebase não conectado. Teste a conexão primeiro.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.textContent = 'Analisando...';
+            
+            try {
+                log('🔍 Iniciando análise completa do banco de dados...', 'info');
+                
+                // Reset dos dados
+                analysisData = {
+                    collections: {},
+                    problems: [],
+                    stats: {
+                        totalCollections: 0,
+                        totalDocuments: 0,
+                        totalProblems: 0,
+                        schemaInconsistencies: 0
+                    }
+                };
+
+                // Coleções a analisar
+                const collectionsToAnalyze = ['tasks', 'clients', 'team'];
+                
+                for (const collectionName of collectionsToAnalyze) {
+                    try {
+                        const schema = await analyzeCollection(collectionName);
+                        analysisData.collections[collectionName] = schema;
+                        analysisData.stats.totalCollections++;
+                        
+                        log(`✅ ${collectionName}: ${schema.documentCount} docs, ${schema.inconsistencies.length} problemas`, 'success');
+                    } catch (error) {
+                        log(`⚠️ Erro em ${collectionName}: ${error.message}`, 'warning');
+                    }
+                }
+
+                // Atualizar estatísticas
+                updateStats();
+                
+                // Mostrar resultados
+                displayResults();
+                
+                log('🎉 Análise completa finalizada!', 'success');
+                
+            } catch (error) {
+                log(`❌ Erro na análise: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Iniciar Análise Completa';
+            }
+        };
+
+        // Função para atualizar estatísticas
+        function updateStats() {
+            document.getElementById('totalCollections').textContent = analysisData.stats.totalCollections;
+            document.getElementById('totalDocuments').textContent = analysisData.stats.totalDocuments;
+            document.getElementById('totalProblems').textContent = analysisData.stats.totalProblems;
+            document.getElementById('schemaInconsistencies').textContent = analysisData.stats.schemaInconsistencies;
+            
+            document.getElementById('statsContainer').style.display = 'grid';
+        }
+
+        // Função para exibir resultados
+        function displayResults() {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = '';
+            
+            Object.values(analysisData.collections).forEach(collection => {
+                const collectionDiv = document.createElement('div');
+                collectionDiv.className = 'collection-result';
+                
+                let html = `
+                    <h3>📁 ${collection.name} (${collection.documentCount} documentos)</h3>
+                    <h4>Campos encontrados:</h4>
+                    <ul>
+                `;
+                
+                Object.keys(collection.fields).forEach(fieldName => {
+                    const field = collection.fields[fieldName];
+                    html += `<li><strong>${fieldName}</strong>: ${field.types.join(', ')} (${field.occurrences}/${collection.documentCount} docs)</li>`;
+                });
+                
+                html += '</ul>';
+                
+                if (collection.inconsistencies.length > 0) {
+                    html += '<h4>⚠️ Problemas encontrados:</h4>';
+                    collection.inconsistencies.forEach(problem => {
+                        const cssClass = problem.type === 'precision_issue' ? 'problem-critical' : 'problem-item';
+                        html += `<div class="${cssClass}">${problem.message}</div>`;
+                    });
+                }
+                
+                collectionDiv.innerHTML = html;
+                container.appendChild(collectionDiv);
+            });
+            
+            container.style.display = 'block';
+        }
+
+        // Função para mostrar correções rápidas
+        window.showQuickFixes = function() {
+            log('🔧 Gerando correções rápidas...', 'info');
+            
+            const fixes = [
+                '1. Arredondar números decimais excessivos',
+                '2. Normalizar tipos de data inconsistentes', 
+                '3. Corrigir referências quebradas',
+                '4. Adicionar campos obrigatórios ausentes'
+            ];
+            
+            fixes.forEach(fix => log(`💡 ${fix}`, 'warning'));
+        };
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', async () => {
+            log('🚀 Iniciando sistema...', 'info');
+            await initializeFirebase();
+        });
+
+        // Live reload para desenvolvimento
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            log('🔄 Live reload enabled.', 'info');
+        }
+    </script>
+</body>
+</html>

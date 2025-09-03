@@ -4,6 +4,37 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.6] - 2025-01-31
+
+### 🔧 CORRIGIDO
+- **Correção Massiva de Dados de Horas:** Implementação de ferramentas avançadas para correção de problemas de migração
+  - ⏰ **Campo Hours:** Correção de 41 documentos com `hours` como `object null` → convertido para timestamp
+  - 📅 **Campo DueDate:** Correção de 47 documentos com `dueDate` mal formatado (string → timestamp)
+  - 🔄 **Campos de Recorrência:** Correção de 44 documentos com problemas:
+    - `recurrenceDays` como `array null` → convertido para string "none"
+    - `recurrenceUntil` como `string null` → convertido para string vazia
+  - 🛠️ **Função fixLegacyHours:** Completamente reescrita para lidar com problemas específicos de migração
+  - 🔧 **Função normalizeAllTypes:** Melhorada com correções específicas para tipos de dados incorretos
+  - 📊 **Logs Detalhados:** Implementação de logging específico para cada tipo de correção aplicada
+
+### ✅ ADICIONADO
+- **Ferramenta de Limpeza Profunda Aprimorada:** `deep-data-cleanup.html` com funcionalidades expandidas
+  - 🎯 **Correções Específicas:** Algoritmos dedicados para cada tipo de problema identificado
+  - 📈 **Relatórios Detalhados:** Contadores específicos para cada categoria de correção
+  - 🔍 **Validação Inteligente:** Verificação de integridade após cada operação de correção
+  - ⚡ **Performance Otimizada:** Processamento em lotes para grandes volumes de dados
+
+### 🗑️ REMOVIDO
+- **Ferramentas Obsoletas:** Remoção de ferramentas que não funcionaram adequadamente:
+  - `fix-legacy-hours.html` (funcionalidade migrada para deep-data-cleanup.html)
+  - `fix-decimal-hours.html` (integrada na ferramenta principal)
+  - Outras ferramentas redundantes de correção de dados
+
+### 📚 DOCUMENTADO
+- **Problemas de Migração:** Documentação completa dos problemas encontrados e soluções aplicadas
+- **Ferramentas de Correção:** Guia de uso das ferramentas de limpeza de dados
+- **Validação de Integridade:** Procedimentos para verificação pós-correção
+
 ## [v5.5.5] - 2025-01-31
 
 ### 🔧 CORRIGIDO

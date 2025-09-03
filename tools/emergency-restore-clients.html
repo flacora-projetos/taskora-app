@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restauração de Emergência - Clientes</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
+        h1 { color: #d32f2f; }
+        button { padding: 12px 24px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #1565c0; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        .error { background: #ffebee; color: #c62828; }
+        .info { background: #e3f2fd; color: #1565c0; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto; max-height: 400px; }
+    </style>
+</head>
+<body>
+    <h1>🚨 Restauração de Emergência - Clientes</h1>
+    <p><strong>Esta ferramenta restaura os clientes do arquivo migration-report-offline-2025-09-02.json</strong></p>
+    
+    <button id="restoreBtn" onclick="restoreClients()">Restaurar Clientes Agora</button>
+    
+    <div id="status"></div>
+    <pre id="log"></pre>
+
+    <script type="module" src="assets/js/config/firebase-test.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+        import { getFirestore, collection, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+        let app, auth, db;
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+
+        function addLog(message) {
+            log.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function setStatus(message, type = 'info') {
+            status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        async function initFirebase() {
+            if (!window.firebaseConfig) {
+                throw new Error('Configuração do Firebase não encontrada');
+            }
+            
+            app = initializeApp(window.firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            await signInAnonymously(auth);
+            addLog('Conectado ao Firebase com sucesso');
+        }
+
+        window.restoreClients = async function() {
+            try {
+                document.getElementById('restoreBtn').disabled = true;
+                setStatus('Iniciando restauração...', 'info');
+                addLog('=== INICIANDO RESTAURAÇÃO DE EMERGÊNCIA ===');
+
+                await initFirebase();
+
+                // Carregar dados do arquivo offline
+                const response = await fetch('./migration-report-offline-2025-09-02.json');
+                const data = await response.json();
+                
+                if (!data.data || !data.data.clients) {
+                    throw new Error('Dados de clientes não encontrados no arquivo');
+                }
+
+                const clients = data.data.clients;
+                addLog(`Encontrados ${clients.length} clientes para restaurar`);
+
+                let restored = 0;
+                let errors = 0;
+
+                for (const client of clients) {
+                    try {
+                        // Converter para o formato do Taskora v5.5
+                        const taskораClient = {
+                            orgId: 'dacora',
+                            displayName: client.name,
+                            email: '',
+                            phone: '',
+                            website: '',
+                            instagram: '',
+                            status: client.status.toUpperCase(),
+                            tier: client.tier,
+                            defaultAssigneeRef: '',
+                            entryDate: client.createdAt,
+                            responsible: client.owner,
+                            paymentMethod: '',
+                            documents: [],
+                            notes: '',
+                            
+                            // Orçamentos por plataforma
+                            budgetMetaAds: client.metaAds?.dailyBudget || 0,
+                            budgetGoogleAds: client.googleAds?.dailyBudget || 0,
+                            budgetTiktokAds: client.tiktokAds?.dailyBudget || 0,
+                            budgetPinterestAds: client.pinterestAds?.dailyBudget || 0,
+                            
+                            // Plataformas ativas
+                            platformMetaAds: (client.metaAds?.dailyBudget || 0) > 0,
+                            platformGoogleAds: (client.googleAds?.dailyBudget || 0) > 0,
+                            platformTiktokAds: (client.tiktokAds?.dailyBudget || 0) > 0,
+                            platformPinterestAds: (client.pinterestAds?.dailyBudget || 0) > 0,
+                            
+                            // Performance
+                            realBilling: client.realBilling || 0,
+                            realLeads: client.realLeads || 0,
+                            billingGoal: client.billingGoal || 0,
+                            leadsGoal: client.leadsGoal || 0,
+                            roi: client.roi || 0,
+                            
+                            // Controle de saldo
+                            balanceControl: {
+                                metaAds: {
+                                    deposit: client.metaAds?.deposit || 0,
+                                    depositDate: client.metaAds?.depositDate || null,
+                                    dailyBudget: client.metaAds?.dailyBudget || 0
+                                },
+                                googleAds: {
+                                    deposit: client.googleAds?.deposit || 0,
+                                    depositDate: client.googleAds?.depositDate || null,
+                                    dailyBudget: client.googleAds?.dailyBudget || 0
+                                },
+                                tiktokAds: {
+                                    deposit: client.tiktokAds?.deposit || 0,
+                                    depositDate: client.tiktokAds?.depositDate || null,
+                                    dailyBudget: client.tiktokAds?.dailyBudget || 0
+                                },
+                                pinterestAds: {
+                                    deposit: client.pinterestAds?.deposit || 0,
+                                    depositDate: client.pinterestAds?.depositDate || null,
+                                    dailyBudget: client.pinterestAds?.dailyBudget || 0
+                                }
+                            },
+                            
+                            createdAt: serverTimestamp(),
+                            updatedAt: serverTimestamp()
+                        };
+
+                        await setDoc(doc(db, 'clients', client.id), taskораClient);
+                        restored++;
+                        addLog(`✓ Cliente restaurado: ${client.name} (${client.id})`);
+                        
+                    } catch (error) {
+                        errors++;
+                        addLog(`✗ Erro ao restaurar ${client.name}: ${error.message}`);
+                    }
+                }
+
+                addLog('=== RESTAURAÇÃO CONCLUÍDA ===');
+                addLog(`Clientes restaurados: ${restored}`);
+                addLog(`Erros: ${errors}`);
+                
+                if (errors === 0) {
+                    setStatus(`✅ Sucesso! ${restored} clientes restaurados com sucesso!`, 'success');
+                } else {
+                    setStatus(`⚠️ Restauração parcial: ${restored} sucessos, ${errors} erros`, 'error');
+                }
+                
+            } catch (error) {
+                addLog(`ERRO CRÍTICO: ${error.message}`);
+                setStatus(`❌ Falha na restauração: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('restoreBtn').disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
