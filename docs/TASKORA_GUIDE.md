@@ -32,8 +32,8 @@ O **Taskora** é a base tecnológica do aplicativo utilizado pela **Dácora**.
 No front-end, a identidade visual **permanece 100% como Dácora**, com a assinatura **"powered by Taskora"**.  
 Toda a evolução descrita aqui é **estrutural e técnica**, não alterando a UI ou branding.
 
-**Versão atual:** `taskora_v5.3_history_module.html`  
-**Arquivo principal:** `taskora_v5.3_history_module.html` (com redirecionamento via `index.html`)
+**Versão atual:** `taskora_v5.5.5_secure_firebase.html`  
+**Arquivo principal:** `taskora_v5.5.5_secure_firebase.html` (com redirecionamento via `index.html`)
 
 O Taskora organiza informações em módulos principais:
 - **Clientes** ✅ (Totalmente implementado)

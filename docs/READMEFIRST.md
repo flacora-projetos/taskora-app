@@ -1,5 +1,5 @@
 # 📖 READMEFIRST - Orientações Iniciais  
-**Versão do app:** `taskora_v5.5_team_integration.html`
+**Versão do app:** `taskora_v5.5.5_secure_firebase.html`
 
 Este documento deve ser lido **antes de qualquer modificação no app Taskora**.  
 Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de trabalho, evitando retrabalho, inconsistências e perda de tempo.
@@ -9,19 +9,19 @@ Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de traba
 ## 📌 Objetivo
 - O **Taskora** é a base tecnológica usada pela **Dácora** em **white label**.  
 - **UI e branding permanecem Dácora**, com a assinatura **"powered by Taskora"** (não alterar).  
-- Esta versão do app é **Taskora v5.5 com integração Team ↔ Tasks + navegação de calendário**, identificada por: **`taskora_v5.5_team_integration.html`**.  
-- **Novidades v5.5:** Integração completa entre módulos Team e Tasks, seletores de mês/ano no calendário
+- Esta versão do app é **Taskora v5.5.5 com configuração segura do Firebase**, identificada por: **`taskora_v5.5.5_secure_firebase.html`**.  
+- **Novidades v5.5.5:** Configuração segura do Firebase com proteção de chaves de API, integração completa entre módulos Team e Tasks, seletores de mês/ano no calendário
 - Firestore inicia em **modo Produção**, com **autenticação anônima habilitada** (sem tela de login).
 
 ---
 
 ## 1) Primeira Regra: Seja um **Expert no App**
 Antes de escrever qualquer linha de código:
-- Ler o código do arquivo principal: `taskora_v5.5_team_integration.html`
+- Ler o código do arquivo principal: `taskora_v5.5.5_secure_firebase.html`
 - Ler os documentos atualizados em `docs/`:
   - `TASKORA_GUIDE.md`, `SCHEMA_TASKORA.md`, `FIRESTORE_RULES.md`, `INDEXES.md`, `CHANGELOG.md`.
 - Entender layout, páginas, componentes JS/CSS e integração com Firebase:
-  - **Config** em `assets/js/config/firebase-test.js` (injeta `window.firebaseConfig`).  
+  - **Config** em `assets/js/config/firebase-config.js` (carrega configuração segura do Firebase).  
   - **Bootstrap** em `assets/js/firebase.js` (inicializa `app/db`).
   - **Roteamento** em `assets/js/app.js` (router por hash).
 - **Só após familiaridade completa** começar ajustes/melhorias.

@@ -1,14 +1,14 @@
 # SCHEMA_TASKORA.md
 
 ## 📌 Visão Geral
-Este documento define a **estrutura de dados oficial do Taskora v5.5**, baseada na implementação real do código.  
+Este documento define a **estrutura de dados oficial do Taskora v5.5.5**, baseada na implementação real do código.  
 Ele organiza coleções, campos e tipos utilizados pelo aplicativo, garantindo consistência, segurança e escalabilidade.  
 
 ⚠️ Importante:  
 - O front-end permanece com a identidade **Dácora**, exibindo "powered by Taskora".  
 - Esta definição reflete o **back-end (Firestore) realmente implementado**.
-- **Versão atual:** `taskora_v5.5_team_integration.html`
-- **Nova integração:** Team ↔ Tasks com responsáveis dinâmicos
+- **Versão atual:** `taskora_v5.5.5_secure_firebase.html`
+- **Nova integração:** Configuração segura do Firebase + Team ↔ Tasks com responsáveis dinâmicos
 
 ---
 
