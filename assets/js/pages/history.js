@@ -554,11 +554,14 @@ import { listTasksRaw } from '../data/tasksRepo.js';
         return sum;
       }, 0);
       
+      // Arredondar para evitar problemas de precisão decimal
+      const roundedTotalMinutes = Math.round(totalMinutes);
+      
       const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
       
       // Converter minutos para formato HH:MM
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
+      const hours = Math.floor(roundedTotalMinutes / 60);
+      const minutes = roundedTotalMinutes % 60;
       const timeFormatted = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
       
       elTotalTasks.textContent = total;

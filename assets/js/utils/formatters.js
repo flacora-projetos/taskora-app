@@ -242,6 +242,20 @@ export function removeAccents(text) {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
+/**
+ * Arredonda um número para um número específico de casas decimais
+ * Resolve problemas de precisão de ponto flutuante em JavaScript
+ * @param {number} num - Número a ser arredondado
+ * @param {number} decimals - Número de casas decimais (padrão: 2)
+ * @returns {number} Número arredondado
+ */
+export function roundToDecimals(num, decimals = 2) {
+  if (num === null || num === undefined || isNaN(num)) {
+    return 0;
+  }
+  return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
+
 // Para compatibilidade com módulos que não usam ES6
 if (typeof window !== 'undefined') {
   window.formatCurrency = formatCurrency;
@@ -256,4 +270,5 @@ if (typeof window !== 'undefined') {
   window.truncateText = truncateText;
   window.capitalizeWords = capitalizeWords;
   window.removeAccents = removeAccents;
+  window.roundToDecimals = roundToDecimals;
 }

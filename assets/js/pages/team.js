@@ -18,7 +18,7 @@ import {
 
 import { EventBus } from "../utils/eventBus.js";
 import { showToast } from "../utils/toast.js";
-import { formatCurrency, formatDate } from "../utils/formatters.js";
+import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters.js";
 
 (function (global) {
   "use strict";
@@ -550,11 +550,15 @@ import { formatCurrency, formatDate } from "../utils/formatters.js";
    * Atualiza cards de estatísticas
    */
   function updateStatsCards() {
+    const totalHoursRaw = allMembers.reduce((sum, m) => sum + (m.totalHours || 0), 0);
+    // Arredondar para 2 casas decimais para evitar problemas de precisão
+    const totalHoursWorked = roundToDecimals(totalHoursRaw, 2);
+    
     const stats = {
       totalMembers: allMembers.length,
       activeMembers: allMembers.filter(m => m.status === 'Ativo').length,
       averageHourlyRate: allMembers.length > 0 ? Math.round(allMembers.reduce((sum, m) => sum + (m.hourlyRate || 0), 0) / allMembers.length) : 0,
-      totalHoursWorked: allMembers.reduce((sum, m) => sum + (m.totalHours || 0), 0)
+      totalHoursWorked
     };
 
     if (elTotalMembers) elTotalMembers.textContent = stats.totalMembers;

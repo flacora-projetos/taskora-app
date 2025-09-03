@@ -10,6 +10,7 @@ import {
 import { createTask, updateTask } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
 import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
+import { roundToDecimals } from "../utils/formatters.js";
 
 /* global TaskoraFilters */
 
@@ -378,6 +379,8 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
     function updateStats() {
       const total = allRows.length;
       const totalHours = allRows.reduce((sum, row) => sum + (row.hours || 0), 0);
+      // Arredondar para 2 casas decimais para evitar problemas de precisão
+      const roundedTotalHours = roundToDecimals(totalHours, 2);
       const pending = allRows.filter(row => {
         const status = canonStatus(row.status || '').toLowerCase();
         return status === 'iniciada' || status === 'em progresso' || status === 'não realizada';
@@ -388,7 +391,7 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
       }).length;
       
       elStatTotal.textContent = total;
-      elStatHours.textContent = hoursFmt(totalHours);
+      elStatHours.textContent = hoursFmt(roundedTotalHours);
       elStatPending.textContent = pending;
       elStatCompleted.textContent = completed;
     }

@@ -19,6 +19,7 @@ import {
 
 import { db } from '../firebase.js';
 import { EventBus } from '../utils/eventBus.js';
+import { roundToDecimals } from '../utils/formatters.js';
 
 // Constantes para especialidades
 export const TEAM_SPECIALTIES = {
@@ -324,7 +325,8 @@ export async function getTeamStats() {
     });
 
     stats.averageHourlyRate = members.length > 0 ? Math.round(totalRate / members.length) : 0;
-    stats.totalHoursWorked = totalHours;
+    // Arredondar para 2 casas decimais para evitar problemas de precisão
+    stats.totalHoursWorked = roundToDecimals(totalHours, 2);
 
     return stats;
   } catch (error) {
@@ -389,7 +391,8 @@ export async function calculateMemberHours(memberName) {
       }
     });
     
-    return totalHours;
+    // Arredondar para 2 casas decimais para evitar problemas de precisão
+    return roundToDecimals(totalHours, 2);
   } catch (error) {
     console.error('Erro ao calcular horas do membro:', error);
     return 0;
