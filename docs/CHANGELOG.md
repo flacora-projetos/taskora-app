@@ -4,6 +4,33 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.7] - 2025-01-31
+
+### 🔧 CORRIGIDO
+- **Dropdown de Status de Tarefas:** Correção do posicionamento quando tarefa está no fim da lista
+  - 🎯 **Posicionamento Dinâmico:** Implementação de lógica para detectar espaço disponível na viewport
+  - ⬆️ **Posicionamento Acima:** Dropdown aparece acima da "pill" quando não há espaço embaixo
+  - ↔️ **Ajuste Horizontal:** Correção automática quando dropdown sai da lateral da tela
+  - 📁 **Arquivo:** `tasks.js` - função `showStatusDropdown` com cálculo de posicionamento inteligente
+
+- **Filtros Globais de Tarefas:** Correção da atualização instantânea após mudança de status
+  - 🔄 **Re-filtragem Automática:** Substituição de `renderTableSlice()` por `fetchAndFilter(TaskoraFilters.get())`
+  - 📊 **Atualização de Estatísticas:** Adição de `updateStats()` para refletir mudanças imediatamente
+  - ⚡ **Resposta Instantânea:** Tarefas agora desaparecem/aparecem instantaneamente ao mudar status
+  - 📁 **Arquivo:** `tasks.js` - função `showStatusDropdown` com aplicação correta dos filtros
+
+- **Filtro de Intervalo Rápido:** Correção do filtro "Últimos 30 dias" que não funcionava no carregamento inicial
+  - 🗓️ **Inicialização de Datas:** Processamento automático do filtro rápido quando datas estão vazias
+  - 🔧 **Função setFromState:** Adição de lógica para aplicar datas do filtro rápido na inicialização
+  - 💾 **Sincronização:** Atualização automática do `TaskoraFilters` com as datas calculadas
+  - 📁 **Arquivo:** `GlobalFiltersBar.js` - função `setFromState` com processamento de filtros rápidos
+
+### ✅ MELHORADO
+- **Experiência do Usuário:** Interface mais responsiva e intuitiva
+  - 🎨 **UI Consistente:** Dropdowns sempre visíveis independente da posição na tela
+  - ⚡ **Performance:** Filtros aplicados instantaneamente sem necessidade de recarregamento
+  - 🎯 **Precisão:** Filtros de data funcionam corretamente desde o primeiro carregamento
+
 ## [v5.5.6] - 2025-01-31
 
 ### 🔧 CORRIGIDO

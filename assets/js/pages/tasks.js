@@ -1024,11 +1024,30 @@ import { RichTextEditor } from "../components/richTextEditor.js";
       // Posicionar dropdown
       const chipRect = statusChip.getBoundingClientRect();
       dropdown.style.position = 'fixed';
-      dropdown.style.top = `${chipRect.bottom + 5}px`;
       dropdown.style.left = `${chipRect.left}px`;
       dropdown.style.zIndex = '1000';
 
       document.body.appendChild(dropdown);
+      
+      // Calcular posição vertical considerando o espaço disponível
+      const dropdownRect = dropdown.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const spaceBelow = viewportHeight - chipRect.bottom;
+      const spaceAbove = chipRect.top;
+      const dropdownHeight = dropdownRect.height;
+      
+      // Se não há espaço suficiente abaixo, posicionar acima
+      if (spaceBelow < dropdownHeight + 10 && spaceAbove > dropdownHeight + 10) {
+        dropdown.style.top = `${chipRect.top - dropdownHeight - 5}px`;
+      } else {
+        dropdown.style.top = `${chipRect.bottom + 5}px`;
+      }
+      
+      // Ajustar posição horizontal se necessário
+      const spaceRight = window.innerWidth - chipRect.left;
+      if (spaceRight < dropdownRect.width + 10) {
+        dropdown.style.left = `${chipRect.right - dropdownRect.width}px`;
+      }
 
       // Event listeners para opções
       dropdown.addEventListener('click', async (e) => {
@@ -1051,8 +1070,11 @@ import { RichTextEditor } from "../components/richTextEditor.js";
             allRows[taskIndex].status = newStatus;
           }
           
-          // Re-renderizar tabela
-          renderTableSlice();
+          // Re-aplicar filtros para atualizar a listagem instantaneamente
+          fetchAndFilter(TaskoraFilters.get());
+          
+          // Atualizar estatísticas
+          updateStats();
           
           // Mostrar feedback
           showCenterToast(`Status alterado para: ${option.querySelector('.tk-chip').textContent}`);

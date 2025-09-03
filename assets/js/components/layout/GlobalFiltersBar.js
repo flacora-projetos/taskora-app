@@ -527,6 +527,41 @@ export function GlobalFiltersBar(rootEl) {
     $("#f-date-from").value = s.dateFrom || s.startDate || "";
     $("#f-date-to").value   = s.dateTo   || s.endDate   || "";
     $("#f-quick").value     = s.quick || "custom";
+    
+    // Se o filtro rápido está definido mas as datas estão vazias, aplicar as datas do filtro rápido
+    const quickValue = s.quick || "custom";
+    const hasDateFrom = s.dateFrom || s.startDate;
+    const hasDateTo = s.dateTo || s.endDate;
+    
+    if (quickValue !== "custom" && (!hasDateFrom || !hasDateTo)) {
+      // Aplicar as datas do filtro rápido
+      if (quickValue === "today") {
+        setDates(today(), today());
+      } else if (quickValue === "yesterday") {
+        const y = addDays(today(), -1);
+        setDates(y, y);
+      } else if (quickValue === "last7") {
+        setDates(addDays(today(), -6), today());
+      } else if (quickValue === "last30") {
+        setDates(addDays(today(), -29), today());
+      } else if (quickValue === "thisMonth") {
+        const d = new Date();
+        const from = new Date(d.getFullYear(), d.getMonth(), 1);
+        const to   = new Date(d.getFullYear(), d.getMonth()+1, 0);
+        setDates(from, to);
+      } else if (quickValue === "prevMonth") {
+        const d = new Date();
+        const from = new Date(d.getFullYear(), d.getMonth()-1, 1);
+        const to   = new Date(d.getFullYear(), d.getMonth(), 0);
+        setDates(from, to);
+      }
+      
+      // Atualizar o TaskoraFilters com as novas datas
+      TaskoraFilters.set({
+        dateFrom: $("#f-date-from").value,
+        dateTo: $("#f-date-to").value
+      });
+    }
   }
   function setDates(from,to){
     $("#f-date-from").value = toISO(from);
