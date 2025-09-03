@@ -10,20 +10,6 @@ import { listTasks } from '../data/tasksRepo.js';
     return div.innerHTML;
   }
   
-  // Normalização de status (compatível com o módulo de tarefas)
-  const STATUS_OFFICIAL = ["iniciada","em progresso","concluída","não realizada"];
-  const norm = s => (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[_\s]+/g,"").toLowerCase();
-  function canonStatus(raw){
-    const n = norm(raw);
-    if(!n) return "";
-    if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog"].includes(n)) return "iniciada";
-    if(["emandamento","emprogresso","inprogress","doing","andamento","progresso"].includes(n)) return "em progresso";
-    if(["concluida","concluido","finalizada","finalizado","done","completed","fechada","fechado"].includes(n)) return "concluída";
-    if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
-    if(STATUS_OFFICIAL.map(norm).includes(n)) return raw;
-    return raw || "";
-  }
-  
   function formatDate(dateStr) {
     if (!dateStr) return '';
     
@@ -54,14 +40,13 @@ import { listTasks } from '../data/tasksRepo.js';
   }
   
   function getStatusColor(status) {
-    const normalizedStatus = canonStatus(status);
     const colors = {
       'concluída': { bg: '#DCFCE7', fg: '#166534', bd: '#BBF7D0' },
       'em progresso': { bg: '#DBEAFE', fg: '#1E40AF', bd: '#BFDBFE' },
       'iniciada': { bg: '#FEF3C7', fg: '#92400E', bd: '#FDE68A' },
       'não realizada': { bg: '#FEE2E2', fg: '#DC2626', bd: '#FECACA' }
     };
-    return colors[normalizedStatus] || { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' };
+    return colors[status] || { bg: '#F3F4F6', fg: '#6B7280', bd: '#E5E7EB' };
   }
   
   function getPriorityColor(priority) {
@@ -481,11 +466,7 @@ import { listTasks } from '../data/tasksRepo.js';
       
       // Filtro por status
       if (elStatusFilter.value !== 'all') {
-        filtered = filtered.filter(task => {
-          const taskStatus = canonStatus(task.status);
-          const filterStatus = canonStatus(elStatusFilter.value);
-          return taskStatus === filterStatus;
-        });
+        filtered = filtered.filter(task => task.status === elStatusFilter.value);
       }
       
       // Filtro por cliente (só aplicar se "Todos" estiver selecionado)
@@ -524,7 +505,7 @@ import { listTasks } from '../data/tasksRepo.js';
     
     function updateStats() {
       const total = filteredTasks.length;
-      const completed = filteredTasks.filter(t => canonStatus(t.status) === 'concluída').length;
+      const completed = filteredTasks.filter(t => t.status === 'concluída').length;
       
       // Calcular horas usando o campo hours (decimal) do repositório
       const totalMinutes = filteredTasks.reduce((sum, t) => {
@@ -641,9 +622,8 @@ import { listTasks } from '../data/tasksRepo.js';
           const taskDate = dateValue ? new Date(dateValue) : null;
           
           let dotClass = 'hs-task-dot';
-          const normalizedStatus = canonStatus(task.status);
-          if (normalizedStatus === 'concluída') dotClass += ' completed';
-          else if (normalizedStatus === 'em progresso') dotClass += ' in-progress';
+          if (task.status === 'concluída') dotClass += ' completed';
+          else if (task.status === 'em progresso') dotClass += ' in-progress';
           else if (task.dueDate && new Date(task.dueDate) < new Date()) dotClass += ' overdue';
           
           const taskTitle = task.client || task.title || 'Tarefa sem título';
@@ -661,7 +641,7 @@ import { listTasks } from '../data/tasksRepo.js';
                     <div class="hs-task-title">${escapeHtml(taskTitle)}</div>
                     <div class="hs-task-meta">
                       <span class="hs-task-status" style="background: ${statusColor.bg}; color: ${statusColor.fg}; border: 1px solid ${statusColor.bd}">
-                        ${normalizedStatus}
+                        ${task.status}
                       </span>
                       ${task.priority ? `
                         <span class="hs-task-priority" style="background: ${priorityColor.bg}; color: ${priorityColor.fg}; border: 1px solid ${priorityColor.bd}">

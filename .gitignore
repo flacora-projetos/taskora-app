@@ -60,6 +60,11 @@ Thumbs.db
 .firebaserc
 firebase-debug.log
 
+# Firebase configuration files with API keys
+assets/js/config/firebase-*.js
+!assets/js/config/firebase-config.js
+!assets/js/config/firebase-example.js
+
 # Build outputs
 dist/
 build/

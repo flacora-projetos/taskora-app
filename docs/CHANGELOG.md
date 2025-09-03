@@ -4,26 +4,6 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
-## [v5.5.5] - 2025-01-14
-
-### 🔧 CONFIGURAÇÃO DE BANCO DE DADOS
-- **Renomeação de Arquivo:** `firebase-test.js` → `firebase-production.js` para clareza sobre ambiente
-- **Atualização de Referências:** Arquivo HTML principal atualizado para usar nova configuração
-- **Comentários Melhorados:** Adicionados comentários claros sobre ambiente de produção no arquivo de configuração
-- **Confirmação de Banco Ativo:** Verificado que sistema usa exclusivamente `dacora---tarefas` (produção)
-- **Análise de Escritas Simultâneas:** Confirmado que NÃO há escritas simultâneas em múltiplos bancos
-
-### 📚 DOCUMENTAÇÃO
-- **Novo Arquivo:** `docs/DATABASE_CONFIGURATION.md` - Documentação completa sobre configuração de bancos
-- **Esclarecimento de Ambientes:** Diferenciação clara entre banco de produção (`dacora---tarefas`) e migração (`taskora-39404`)
-- **Mapeamento de Operações:** Documentação das operações CRUD centralizadas vs. diretas
-- **Histórico de Alterações:** Registro completo das mudanças de configuração
-
-### ⚠️ IMPORTANTE
-- **Banco de Migração Inativo:** `taskora-39404` usado apenas para ferramentas manuais de migração
-- **Sem Conflitos:** Confirmado que não há escritas simultâneas ou conflitos entre bancos
-- **Ambiente Único:** Sistema opera exclusivamente em produção (`dacora---tarefas`)
-
 ## [v5.5.4] - 2025-01-31
 
 ### 🔧 CORRIGIDO

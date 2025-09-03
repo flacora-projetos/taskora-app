@@ -1,20 +1,13 @@
 // Taskora — Firebase (PROJETO NOVO)
-// Este arquivo injeta o firebaseConfig no window antes do app iniciar.
-// Mantemos o nome e caminho para não precisar alterar os HTMLs.
+// Este arquivo foi modificado para usar a configuração segura do Firebase.
+// Agora importamos a configuração do arquivo firebase-config.js que gerencia as chaves de API de forma segura.
 // Ambiente: produção com autenticação anônima habilitada (sem tela de login).
 
-export const firebaseConfig = {
-  apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
-  authDomain: "dacora---tarefas.firebaseapp.com",
-  projectId: "dacora---tarefas",
-  storageBucket: "dacora---tarefas.firebasestorage.app",
-  messagingSenderId: "406318974539",
-  appId: "1:406318974539:web:d842997c1b064c0ba56fce"
-}; // Configuração da Dácora - migrado do export-dacora-data.html
+// Importa a configuração segura do Firebase
+import { loadFirebaseConfig } from './firebase-config.js';
 
-if (typeof window !== "undefined") {
-  // Disponibiliza para assets/js/firebase.js
-  window.firebaseConfig = firebaseConfig;
-  // Log leve para conferência no console
-  console.log("[Dácora] Firebase config carregado:", firebaseConfig.projectId);
-}
+// A configuração é carregada automaticamente pelo firebase-config.js
+// e disponibilizada via window.firebaseConfig
+
+// Este arquivo é mantido para compatibilidade com os HTMLs existentes
+// mas não contém mais chaves de API expostas no código fonte
