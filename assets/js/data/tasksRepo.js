@@ -192,50 +192,7 @@ function canonStatus(raw){
 }
 
 // ==== Map DB → UI ===================================================
-async function mapDbToUi(docSnap) {
-  const data = docSnap.data();
-  const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-  const { Timestamp } = fs;
-
-  const title = firstNonEmpty(data.title, data.task, data.name, '(sem título)');
-
-  const startDate = (data.startAt instanceof Timestamp) ? data.startAt.toDate()
-                   : (data.inicio && !isNaN(new Date(data.inicio)) ? new Date(data.inicio) : null);
-  const dueDate   = (data.dueAt   instanceof Timestamp) ? data.dueAt.toDate()
-                   : (data.limite && !isNaN(new Date(data.limite)) ? new Date(data.limite) : null);
-
-  let dateStr = firstNonEmpty(data.date, data.data, data.startDateStr, data.inicioStr);
-  if (!dateStr) {
-    if (startDate)      dateStr = ymd(startDate);
-    else if (dueDate)   dateStr = ymd(dueDate);
-  }
-
-  // Normalizar status para garantir compatibilidade com dados legados
-  const rawStatus = data.status || 'NAO_REALIZADA';
-  const normalizedStatus = canonStatus(rawStatus);
-
-  return {
-    id: docSnap.id,
-    title,
-    description: data.description || '',
-    status: normalizedStatus,
-    priority: data.priority || 'MEDIUM',
-    client: firstNonEmpty(data.client, data.clientName, data.cliente) || null,
-    owner:  firstNonEmpty(data.owner,  data.ownerName,  data.responsavel) || null,
-    startDate,
-    dueDate,
-    hours: data.hours || (data.estimatedMinutes | 0) / 60, // Usar campo hours direto ou converter de estimatedMinutes
-    hoursHHMM: hhmmFromMinutes(data.estimatedMinutes | 0),
-    spentMinutes: data.spentMinutes | 0,
-
-    date: dateStr,
-    recurrenceType: data.recurrenceType || (data.recurrence && data.recurrence.type) || null,
-    recurrenceDays: data.recurrenceDays || (data.recurrence && data.recurrence.days) || null,
-    recurrenceUntil: data.recurrenceUntil || (data.recurrence && data.recurrence.until) || null,
-
-    orgId: data.orgId || null
-  };
-}
+// Função mapDbToUi movida para a seção de exports para ser reutilizada
 
 // ==== Helpers de evento =============================================
 function emitTasksChanged(op, id){
@@ -276,6 +233,58 @@ async function updateTeamMemberHours(ownerName) {
 }
 
 // ==== API ============================================================
+
+/**
+ * Mapeia dados do banco para a UI
+ * @param {DocumentSnapshot} docSnap - Snapshot do documento do Firestore
+ * @returns {Promise<Object>} Objeto mapeado para a UI
+ */
+export async function mapDbToUi(docSnap) {
+  const data = docSnap.data();
+  const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+  const { Timestamp } = fs;
+
+  const title = firstNonEmpty(data.title, data.task, data.name, '(sem título)');
+
+  const startDate = (data.startAt instanceof Timestamp) ? data.startAt.toDate()
+                   : (data.inicio && !isNaN(new Date(data.inicio)) ? new Date(data.inicio) : null);
+  const dueDate   = (data.dueAt   instanceof Timestamp) ? data.dueAt.toDate()
+                   : (data.limite && !isNaN(new Date(data.limite)) ? new Date(data.limite) : null);
+
+  let dateStr = firstNonEmpty(data.date, data.data, data.startDateStr, data.inicioStr);
+  if (!dateStr) {
+    if (startDate)      dateStr = ymd(startDate);
+    else if (dueDate)   dateStr = ymd(dueDate);
+  }
+
+  // Normalizar status para garantir compatibilidade com dados legados
+  const rawStatus = data.status || 'NAO_REALIZADA';
+  const normalizedStatus = canonStatus(rawStatus);
+
+  return {
+    id: docSnap.id,
+    title,
+    description: data.description || '',
+    status: normalizedStatus,
+    priority: data.priority || 'MEDIUM',
+    client: firstNonEmpty(data.client, data.clientName, data.cliente) || null,
+    owner:  firstNonEmpty(data.owner,  data.ownerName,  data.responsavel) || null,
+    startDate,
+    dueDate,
+    date: dateStr,
+    dueDate: firstNonEmpty(data.dueDate, data.limite, data.prazo) || null,
+    endDate: data.endDate || null,
+    hours: data.hours || (data.estimatedMinutes ? data.estimatedMinutes / 60 : 0),
+    hoursHHMM: data.estimatedMinutes ? hhmmFromMinutes(data.estimatedMinutes) : '00:00',
+    createdAt: (data.createdAt instanceof Timestamp) ? data.createdAt.toDate() : new Date(),
+    updatedAt: (data.updatedAt instanceof Timestamp) ? data.updatedAt.toDate() : null,
+    orgId: data.orgId || 'dacora',
+    recurrence: data.recurrence || { type: 'none' },
+    recurrenceType: data.recurrenceType || 'none',
+    recurrenceDays: data.recurrenceDays || [],
+    recurrenceUntil: data.recurrenceUntil || null
+  };
+}
 
 /**
  * Lista tarefas SEM aplicar filtros globais (para uso independente)

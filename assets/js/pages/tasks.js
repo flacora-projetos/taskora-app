@@ -7,7 +7,7 @@ import {
   collection, query, orderBy, limit, getDocs,
   addDoc, updateDoc, deleteDoc, doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-import { createTask, updateTask } from "../data/tasksRepo.js";
+import { createTask, updateTask, mapDbToUi } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
 import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 import { roundToDecimals } from "../utils/formatters.js";
@@ -380,9 +380,13 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     
     function updateStats() {
       const total = allRows.length;
-      const totalHours = allRows.reduce((sum, row) => sum + (row.hours || 0), 0);
-      // Arredondar para 2 casas decimais para evitar problemas de precisão
-      const roundedTotalHours = roundToDecimals(totalHours, 2);
+      
+      // Calcular total de horas trabalhadas
+      const totalHours = allRows.reduce((sum, row) => {
+        const hours = parseFloat(row.hours) || 0;
+        return sum + hours;
+      }, 0);
+      
       const pending = allRows.filter(row => {
         const status = canonStatus(row.status || '').toLowerCase();
         return status === 'iniciada' || status === 'em progresso' || status === 'não realizada';
@@ -393,7 +397,7 @@ import { RichTextEditor } from "../components/richTextEditor.js";
       }).length;
       
       elStatTotal.textContent = total;
-      elStatHours.textContent = hoursFmt(roundedTotalHours);
+      elStatHours.textContent = hoursFmt(totalHours);
       elStatPending.textContent = pending;
       elStatCompleted.textContent = completed;
     }
@@ -489,11 +493,19 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     async function fetchFromFirestoreOrdered(){
       const q = query(collection(db,"tasks"), orderBy("date","desc"), limit(PREFETCH));
       const snap = await getDocs(q);
-      return snap.docs.map(d=>({id:d.id, ...d.data()}));
+      const items = [];
+      for (const d of snap.docs) {
+        items.push(await mapDbToUi(d));
+      }
+      return items;
     }
     async function fetchFromFirestoreSimple(){
       const snap = await getDocs(collection(db,"tasks"));
-      return snap.docs.map(d=>({id:d.id, ...d.data()}));
+      const items = [];
+      for (const d of snap.docs) {
+        items.push(await mapDbToUi(d));
+      }
+      return items;
     }
 
     async function fetchAndFilter(current){
