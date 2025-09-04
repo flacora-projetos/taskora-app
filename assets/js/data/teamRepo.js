@@ -17,8 +17,8 @@ import {
   writeBatch
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
 
-import { db } from '../config/firebase.js';
-import { EventBus } from '../utils/EventBus.js';
+import { db } from '../firebase.js';
+import { EventBus } from '../utils/eventBus.js';
 import { roundToDecimals } from '../utils/formatters.js';
 
 // Constantes para especialidades

@@ -1,4 +1,4 @@
-// EventBus.js - Sistema de eventos para comunicação entre módulos
+// eventBus.js - Sistema de eventos para comunicação entre módulos
 
 class EventBusClass {
   constructor() {
@@ -72,33 +72,26 @@ class EventBusClass {
 
   /**
    * Lista todos os eventos registrados
-   * @returns {Array} Array com nomes dos eventos
+   * @returns {string[]} Array com nomes dos eventos
    */
   getEvents() {
     return Object.keys(this.events);
   }
 
   /**
-   * Verifica se um evento tem listeners
+   * Conta quantos listeners um evento possui
    * @param {string} event - Nome do evento
-   * @returns {boolean}
-   */
-  hasListeners(event) {
-    return this.events[event] && this.events[event].length > 0;
-  }
-
-  /**
-   * Retorna o número de listeners para um evento
-   * @param {string} event - Nome do evento
-   * @returns {number}
+   * @returns {number} Número de listeners
    */
   listenerCount(event) {
     return this.events[event] ? this.events[event].length : 0;
   }
 }
 
-// Exporta uma instância única (singleton)
+// Instância singleton do EventBus
 export const EventBus = new EventBusClass();
 
-// Exporta também a classe para casos especiais
-export { EventBusClass };
+// Para compatibilidade com módulos que não usam ES6
+if (typeof window !== 'undefined') {
+  window.EventBus = EventBus;
+}

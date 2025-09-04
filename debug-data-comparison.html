@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Comparação de Dados</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .data { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Debug - Comparação de Dados entre Páginas</h1>
+    
+    <div class="section">
+        <h2>Dados da Página de Tarefas (fetchFromFirestore)</h2>
+        <div id="tasks-data" class="data">Carregando...</div>
+    </div>
+    
+    <div class="section">
+        <h2>Dados da Página de Histórico (listTasksRaw)</h2>
+        <div id="history-data" class="data">Carregando...</div>
+    </div>
+    
+    <div class="section">
+        <h2>Comparação de Campos Hours</h2>
+        <div id="comparison" class="data">Aguardando dados...</div>
+    </div>
+
+    <script type="module">
+        // Configuração Firebase
+        window.firebaseConfig = {
+            apiKey: "AIzaSyBEWKJWQKJWQKJWQKJWQKJWQKJWQKJWQKJ",
+            authDomain: "taskora-app.firebaseapp.com",
+            projectId: "taskora-app",
+            storageBucket: "taskora-app.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnop"
+        };
+
+        import { listTasksRaw, mapDbToUi } from './assets/js/data/tasksRepo.js';
+
+        async function getDb() {
+            if (window.db) return window.db;
+            const appMod = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+            const fsMod = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+            const { initializeApp } = appMod;
+            const { getFirestore } = fsMod;
+            const app = initializeApp(window.firebaseConfig);
+            window.db = getFirestore(app);
+            return window.db;
+        }
+
+        async function fetchFromFirestoreOrdered() {
+            const db = await getDb();
+            const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+            const { collection, getDocs, query, orderBy, limit } = fs;
+            
+            const q = query(collection(db, "tasks"), orderBy("date", "desc"), limit(50));
+            const snap = await getDocs(q);
+            const items = [];
+            for (const d of snap.docs) {
+                items.push(await mapDbToUi(d));
+            }
+            return items;
+        }
+
+        async function compareData() {
+            try {
+                console.log('Iniciando comparação de dados...');
+                
+                // Dados da página de tarefas
+                const tasksData = await fetchFromFirestoreOrdered();
+                console.log('Dados da página de tarefas:', tasksData);
+                
+                // Dados da página de histórico
+                const historyData = await listTasksRaw(50);
+                console.log('Dados da página de histórico:', historyData);
+                
+                // Exibir dados
+                document.getElementById('tasks-data').innerHTML = `
+                    <strong>Total:</strong> ${tasksData.length} tarefas<br>
+                    <strong>Primeiras 3 tarefas:</strong><br>
+                    <pre>${JSON.stringify(tasksData.slice(0, 3), null, 2)}</pre>
+                `;
+                
+                document.getElementById('history-data').innerHTML = `
+                    <strong>Total:</strong> ${historyData.length} tarefas<br>
+                    <strong>Primeiras 3 tarefas:</strong><br>
+                    <pre>${JSON.stringify(historyData.slice(0, 3), null, 2)}</pre>
+                `;
+                
+                // Comparar campos hours
+                let comparison = '<strong>Comparação de Hours:</strong><br>';
+                const maxCompare = Math.min(5, tasksData.length, historyData.length);
+                
+                for (let i = 0; i < maxCompare; i++) {
+                    const taskItem = tasksData[i];
+                    const historyItem = historyData.find(h => h.id === taskItem.id);
+                    
+                    if (historyItem) {
+                        comparison += `<br><strong>Tarefa ${taskItem.id}:</strong><br>`;
+                        comparison += `- Tasks page hours: ${taskItem.hours}<br>`;
+                        comparison += `- History page hours: ${historyItem.hours}<br>`;
+                        comparison += `- Iguais: ${taskItem.hours === historyItem.hours ? 'SIM' : 'NÃO'}<br>`;
+                    }
+                }
+                
+                document.getElementById('comparison').innerHTML = comparison;
+                
+            } catch (error) {
+                console.error('Erro na comparação:', error);
+                document.getElementById('tasks-data').innerHTML = 'Erro: ' + error.message;
+                document.getElementById('history-data').innerHTML = 'Erro: ' + error.message;
+                document.getElementById('comparison').innerHTML = 'Erro: ' + error.message;
+            }
+        }
+
+        // Executar comparação quando a página carregar
+        compareData();
+    </script>
+</body>
+</html>

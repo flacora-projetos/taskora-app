@@ -1,7 +1,6 @@
 // Taskora — Firebase (Configuração Segura)
 // Este arquivo carrega a configuração do Firebase de forma segura, sem expor chaves de API no código fonte.
 // As chaves de API são carregadas de variáveis de ambiente ou de um arquivo local não versionado.
-// ATUALIZADO: 15/09/2025 - Correção definitiva da chave de API
 
 // Função para carregar a configuração do Firebase
 export function loadFirebaseConfig() {
@@ -14,45 +13,41 @@ export function loadFirebaseConfig() {
     appId: "1:406318974539:web:d842997c1b064c0ba56fce"
   };
 
-  // Configuração com chave de API para produção - CORRIGIDA
-  const config = {
-    ...defaultConfig,
-    apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ"
-  };
-  
-  // Limpa qualquer configuração anterior do cache
-  if (typeof window !== "undefined") {
-    delete window.firebaseConfig;
-    // Força a nova configuração
-    window.firebaseConfig = config;
-    console.log("[Taskora] Firebase config carregado (v15.09.2025):", config.projectId);
-    console.log("[Taskora] API Key ativa:", config.apiKey.substring(0, 20) + "...");
-  }
-  
-  // Fallback para desenvolvimento local (tenta carregar firebase-keys.js)
+  // Tenta carregar a chave de API de um arquivo local não versionado
   try {
+    // Importa dinamicamente o arquivo de configuração local (não versionado)
     import('./firebase-keys.js')
       .then(module => {
-        if (module.FIREBASE_API_KEY && module.FIREBASE_API_KEY !== "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ") {
-          const localConfig = {
-            ...defaultConfig,
-            apiKey: module.FIREBASE_API_KEY
-          };
-          if (typeof window !== "undefined") {
-            window.firebaseConfig = localConfig;
-            console.log("[Taskora] Firebase config local carregado:", localConfig.projectId);
-          }
+        // Mescla a configuração padrão com a chave de API
+        const config = {
+          ...defaultConfig,
+          apiKey: module.FIREBASE_API_KEY
+        };
+        
+        // Disponibiliza para assets/js/firebase.js
+        if (typeof window !== "undefined") {
+          window.firebaseConfig = config;
+          console.log("[Taskora] Firebase config carregado com segurança:", config.projectId);
         }
       })
       .catch(error => {
-        // Ignora erro silenciosamente - usa a configuração padrão acima
-        console.log("[Taskora] Usando configuração de produção (firebase-keys.js não encontrado)");
+        console.error("[Taskora] Erro ao carregar chaves do Firebase. Verifique se o arquivo firebase-keys.js existe:", error);
+        console.warn("[Taskora] Usando configuração sem chave de API. O aplicativo não funcionará corretamente.");
+        
+        // Em caso de erro, disponibiliza a configuração sem a chave de API
+        if (typeof window !== "undefined") {
+          window.firebaseConfig = defaultConfig;
+        }
       });
   } catch (error) {
-    // Em caso de erro, usa a configuração já definida acima
-    console.log("[Taskora] Usando configuração de produção");
+    console.error("[Taskora] Erro ao carregar configuração do Firebase:", error);
+    
+    // Em caso de erro, disponibiliza a configuração sem a chave de API
+    if (typeof window !== "undefined") {
+      window.firebaseConfig = defaultConfig;
+    }
   }
 }
 
-// Carrega automaticamente quando o módulo é importado
+// Carrega a configuração automaticamente
 loadFirebaseConfig();
