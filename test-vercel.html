@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Vercel - Taskora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Diagnóstico - Vercel</h1>
+    
+    <div class="test-card">
+        <h2>📍 Informações do Ambiente</h2>
+        <div id="env-info"></div>
+    </div>
+    
+    <div class="test-card">
+        <h2>🔥 Teste Firebase</h2>
+        <div id="firebase-test"></div>
+    </div>
+    
+    <div class="test-card">
+        <h2>📦 Teste Módulos ES6</h2>
+        <div id="modules-test"></div>
+    </div>
+    
+    <div class="test-card">
+        <h2>🌐 Teste Conectividade</h2>
+        <div id="connectivity-test"></div>
+    </div>
+
+    <script>
+        // Teste 1: Informações do ambiente
+        function testEnvironment() {
+            const info = {
+                hostname: window.location.hostname,
+                protocol: window.location.protocol,
+                port: window.location.port,
+                userAgent: navigator.userAgent,
+                timestamp: new Date().toISOString()
+            };
+            
+            document.getElementById('env-info').innerHTML = `
+                <div class="status info">
+                    <strong>Hostname:</strong> ${info.hostname}<br>
+                    <strong>Protocol:</strong> ${info.protocol}<br>
+                    <strong>Port:</strong> ${info.port || 'default'}<br>
+                    <strong>User Agent:</strong> ${info.userAgent}<br>
+                    <strong>Timestamp:</strong> ${info.timestamp}
+                </div>
+            `;
+        }
+        
+        // Teste 2: Firebase
+        async function testFirebase() {
+            const testDiv = document.getElementById('firebase-test');
+            try {
+                // Teste de carregamento da configuração
+                const configModule = await import('./assets/js/config/firebase-config.js');
+                testDiv.innerHTML += '<div class="status success">✅ Configuração Firebase carregada</div>';
+                
+                // Teste de inicialização
+                const firebaseModule = await import('./assets/js/firebase.js');
+                testDiv.innerHTML += '<div class="status success">✅ Firebase inicializado</div>';
+                
+                // Verificar se window.firebaseConfig existe
+                if (window.firebaseConfig) {
+                    testDiv.innerHTML += `<div class="status success">✅ window.firebaseConfig disponível</div>`;
+                    testDiv.innerHTML += `<pre>${JSON.stringify(window.firebaseConfig, null, 2)}</pre>`;
+                } else {
+                    testDiv.innerHTML += '<div class="status error">❌ window.firebaseConfig não encontrado</div>';
+                }
+                
+            } catch (error) {
+                testDiv.innerHTML += `<div class="status error">❌ Erro Firebase: ${error.message}</div>`;
+                testDiv.innerHTML += `<pre>${error.stack}</pre>`;
+            }
+        }
+        
+        // Teste 3: Módulos ES6
+        async function testModules() {
+            const testDiv = document.getElementById('modules-test');
+            const modules = [
+                './assets/js/app.js',
+                './assets/js/auth/authManager.js',
+                './assets/js/components/layout/SidebarNav.js'
+            ];
+            
+            for (const modulePath of modules) {
+                try {
+                    await import(modulePath);
+                    testDiv.innerHTML += `<div class="status success">✅ ${modulePath}</div>`;
+                } catch (error) {
+                    testDiv.innerHTML += `<div class="status error">❌ ${modulePath}: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        // Teste 4: Conectividade
+        async function testConnectivity() {
+            const testDiv = document.getElementById('connectivity-test');
+            const urls = [
+                'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js',
+                'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js',
+                'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js'
+            ];
+            
+            for (const url of urls) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    if (response.ok) {
+                        testDiv.innerHTML += `<div class="status success">✅ ${url}</div>`;
+                    } else {
+                        testDiv.innerHTML += `<div class="status error">❌ ${url}: ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    testDiv.innerHTML += `<div class="status error">❌ ${url}: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        // Executar todos os testes
+        async function runAllTests() {
+            testEnvironment();
+            await testFirebase();
+            await testModules();
+            await testConnectivity();
+        }
+        
+        // Iniciar testes quando a página carregar
+        window.addEventListener('load', runAllTests);
+    </script>
+</body>
+</html>
