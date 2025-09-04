@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskora - Tarefas</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link rel="stylesheet" href="../assets/css/calendar.css">
+    <link rel="stylesheet" href="../assets/css/calendar-sizing-override.css">
+</head>
+<body>
+    <div class="app-shell" style="display: none;">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar"></aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Topbar -->
+            <header id="topbar" class="topbar"></header>
+            
+            <!-- Global Filters -->
+            <div id="global-filters" class="global-filters"></div>
+            
+            <!-- Page Content -->
+            <main id="page-root" class="page-content"></main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../assets/js/app.js"></script>
+    <script>
+        // Forçar navegação para a página de tarefas
+        window.location.hash = '#/tasks';
+    </script>
+</body>
+</html>

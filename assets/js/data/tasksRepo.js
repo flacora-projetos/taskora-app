@@ -160,6 +160,8 @@ async function mapUiToDb(payload) {
     spentMinutes: payload.spentMinutes | 0,
     hours: payload.hours || null, // Campo hours decimal para compatibilidade
     createdBy: payload.createdByRef || null,
+    createdByEmail: payload.createdByEmail || null,
+    createdByName: payload.createdByName || null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
 
@@ -468,6 +470,19 @@ export async function createTask(uiPayload) {
   const db = await getDb();
   const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
   const { collection, addDoc } = fs;
+
+  // Adicionar usuário autenticado como criador da tarefa
+  try {
+    const authManager = (await import('../auth/authManager.js')).default;
+    const currentUser = authManager.getCurrentUser();
+    if (currentUser) {
+      uiPayload.createdByRef = currentUser.uid;
+      uiPayload.createdByEmail = currentUser.email;
+      uiPayload.createdByName = authManager.getCurrentUserDisplayName();
+    }
+  } catch (error) {
+    console.warn('[TasksRepo] Não foi possível obter usuário autenticado:', error);
+  }
 
   const toSave = await mapUiToDb(uiPayload);
   const ref = await addDoc(collection(db, 'tasks'), toSave);

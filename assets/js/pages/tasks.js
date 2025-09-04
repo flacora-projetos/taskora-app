@@ -140,7 +140,7 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         /* Campo sticky com título, cards e filtros */
         .tk-sticky-section {
           position: sticky;
-          top: 65px;
+          top: 75px;
           z-index: 10;
           background: #F8F9FA;
           padding: 32px 32px 20px 32px;
@@ -936,6 +936,29 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     // Botão "Nova Tarefa" (criação real)
     async function openNewTaskModal(e){
       if(e) e.preventDefault();
+      
+      // Verificar autenticação antes de abrir o modal
+      try {
+        const authManager = (await import('../auth/authManager.js')).default;
+        const currentUser = authManager.getCurrentUser();
+        
+        if (!currentUser) {
+          alert('Você precisa estar logado para criar tarefas.');
+          console.error('[Tasks] Usuário não autenticado');
+          return;
+        }
+        
+        console.log('[Tasks] Usuário autenticado:', {
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: authManager.getCurrentUserDisplayName()
+        });
+      } catch (authError) {
+        console.error('[Tasks] Erro ao verificar autenticação:', authError);
+        alert('Erro ao verificar autenticação. Tente fazer login novamente.');
+        return;
+      }
+      
       let clients=[], owners=[];
       try{
         const { listClients, listTeamMembers } = await import("../data/metaRepo.js");
@@ -952,18 +975,16 @@ import { RichTextEditor } from "../components/richTextEditor.js";
             showCenterToast("Tarefa criada com sucesso");
             console.log('[Tasks] ✅ Tarefa criada com ID:', taskId);
             
-            // Adicionar tarefa localmente para exibição imediata
-            const newTask = { 
-              id: taskId, 
-              ...payload, 
-              createdAt: { seconds: Math.floor(Date.now() / 1000) } 
-            };
-            allRows.unshift(newTask);
-            page = 0; 
-            renderTableSlice();
+            // Não adicionar tarefa localmente - deixar o sistema de refresh automático funcionar
+            // O tasks-live-refresh.js irá detectar a mudança e atualizar a lista automaticamente
           }catch(err){
             console.error("[Tasks] Erro ao criar tarefa:", err);
-            alert("Falha ao criar tarefa. Veja o console para detalhes.");
+            console.error("[Tasks] Detalhes do erro:", {
+              message: err.message,
+              code: err.code,
+              stack: err.stack
+            });
+            alert(`Falha ao criar tarefa: ${err.message || 'Erro desconhecido'}`);
           }
         }
       });

@@ -16,7 +16,7 @@ import {
   TEAM_STATUS
 } from "../data/teamRepo.js";
 
-import { EventBus } from "../utils/eventBus.js";
+import { EventBus } from "../utils/EventBus.js";
 import { showToast } from "../utils/toast.js";
 import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters.js";
 
@@ -42,46 +42,45 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
    */
   function render() {
     const container = document.createElement('div');
-    container.id = 'team-container';
+    container.className = 'team-page';
     
     container.innerHTML = `
       <style>
         /* Estilos específicos do módulo Team */
-        .tm-container { width: 100%; margin: 0; padding: 0; }
-        .tm-sticky { position: sticky; top: 40px; z-index: 10; background: transparent; padding: 20px; }
-        .tm-content-section { position: relative; overflow: auto; padding: 0 20px 20px 20px; }
+        .team-page { background: #F8F9FA; min-height: 100vh; font-size: 13px; color: #2F3B2F; display: flex; flex-direction: column; }
+        .tm-sticky { position: sticky; top: 0; z-index: 10; background: #F8F9FA; padding: 20px; border-bottom: 2px solid #E4E7E4; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tm-content-section { flex: 1; padding: 20px; overflow: auto; }
         
         /* Tabela unificada */
         .tm-table-container { 
           background: #FFFFFF; 
           border: 1px solid #E4E7E4;
           border-radius: 8px;
-          overflow: hidden;
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .tm-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .tm-table { 
+          width: 100%; 
+          table-layout: fixed; 
+          border-collapse: separate; 
+          border-spacing: 0; 
+        }
         .tm-table-header th { text-align: center; font-weight: 900; font-size: 12px; color: #334155; padding: 12px 10px; letter-spacing: 0.2px; background: #F8F9FA; border: none; border-bottom: 1px solid #E4E7E4; }
         .tm-table tbody tr { border-bottom: 1px solid #F1F5F9; }
         .tm-table tbody tr:last-child { border-bottom: none; }
         .tm-loading { text-align: center; padding: 40px; color: #6B7280; font-style: italic; }
         .tm-empty { text-align: center; padding: 40px; }
         .tm-empty p { margin-bottom: 16px; color: #6B7280; }
-        .tm-cell { padding: 12px 10px; vertical-align: middle; border: none; }
-
-        
+        .tm-cell { background:#fff; border:1px solid #EEE; padding:10px 12px; vertical-align:middle; overflow:hidden; }
         .tm-row{ box-shadow:0 1px 1px rgba(0,0,0,.03), 0 6px 16px rgba(0,0,0,.03) }
-        .tm-cell{ background:#fff; border:1px solid #EEE; padding:10px 12px; vertical-align:middle; overflow:hidden; }
-        .tm-table{ width:100%; table-layout:auto; border-collapse:separate; border-spacing:0; min-width:800px; }
         
         /* Larguras das colunas */
-        .col-photo{ width:80px }
-        .col-name{ width:25%; min-width:200px }
-        .col-specialty{ width:20%; min-width:150px }
-        .col-level{ width:15%; min-width:120px }
-        .col-status{ width:12%; min-width:100px; text-align:center }
-        .col-rate{ width:12%; min-width:120px; text-align:center }
-        .col-hours{ width:10%; min-width:100px; text-align:center }
-        .col-actions{ width:120px; text-align:center }
+        .col-photo{ width:80px; }
+        .col-name{ width:30%; }
+        .col-specialty{ width:20%; }
+        .col-level{ width:15%; }
+        .col-status{ width:12%; text-align:center; }
+        .col-hours{ width:10%; text-align:center; }
+        .col-actions{ width:120px; text-align:center; }
         
         /* Foto do membro */
         .tm-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #E4E7E4; }
@@ -158,9 +157,37 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
         /* Responsividade */
         @media (max-width: 768px) {
           .tm-hide-sm { display: none !important; }
+          .tm-table { font-size: 12px; min-width: 500px; }
+          .tm-filters-form { flex-direction: column; gap: 12px; }
+          .tm-filters-group { flex-direction: column; width: 100%; }
+          .tm-filter-field { width: 100%; }
+          .tm-sticky { padding: 15px; }
+          .tm-content-section { padding: 0 15px 15px 15px; }
           .col-photo{ width:60px }
-          .col-name{ width:150px }
-          .col-specialty{ width:120px }
+          .col-name{ min-width:150px; width:25% }
+          .col-specialty{ min-width:120px; width:20% }
+          .col-level{ min-width:100px; width:15% }
+          .col-status{ min-width:80px; width:12% }
+          .col-rate{ min-width:100px; width:12% }
+          .col-hours{ min-width:80px; width:10% }
+        }
+        
+        @media (max-width: 480px) {
+          .tm-table { min-width: 400px; }
+          .col-specialty, .col-level { display: none; }
+        }
+        
+        /* Removido: estilos conflitantes do tm-container */
+        
+        .tm-table-container {
+          width: 100%;
+          overflow-x: auto;
+        }
+        
+        .tm-table {
+          width: 100%;
+          min-width: 800px;
+          table-layout: auto;
         }
         
         /* Loading */
@@ -185,7 +212,7 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
         .tm-btn-secondary:hover { background: #E5E7EB; }
       </style>
 
-      <div class="tm-container">
+      <div>
         <!-- Área Sticky -->
         <div class="tm-sticky">
           <!-- Título -->
@@ -384,21 +411,8 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
       
       console.log(`[Team] ${allMembers.length} membros carregados:`, allMembers.map(m => m.name));
       
-      // Calcular e persistir horas trabalhadas para cada membro
-      console.log('[Team] Calculando e salvando horas trabalhadas...');
-      for (let i = 0; i < allMembers.length; i++) {
-        const member = allMembers[i];
-        const totalHours = await calculateMemberHours(member.name);
-        
-        // Persistir no Firebase se as horas mudaram
-        if (member.totalHours !== totalHours) {
-          await updateMemberStats(member.id, { totalHours });
-          console.log(`[Team] Horas atualizadas para ${member.name}: ${totalHours}h`);
-        }
-        
-        allMembers[i] = { ...member, totalHours };
-      }
-      
+      // Usar horas já salvas no Firebase (não recalcular em tempo real para melhor performance)
+      // O cálculo de horas pode ser feito em background ou quando necessário
       filteredMembers = [...allMembers];
       
       await Promise.all([
@@ -406,6 +420,11 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
         updateStatsCards(),
         populateFilterOptions()
       ]);
+      
+      // Calcular horas em background (não bloqueia a interface)
+      setTimeout(() => {
+        updateMemberHoursInBackground();
+      }, 1000);
       
     } catch (error) {
       console.error('Erro ao carregar dados da equipe:', error);
@@ -650,7 +669,13 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
 
     filteredMembers = allMembers.filter(member => {
       if (filters.status && member.status !== filters.status) return false;
-      if (filters.specialty && member.specialty !== filters.specialty) return false;
+      
+      // Verificar especialidade - pode ser array ou string
+      if (filters.specialty) {
+        const memberSpecialties = Array.isArray(member.specialty) ? member.specialty : [member.specialty];
+        if (!memberSpecialties.includes(filters.specialty)) return false;
+      }
+      
       if (filters.level && member.level !== filters.level) return false;
       return true;
     });
@@ -813,6 +838,34 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
   }
 
   /**
+   * Atualiza horas dos membros em background
+   */
+  async function updateMemberHoursInBackground() {
+    try {
+      console.log('[Team] Atualizando horas em background...');
+      
+      for (let i = 0; i < allMembers.length; i++) {
+        const member = allMembers[i];
+        const totalHours = await calculateMemberHours(member.name);
+        
+        // Persistir no Firebase se as horas mudaram
+        if (member.totalHours !== totalHours) {
+          await updateMemberStats(member.id, { totalHours });
+          console.log(`[Team] Horas atualizadas para ${member.name}: ${totalHours}h`);
+          
+          // Atualizar na interface
+          allMembers[i] = { ...member, totalHours };
+          filteredMembers = [...allMembers];
+          updateStatsCards();
+          renderMembersList();
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar horas em background:', error);
+    }
+  }
+
+  /**
    * Utilitário debounce
    */
   function debounce(func, wait) {
@@ -829,7 +882,14 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
 
   // API pública
   global.TaskoraPages = global.TaskoraPages || {};
-  global.TaskoraPages.team = { render };
+  global.TaskoraPages.team = { 
+    render,
+    afterRender: () => {
+      // A inicialização já é feita no setTimeout dentro do render
+      // Esta função existe para compatibilidade com app.js
+      console.log('[Team] afterRender chamado - inicialização já realizada');
+    }
+  };
   
   global.TeamModule = {
     openMemberModal,

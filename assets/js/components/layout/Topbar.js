@@ -16,7 +16,12 @@ function render(el) {
     </div>
     
     <div class="topbar-center">
-      <!-- Espaço para futuras funcionalidades -->
+      ${user ? `
+        <div class="user-info">
+          <span class="user-name">${displayName}</span>
+          <span class="user-email">${email}</span>
+        </div>
+      ` : ''}
     </div>
     
     <div class="brand-right">

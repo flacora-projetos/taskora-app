@@ -70,7 +70,7 @@ import {
         /* Campo sticky com título, cards e filtros */
         .cl-sticky-section {
           position: sticky;
-          top: 65px;
+          top: 75px;
           z-index: 10;
           background: #F8F9FA;
           padding: 32px 32px 20px 32px;

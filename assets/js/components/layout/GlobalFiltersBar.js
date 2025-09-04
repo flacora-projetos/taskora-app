@@ -36,7 +36,7 @@ function injectStylesOnce() {
       border-bottom: 1px solid var(--border-color, #E6E3DF); 
       padding: 12px 20px; 
       position: sticky; 
-      top: 65px; 
+      top: 75px; 
       z-index: 15; 
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
