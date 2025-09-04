@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "dacora---tarefas",
+    "taskora": "dacora---tarefas"
+  },
+  "targets": {},
+  "etags": {}
+}

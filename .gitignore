@@ -1,0 +1,118 @@
+# 🔒 GITIGNORE PRINCIPAL - TASKORA
+# Arquivo para proteger informações sensíveis em todo o projeto
+
+# ===== ARQUIVOS DE CONFIGURAÇÃO SENSÍVEIS =====
+# Variáveis de ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.backup
+
+# Chaves e configurações do Firebase
+**/firebase-keys.js
+**/firebase-config.js
+**/config/firebase.js
+
+# Arquivos de backup com dados sensíveis
+**/*backup*.json
+**/*_backup_*.json
+
+# ===== LOGS E DADOS TEMPORÁRIOS =====
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dados temporários
+tmp/
+temp/
+*.tmp
+*.temp
+
+# ===== DEPENDÊNCIAS =====
+# Node modules
+node_modules/
+
+# Yarn
+.yarn/
+.yarn-integrity
+
+# ===== ARQUIVOS DE BUILD =====
+# Distribuição
+dist/
+build/
+
+# ===== ARQUIVOS DO SISTEMA =====
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# ===== IDEs E EDITORES =====
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===== ARQUIVOS ESPECÍFICOS DO TASKORA =====
+# Arquivos de debug com chaves expostas
+debug-data-comparison.html
+tools/debug-tasks-hours.html
+tools/debug-team-hours.html
+tools/fix-data-structure.html
+tools/firebase-connection-test.html
+tools/sync-team-hours.html
+tools/database-schema-analyzer-fixed.html
+tools/validate-migrated-data.html
+tools/selective-field-migration.html
+tools/cleanup-conflicted-data.html
+tools/database-schema-analyzer.html
+tools/diagnosticar-firebase-taskora.html
+seed/populate-team.html
+
+# Arquivos HTML com configurações hardcoded (temporário)
+**/*debug*.html
+**/*test*.html
+**/*temp*.html
+
+# ===== SEGURANÇA ADICIONAL =====
+# Certificados e chaves
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Arquivos de configuração de produção
+production.config.js
+prod.config.js
+
+# ===== OBSERVAÇÕES =====
+# Este arquivo protege todo o projeto Taskora
+# Mantenha sempre atualizado quando adicionar novos arquivos sensíveis
+# Em caso de dúvida, adicione o arquivo aqui para proteger o projeto

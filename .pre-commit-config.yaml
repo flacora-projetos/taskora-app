@@ -1,0 +1,133 @@
+# 🔒 CONFIGURAÇÃO DE PRE-COMMIT HOOKS - TASKORA
+# Sistema de detecção de segredos e validação de segurança
+
+repos:
+  # Detecção de segredos e chaves API
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: 🔍 Detectar Segredos
+        description: Detecta chaves API, senhas e outros segredos
+        args: 
+          - '--baseline'
+          - '.secrets.baseline'
+          - '--force-use-all-plugins'
+        exclude: |
+          (?x)^(
+            package-lock\.json|
+            yarn\.lock|
+            \.env\.example|
+            docs/.*\.md
+          )$
+
+  # Verificações gerais de segurança
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+        name: 📁 Verificar Arquivos Grandes
+        description: Previne commit de arquivos muito grandes
+        args: ['--maxkb=1000']
+      
+      - id: check-merge-conflict
+        name: ⚔️ Verificar Conflitos de Merge
+        description: Detecta marcadores de conflito de merge
+      
+      - id: check-yaml
+        name: 📄 Validar YAML
+        description: Valida sintaxe de arquivos YAML
+      
+      - id: check-json
+        name: 📄 Validar JSON
+        description: Valida sintaxe de arquivos JSON
+        exclude: |
+          (?x)^(
+            package-lock\.json|
+            \.vscode/.*
+          )$
+      
+      - id: trailing-whitespace
+        name: 🧹 Remover Espaços em Branco
+        description: Remove espaços em branco no final das linhas
+      
+      - id: end-of-file-fixer
+        name: 📝 Corrigir Final de Arquivo
+        description: Garante que arquivos terminem com nova linha
+
+  # Verificações específicas para JavaScript/HTML
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.57.0
+    hooks:
+      - id: eslint
+        name: 🔍 ESLint - JavaScript
+        description: Analisa código JavaScript para problemas de segurança
+        files: \.(js|jsx|ts|tsx)$
+        additional_dependencies:
+          - eslint@8.57.0
+          - eslint-plugin-security@1.7.1
+        args:
+          - --fix
+          - --config
+          - .eslintrc.security.js
+
+  # Verificação de dependências vulneráveis
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.2
+    hooks:
+      - id: python-safety-dependencies-check
+        name: 🛡️ Verificar Dependências Python
+        description: Verifica vulnerabilidades em dependências Python
+        files: requirements.*\.txt$
+
+  # Verificações customizadas para Firebase
+  - repo: local
+    hooks:
+      - id: check-firebase-keys
+        name: 🔥 Verificar Chaves Firebase
+        description: Detecta chaves Firebase hardcoded
+        entry: bash -c 'if grep -r "AIzaSy[A-Za-z0-9_-]\{33\}" --exclude-dir=node_modules --exclude=".env.example" .; then echo "❌ ERRO: Chave Firebase detectada!"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+      
+      - id: check-env-files
+        name: 📁 Verificar Arquivos .env
+        description: Previne commit de arquivos .env
+        entry: bash -c 'if find . -name ".env" -not -path "./node_modules/*" | grep -q .; then echo "❌ ERRO: Arquivo .env detectado! Use .env.example"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+      
+      - id: check-backup-files
+        name: 💾 Verificar Arquivos de Backup
+        description: Detecta arquivos de backup com dados sensíveis
+        entry: bash -c 'if find . -name "*backup*.json" -o -name "*backup*.sql" | grep -q .; then echo "❌ ERRO: Arquivo de backup detectado!"; exit 1; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+      
+      - id: check-debug-files
+        name: 🐛 Verificar Arquivos de Debug
+        description: Detecta arquivos de debug temporários
+        entry: bash -c 'if find . -name "debug*.html" -o -name "test*.html" -o -name "temp*.html" | grep -q .; then echo "⚠️ AVISO: Arquivo de debug detectado! Verifique se não contém dados sensíveis"; fi'
+        language: system
+        pass_filenames: false
+        always_run: true
+
+# Configuração global
+default_stages: [commit, push]
+fail_fast: true
+
+# Configurações específicas
+ci:
+  autofix_commit_msg: |
+    🔧 [pre-commit.ci] auto fixes from pre-commit hooks
+    
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '🔄 [pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
