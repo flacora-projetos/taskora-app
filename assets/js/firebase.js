@@ -9,13 +9,25 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 // Detectar se está em ambiente de desenvolvimento
-const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isDevelopment = window.location.hostname === 'localhost' || 
+                     window.location.hostname === '127.0.0.1' ||
+                     window.location.hostname.includes('.local');
+
+// Detectar se está em produção (Vercel, Netlify, etc.)
+const isProduction = window.location.hostname.includes('.vercel.app') ||
+                    window.location.hostname.includes('.netlify.app') ||
+                    window.location.hostname.includes('.app') ||
+                    !isDevelopment;
 
 // Live Server configurado para usar localhost:8000 (mesma porta do npx serve)
 // Isso evita problemas de autenticação com o Firebase Auth
-console.log('🔧 Firebase configurado para localhost:8000 - compatível com Live Server');
+if (isDevelopment) {
+  console.log('🔧 Firebase configurado para localhost:8000 - compatível com Live Server');
+} else {
+  console.log('🚀 Firebase configurado para produção:', window.location.hostname);
+}
 
-// Configuração para aceitar tanto localhost quanto 127.0.0.1
+// Configuração para aceitar tanto localhost quanto produção
 const isLocalDevelopment = isDevelopment;
 
 // Lê o config previamente definido por assets/js/config/firebase-*.js
