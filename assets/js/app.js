@@ -3,6 +3,8 @@ import "./store/filtersStore.js";
 import SidebarNav from "./components/layout/SidebarNav.js";
 import Topbar from "./components/layout/Topbar.js";
 import GlobalFiltersBar from "./components/layout/GlobalFiltersBar.js";
+import authManager from "./auth/authManager.js";
+import LoginForm from "./components/auth/LoginForm.js";
 
 // Pages (placeholders rápidos)
 import "./pages/tasks.js";
@@ -60,5 +62,86 @@ function renderRoute() {
   if (page.afterRender) page.afterRender();
 }
 
-window.addEventListener("hashchange", renderRoute);
-window.addEventListener("load", renderRoute);
+// Variáveis de controle de autenticação
+let isAppInitialized = false;
+let loginForm = null;
+
+// Inicializar aplicação com autenticação
+async function initializeApp() {
+  console.log('[App] Inicializando aplicação com autenticação...');
+  
+  // Aguardar inicialização da autenticação
+  const user = await authManager.waitForAuthInit();
+  
+  if (user) {
+    console.log('[App] Usuário autenticado:', user.email);
+    showMainApp();
+  } else {
+    console.log('[App] Usuário não autenticado, mostrando tela de login');
+    showLoginForm();
+  }
+}
+
+// Mostrar aplicação principal
+function showMainApp() {
+  // Remover tela de login se existir
+  if (loginForm) {
+    loginForm.destroy();
+    loginForm = null;
+  }
+  
+  // Mostrar elementos da aplicação
+  const appShell = document.querySelector('.app-shell');
+  if (appShell) {
+    appShell.style.display = 'flex';
+  }
+  
+  // Inicializar roteamento se ainda não foi feito
+  if (!isAppInitialized) {
+    window.addEventListener("hashchange", renderRoute);
+    renderRoute(); // Renderizar rota inicial
+    isAppInitialized = true;
+    console.log('[App] Aplicação principal inicializada');
+  }
+}
+
+// Mostrar formulário de login
+function showLoginForm() {
+  // Esconder aplicação principal
+  const appShell = document.querySelector('.app-shell');
+  if (appShell) {
+    appShell.style.display = 'none';
+  }
+  
+  // Criar e mostrar formulário de login
+  if (!loginForm) {
+    loginForm = new LoginForm();
+    document.body.appendChild(loginForm.render());
+    console.log('[App] Tela de login exibida');
+  }
+}
+
+// Listener para mudanças no estado de autenticação
+authManager.onAuthStateChange((user) => {
+  if (user) {
+    console.log('[App] Usuário logou:', user.email);
+    showMainApp();
+  } else {
+    console.log('[App] Usuário deslogou');
+    showLoginForm();
+    isAppInitialized = false;
+  }
+});
+
+// Inicializar quando a página carregar
+window.addEventListener("load", initializeApp);
+
+// Expor funções globalmente para debug
+if (typeof window !== 'undefined') {
+  window.TaskoraApp = {
+    authManager,
+    showLoginForm,
+    showMainApp,
+    renderRoute
+  };
+}

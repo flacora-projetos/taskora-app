@@ -1,16 +1,19 @@
 # 📖 READMEFIRST - Orientações Iniciais  
-**Versão do app:** `taskora_v5.5.5_secure_firebase.html`
+**Versão do app:** `dácora_v6.1.0_redesign_login.html`
 
-Este documento deve ser lido **antes de qualquer modificação no app Taskora**.  
+Este documento deve ser lido **antes de qualquer modificação no app Dácora**.  
 Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de trabalho, evitando retrabalho, inconsistências e perda de tempo.
 
 ---
 
 ## 📌 Objetivo
 - O **Taskora** é a base tecnológica usada pela **Dácora** em **white label**.  
-- **UI e branding permanecem Dácora**, com a assinatura **"powered by Taskora"** (não alterar).  
-- Esta versão do app é **Taskora v6.0.0 com Sistema de Automações**, identificada por: **`taskora_v5.5.5_secure_firebase.html`** + **Cloud Functions**.  
-- **Novidades v6.0.0:** Sistema completo de automações Firebase com backup diário, lembretes automáticos e monitoramento 24/7
+- **UI e branding são Dácora**, com a assinatura **"powered by Taskora"** (não alterar).  
+- Esta versão do app é **Dácora v6.1.0 com Interface de Login Redesenhada**, identificada por: **`taskora_v5.5.5_secure_firebase.html`** + **Cloud Functions** + **Novo Design de Login**.  
+- **Novidades v6.1.0:** Redesign completo da interface de login com novo branding Dácora
+- **Mudança de Branding:** Interface de login agora exibe "Dácora - powered by Taskora"
+- **Design Modernizado:** Interface limpa, responsiva e otimizada para todos os dispositivos
+- **Sistema de Automações v6.0.0:** Sistema completo de automações Firebase com backup diário, lembretes automáticos e monitoramento 24/7
 - **Etapa 2 Concluída:** Primeira automação 100% operacional com 4 Cloud Functions implantadas
 - Firestore inicia em **modo Produção**, com **autenticação anônima habilitada** (sem tela de login).
 

@@ -8,7 +8,7 @@ import { getFunctions, connectFunctionsEmulator } from 'https://www.gstatic.com/
 
 // Configuração do Firebase - Dácora
 const firebaseConfig = {
-  apiKey: "CHAVE_REMOVIDA_POR_SEGURANCA",
+  apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
   authDomain: "dacora---tarefas.firebaseapp.com",
   projectId: "dacora---tarefas",
   storageBucket: "dacora---tarefas.firebasestorage.app",

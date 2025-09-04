@@ -4,6 +4,68 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v6.1.0] - 2025-01-24
+
+### 🎨 REDESIGN DA INTERFACE DE LOGIN
+**Modernização completa da interface de autenticação com novo branding**
+
+#### 🏷️ Mudança de Branding
+- **Novo Nome:** Alteração de "Taskora" para "Dácora - powered by Taskora"
+  - 🎯 **Posicionamento:** Dácora como marca principal com Taskora como tecnologia
+  - 📝 **Arquivo:** `LoginForm.js` - Atualização do cabeçalho do modal
+  - 🎨 **Estilo:** Tipografia hierárquica com "Dácora" em destaque
+
+#### 🖼️ Melhorias Visuais
+- **Proporções Otimizadas:** Ajuste das dimensões da caixa de login
+  - 📏 **Largura:** Aumentada para 480px (máximo) com mínimo de 400px
+  - 📐 **Altura:** Ajustada para 85vh com scroll automático quando necessário
+  - 📱 **Responsividade:** Layout adaptativo para dispositivos móveis
+
+- **Design Harmonioso:** Refinamento completo dos elementos visuais
+  - 🎨 **Cores:** Paleta consistente com identidade visual da marca
+  - 🔘 **Bordas:** Border-radius padronizado em 10px para botões e inputs
+  - 📝 **Tipografia:** Tamanhos de fonte otimizados para melhor legibilidade
+  - 🎯 **Espaçamento:** Margens e paddings ajustados para proporção ideal
+
+#### 🧹 Limpeza Visual
+- **Remoção de Ícones:** Eliminação do ícone da prancheta (📋) do cabeçalho
+  - 🎯 **Foco:** Concentração no branding textual limpo e profissional
+  - 📐 **Centralização:** Texto "Dácora" e "powered by Taskora" centralizados
+  - ✨ **Minimalismo:** Interface mais limpa e moderna
+
+#### 📱 Responsividade Aprimorada
+- **Mobile First:** Otimização para dispositivos móveis
+  - 📱 **Telas Pequenas:** Ajustes específicos para max-width: 480px
+  - 📲 **Telas Muito Pequenas:** Refinamentos para max-width: 360px
+  - 🔄 **Layout Flexível:** Adaptação automática do conteúdo
+
+#### 🎨 Melhorias de UX
+- **Botões Modernos:** Redesign dos botões de ação
+  - 🔘 **Submit:** Padding otimizado (16px 32px) e border-radius 10px
+  - 🔗 **Google:** Dimensões harmoniosas (14px 24px) com gap de 10px
+  - 🎯 **Consistência:** Estilo visual unificado em toda a interface
+
+- **Formulário Otimizado:** Melhorias na experiência de preenchimento
+  - 📝 **Inputs:** Padding reduzido (14px 16px) para melhor proporção
+  - 📏 **Espaçamento:** Margem entre campos ajustada para 22px
+  - 🎨 **Divisor:** Elemento "ou" com espaçamento otimizado (20px)
+
+#### 📁 Arquivos Modificados
+- ✅ **LoginForm.js** - Atualização do branding e estrutura do cabeçalho
+- ✅ **auth.css** - Redesign completo dos estilos da interface de login
+  - 🎨 Ajustes de dimensões e proporções
+  - 📱 Melhorias de responsividade
+  - 🧹 Remoção de estilos obsoletos do ícone
+  - ✨ Refinamento visual geral
+
+#### 🎯 Resultado
+✅ **Interface moderna e profissional** com branding Dácora  
+✅ **UX otimizada** com proporções harmoniosas  
+✅ **Responsividade completa** para todos os dispositivos  
+✅ **Design limpo e minimalista** sem elementos desnecessários  
+
+---
+
 ## [v6.0.0] - 2025-09-03
 
 ### 🚀 ETAPA 2: PRIMEIRA AUTOMAÇÃO - IMPLEMENTAÇÃO COMPLETA

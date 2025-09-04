@@ -1,10 +1,47 @@
-# 🚀 RELEASE NOTES - TASKORA v5.5.5
+# 🚀 RELEASE NOTES - DÁCORA v6.1.0
+
+## 📣 Resumo das Novidades
+
+Caro time Dácora,
+
+Temos o prazer de anunciar a versão mais recente do Dácora powered by Taskora (v6.1.0), que traz um redesign completo da interface de login e melhorias significativas na experiência do usuário!
+
+### ✨ Destaques desta versão:
+
+- **🎨 Redesign Completo da Interface de Login:** Nova identidade visual com branding Dácora
+- **🏷️ Novo Branding:** Transição de "Taskora" para "Dácora - powered by Taskora"
+- **📱 Responsividade Aprimorada:** Interface otimizada para todos os dispositivos
+- **🧹 Design Minimalista:** Remoção de elementos desnecessários para foco no essencial
+- **🎯 UX Otimizada:** Proporções harmoniosas e navegação intuitiva
+
+## 🎨 Redesign da Interface de Login
+
+Implementamos uma modernização completa da tela de autenticação:
+
+### Mudança de Branding
+- **Novo Posicionamento:** Dácora como marca principal com Taskora como tecnologia subjacente
+- **Tipografia Hierárquica:** "Dácora" em destaque com "powered by Taskora" como subtítulo
+- **Identidade Visual Consistente:** Cores e estilos alinhados com a marca Dácora
+
+### Melhorias Visuais
+- **Proporções Otimizadas:** Caixa de login redimensionada (480px máximo, 400px mínimo)
+- **Design Harmonioso:** Border-radius padronizado, espaçamentos refinados
+- **Interface Limpa:** Remoção do ícone da prancheta para foco no branding textual
+
+### Responsividade Mobile
+- **Adaptação Inteligente:** Layout flexível para telas pequenas (≤480px)
+- **Otimização Extrema:** Ajustes específicos para dispositivos muito pequenos (≤360px)
+- **Experiência Consistente:** Funcionalidade completa em todos os tamanhos de tela
+
+---
+
+# 🚀 RELEASE NOTES ANTERIORES - TASKORA v5.5.5
 
 ## 📣 Resumo das Novidades
 
 Caro time Taskora,
 
-Temos o prazer de anunciar a versão mais recente do Taskora (v5.5.5), que traz melhorias significativas em segurança, desempenho e funcionalidades!
+Temos o prazer de anunciar a versão anterior do Taskora (v5.5.5), que trouxe melhorias significativas em segurança, desempenho e funcionalidades!
 
 ### ✨ Destaques desta versão:
 
