@@ -410,6 +410,6 @@ FIREBASE_APP_ID=1:987654321:web:abc123def456
 
 ---
 
-*Guia criado especialmente para usuários iniciantes - 14/01/2025*
+*Guia criado especialmente para usuários iniciantes - 15/09/2025*
 
 **🔒 LEMBRE-SE: A segurança do Firebase vem das regras e autenticação, não do sigilo das chaves. Foque na configuração adequada!**

@@ -17,7 +17,7 @@ Esta pasta contém **instruções de configuração**, guias de deploy, configur
 - **[configuracao-email-final.md](./configuracao-email-final.md)**
   - *Status:* ✅ Configurado
   - *Descrição:* Configuração completa do sistema de email com SMTP
-  - *Última atualização:* Janeiro 2025
+  - *Última atualização:* Setembro 2025
   - *Ambiente:* Produção
 
 ### 🚀 Deploy & Implantação
@@ -197,5 +197,5 @@ Para problemas de configuração:
 
 ---
 
-*Última atualização: Janeiro 2025*
+*Última atualização: Setembro 2025*
 *Versão: 1.0*

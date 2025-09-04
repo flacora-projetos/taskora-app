@@ -325,7 +325,7 @@ Soluções:
 - **Cloud Functions:** 4/4 deployadas com sucesso
 - **API Keys:** Configuradas com restrições
 - **Domínios:** Autorizados para produção
-- **🔑 CORREÇÃO CRÍTICA:** Chaves de API Firebase corrigidas (14/01/2025)
+- **🔑 CORREÇÃO CRÍTICA:** Chaves de API Firebase corrigidas (15/09/2025)
 
 ### 🔄 Configurações Pendentes
 - [ ] Primeiro usuário admin

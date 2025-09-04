@@ -158,4 +158,4 @@ git commit -m "Teste de segurança"
 
 ---
 
-*Documento criado em 14/01/2025 para esclarecer questões de segurança*
+*Documento criado em 15/09/2025 para esclarecer questões de segurança*

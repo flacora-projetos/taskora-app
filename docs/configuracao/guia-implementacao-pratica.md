@@ -432,6 +432,6 @@ Semana: 06/01 a 12/01/2025
 
 ---
 
-*Guia criado em: Janeiro 2025*
+*Guia criado em: Setembro 2025*
 *Versão: 1.0 - Para não-desenvolvedores*
 *Próxima atualização: Conforme feedback dos usuários*

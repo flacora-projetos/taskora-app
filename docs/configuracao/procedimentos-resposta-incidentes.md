@@ -416,5 +416,5 @@ Get-EventLog -LogName Security -Newest 50  # Windows
 
 ---
 
-*Documento criado em 14/01/2025 - Próxima revisão: 14/04/2025*  
+*Documento criado em 15/09/2025 - Próxima revisão: 15/12/2025*  
 *Versão: 1.0 - Status: Ativo*
