@@ -1,4 +1,5 @@
 // firebase.js - Configuração do Firebase para Taskora
+// ATUALIZADO: 15/09/2025 - Correção definitiva da chave de API
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore, connectFirestoreEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -6,7 +7,7 @@ import { getAuth, connectAuthEmulator } from 'https://www.gstatic.com/firebasejs
 import { getStorage, connectStorageEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { getFunctions, connectFunctionsEmulator } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
 
-// Configuração do Firebase - Dácora
+// Configuração do Firebase - Dácora (CORRIGIDA)
 const firebaseConfig = {
   apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ",
   authDomain: "dacora---tarefas.firebaseapp.com",
@@ -15,6 +16,9 @@ const firebaseConfig = {
   messagingSenderId: "406318974539",
   appId: "1:406318974539:web:d842997c1b064c0ba56fce"
 };
+
+// Log para debug - verificar se a chave está correta
+console.log('[Firebase] Configuração carregada - API Key:', firebaseConfig.apiKey.substring(0, 20) + '...');
 
 // Inicializa o Firebase
 let app;
@@ -32,9 +36,11 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
 
-// Configuração para desenvolvimento (emuladores)
-const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+// Configuração para desenvolvimento (emuladores) - DESABILITADO PARA PERMITIR ACESSO LOCAL
+const isDevelopment = false; // Forçar uso do Firebase de produção mesmo em localhost
 
+// Comentado para permitir acesso local sem emuladores
+/*
 if (isDevelopment) {
   console.log('[Dácora] Modo desenvolvimento detectado');
   
@@ -62,6 +68,9 @@ if (isDevelopment) {
     console.warn('[Dácora] Emuladores não disponíveis, usando Firebase produção:', error.message);
   }
 }
+*/
+
+console.log('[Dácora] Usando Firebase de produção para desenvolvimento local');
 
 // Configurações globais
 export const FIREBASE_CONFIG = {

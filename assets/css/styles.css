@@ -254,6 +254,11 @@ body{
   color: #fff;
 }
 
+/* Estilos da topbar simplificados */
+.topbar-center {
+  flex: 1;
+}
+
 /* ===== FILTROS ===== */
 .filters-bar {
   position: sticky;

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Firebase Config - Taskora</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .config-box { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug Firebase Configuration</h1>
+    <p>Esta página verifica se a configuração do Firebase está correta e limpa qualquer cache.</p>
+    
+    <button onclick="clearCache()">🗑️ Limpar Cache</button>
+    <button onclick="testConfig()">🧪 Testar Configuração</button>
+    <button onclick="location.reload()">🔄 Recarregar Página</button>
+    
+    <div id="results"></div>
+    
+    <script type="module">
+        // Importa a configuração
+        import './assets/js/config/firebase-config.js';
+        
+        window.clearCache = function() {
+            // Limpa localStorage
+            localStorage.clear();
+            // Limpa sessionStorage
+            sessionStorage.clear();
+            // Remove configuração do window
+            delete window.firebaseConfig;
+            
+            document.getElementById('results').innerHTML = '<div class="success">✅ Cache limpo com sucesso!</div>';
+            
+            // Recarrega a configuração
+            setTimeout(() => {
+                import('./assets/js/config/firebase-config.js?' + Date.now());
+            }, 100);
+        };
+        
+        window.testConfig = function() {
+            const results = document.getElementById('results');
+            let html = '<h3>🔍 Resultados do Teste:</h3>';
+            
+            // Verifica se window.firebaseConfig existe
+            if (window.firebaseConfig) {
+                html += '<div class="success">✅ window.firebaseConfig encontrado</div>';
+                
+                const config = window.firebaseConfig;
+                html += '<div class="config-box">';
+                html += '<strong>Configuração Atual:</strong><br>';
+                html += `Project ID: ${config.projectId}<br>`;
+                html += `Auth Domain: ${config.authDomain}<br>`;
+                html += `API Key: ${config.apiKey ? config.apiKey.substring(0, 20) + '...' : 'NÃO ENCONTRADA'}<br>`;
+                html += '</div>';
+                
+                // Verifica se a chave não é placeholder
+                if (config.apiKey && config.apiKey.includes('CHAVE_REMOVIDA_POR_SEGURANCA')) {
+                    html += '<div class="error">❌ ERRO: Ainda usando chave placeholder!</div>';
+                } else if (config.apiKey && config.apiKey.startsWith('AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ')) {
+                    html += '<div class="success">✅ Chave de API correta detectada</div>';
+                } else {
+                    html += '<div class="warning">⚠️ Chave de API não reconhecida</div>';
+                }
+                
+            } else {
+                html += '<div class="error">❌ window.firebaseConfig NÃO encontrado</div>';
+            }
+            
+            // Testa importação direta do firebase.js
+            import('./assets/js/config/firebase.js').then(() => {
+                html += '<div class="success">✅ firebase.js importado com sucesso</div>';
+                results.innerHTML = html;
+            }).catch(error => {
+                html += '<div class="error">❌ Erro ao importar firebase.js: ' + error.message + '</div>';
+                results.innerHTML = html;
+            });
+        };
+        
+        // Executa teste automático ao carregar
+        setTimeout(() => {
+            testConfig();
+        }, 1000);
+    </script>
+</body>
+</html>

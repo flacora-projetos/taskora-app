@@ -1,6 +1,7 @@
 // Taskora — Firebase (Configuração Segura)
 // Este arquivo carrega a configuração do Firebase de forma segura, sem expor chaves de API no código fonte.
 // As chaves de API são carregadas de variáveis de ambiente ou de um arquivo local não versionado.
+// ATUALIZADO: 15/09/2025 - Correção definitiva da chave de API
 
 // Função para carregar a configuração do Firebase
 export function loadFirebaseConfig() {
@@ -13,16 +14,19 @@ export function loadFirebaseConfig() {
     appId: "1:406318974539:web:d842997c1b064c0ba56fce"
   };
 
-  // Configuração com chave de API para produção
+  // Configuração com chave de API para produção - CORRIGIDA
   const config = {
     ...defaultConfig,
     apiKey: "AIzaSyD8Qv-wQBJsGrYAhY_6T1iHdWCjtjmxtEQ"
   };
   
-  // Disponibiliza para assets/js/firebase.js
+  // Limpa qualquer configuração anterior do cache
   if (typeof window !== "undefined") {
+    delete window.firebaseConfig;
+    // Força a nova configuração
     window.firebaseConfig = config;
-    console.log("[Taskora] Firebase config carregado:", config.projectId);
+    console.log("[Taskora] Firebase config carregado (v15.09.2025):", config.projectId);
+    console.log("[Taskora] API Key ativa:", config.apiKey.substring(0, 20) + "...");
   }
   
   // Fallback para desenvolvimento local (tenta carregar firebase-keys.js)

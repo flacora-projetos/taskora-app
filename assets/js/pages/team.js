@@ -47,9 +47,9 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
     container.innerHTML = `
       <style>
         /* Estilos específicos do módulo Team */
-        .tm-container { max-width: 1400px; margin: 0 auto; padding: 0; }
-        .tm-sticky { position: sticky; top: 40px; z-index: 10; background: transparent; padding: 32px 32px 0 32px; }
-        .tm-content-section { position: relative; overflow: auto; padding: 0 32px 32px 32px; }
+        .tm-container { width: 100%; margin: 0; padding: 0; }
+        .tm-sticky { position: sticky; top: 40px; z-index: 10; background: transparent; padding: 20px; }
+        .tm-content-section { position: relative; overflow: auto; padding: 0 20px 20px 20px; }
         
         /* Tabela unificada */
         .tm-table-container { 
@@ -71,16 +71,16 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
         
         .tm-row{ box-shadow:0 1px 1px rgba(0,0,0,.03), 0 6px 16px rgba(0,0,0,.03) }
         .tm-cell{ background:#fff; border:1px solid #EEE; padding:10px 12px; vertical-align:middle; overflow:hidden; }
-        .tm-table{ width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; }
+        .tm-table{ width:100%; table-layout:auto; border-collapse:separate; border-spacing:0; min-width:800px; }
         
         /* Larguras das colunas */
         .col-photo{ width:80px }
-        .col-name{ width:200px }
-        .col-specialty{ width:150px }
-        .col-level{ width:120px }
-        .col-status{ width:100px; text-align:center }
-        .col-rate{ width:120px; text-align:center }
-        .col-hours{ width:100px; text-align:center }
+        .col-name{ width:25%; min-width:200px }
+        .col-specialty{ width:20%; min-width:150px }
+        .col-level{ width:15%; min-width:120px }
+        .col-status{ width:12%; min-width:100px; text-align:center }
+        .col-rate{ width:12%; min-width:120px; text-align:center }
+        .col-hours{ width:10%; min-width:100px; text-align:center }
         .col-actions{ width:120px; text-align:center }
         
         /* Foto do membro */

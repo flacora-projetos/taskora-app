@@ -272,7 +272,6 @@ export async function mapDbToUi(docSnap) {
     startDate,
     dueDate,
     date: dateStr,
-    dueDate: firstNonEmpty(data.dueDate, data.limite, data.prazo) || null,
     endDate: data.endDate || null,
     hours: data.hours || (data.estimatedMinutes ? data.estimatedMinutes / 60 : 0),
     hoursHHMM: data.estimatedMinutes ? hhmmFromMinutes(data.estimatedMinutes) : '00:00',
