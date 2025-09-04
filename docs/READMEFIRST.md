@@ -9,9 +9,33 @@ Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de traba
 ## 📌 Objetivo
 - O **Taskora** é a base tecnológica usada pela **Dácora** em **white label**.  
 - **UI e branding permanecem Dácora**, com a assinatura **"powered by Taskora"** (não alterar).  
-- Esta versão do app é **Taskora v5.5.5 com configuração segura do Firebase**, identificada por: **`taskora_v5.5.5_secure_firebase.html`**.  
-- **Novidades v5.5.5:** Configuração segura do Firebase com proteção de chaves de API, integração completa entre módulos Team e Tasks, seletores de mês/ano no calendário
+- Esta versão do app é **Taskora v6.0.0 com Sistema de Automações**, identificada por: **`taskora_v5.5.5_secure_firebase.html`** + **Cloud Functions**.  
+- **Novidades v6.0.0:** Sistema completo de automações Firebase com backup diário, lembretes automáticos e monitoramento 24/7
+- **Etapa 2 Concluída:** Primeira automação 100% operacional com 4 Cloud Functions implantadas
 - Firestore inicia em **modo Produção**, com **autenticação anônima habilitada** (sem tela de login).
+
+## 🤖 Sistema de Automações (v6.0.0)
+
+### **Cloud Functions Operacionais ✅**
+- **backupDiario:** Backup automático às 2h da manhã (horário de Brasília)
+- **lembretesAutomaticos:** Lembretes de tarefas às 9h da manhã
+- **testarAutomacoes:** Função de teste manual das automações
+- **statusAutomacoes:** Endpoint de monitoramento em tempo real
+
+### **URLs Funcionais**
+- **Status:** https://southamerica-east1-dacora---tarefas.cloudfunctions.net/statusAutomacoes
+- **Teste:** https://southamerica-east1-dacora---tarefas.cloudfunctions.net/testarAutomacoes
+
+### **Configurações de Email ✅**
+- **Sistema:** equipe@nandacora.com.br
+- **Admin:** flacora@gmail.com
+- **Status:** 100% configurado e funcional
+
+### **Benefícios Ativos**
+- 🔒 **Segurança:** Backups automáticos diários
+- 📧 **Produtividade:** Lembretes automáticos de tarefas
+- 📊 **Monitoramento:** Sistema 24/7 com 183 tarefas monitoradas
+- 💰 **Custo:** $0.11-$0.31/mês (extremamente baixo)
 
 ---
 
