@@ -1,16 +1,11 @@
-// authManager.js - Sistema de Autenticação para Taskora
-// Substitui o modo anônimo por autenticação real com email/senha
+// authManager.js - Sistema de Autenticação Anônima para Taskora
+// Versão simplificada usando apenas autenticação anônima
 
 import { auth } from '../config/firebase.js';
 import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
+  signInAnonymously,
   signOut, 
-  onAuthStateChanged,
-  updateProfile,
-  GoogleAuthProvider,
-  signInWithPopup,
-  sendPasswordResetEmail
+  onAuthStateChanged
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 class AuthManager {
@@ -21,6 +16,9 @@ class AuthManager {
     
     // Inicializar listener de estado de autenticação
     this.initAuthStateListener();
+    
+    // Fazer login anônimo automaticamente
+    this.signInAnonymously();
   }
 
   /**
@@ -40,7 +38,7 @@ class AuthManager {
         }
       });
       
-      console.log('[AuthManager] Estado de autenticação:', user ? 'Autenticado' : 'Não autenticado');
+      console.log('[AuthManager] Estado de autenticação anônima:', user ? 'Conectado' : 'Desconectado');
     });
   }
 
@@ -67,118 +65,38 @@ class AuthManager {
   }
 
   /**
-   * Registra um novo usuário
+   * Faz login anônimo
    */
-  async register(email, password, displayName = '') {
+  async signInAnonymously() {
     try {
-      console.log('[AuthManager] Registrando usuário:', email);
+      console.log('[AuthManager] Fazendo login anônimo...');
       
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInAnonymously(auth);
       const user = userCredential.user;
       
-      // Atualizar nome de exibição se fornecido
-      if (displayName.trim()) {
-        await updateProfile(user, {
-          displayName: displayName.trim()
-        });
-      }
-      
-      console.log('[AuthManager] Usuário registrado com sucesso:', user.uid);
+      console.log('[AuthManager] Login anônimo realizado com sucesso:', user.uid);
       return user;
       
     } catch (error) {
-      console.error('[AuthManager] Erro ao registrar usuário:', error);
+      console.error('[AuthManager] Erro no login anônimo:', error);
       throw this.formatAuthError(error);
     }
   }
 
   /**
-   * Faz login com email e senha
-   */
-  async login(email, password) {
-    try {
-      console.log('[AuthManager] Fazendo login:', email);
-      
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      console.log('[AuthManager] Login realizado com sucesso:', user.uid);
-      return user;
-      
-    } catch (error) {
-      console.error('[AuthManager] Erro ao fazer login:', error);
-      throw this.formatAuthError(error);
-    }
-  }
-
-  /**
-   * Login com Google
-   */
-  async signInWithGoogle() {
-    try {
-      console.log('[AuthManager] Fazendo login com Google');
-      
-      const provider = new GoogleAuthProvider();
-      
-      // Configurar provider para solicitar informações básicas
-      provider.addScope('email');
-      provider.addScope('profile');
-      
-      // Configurar parâmetros customizados
-      provider.setCustomParameters({
-        prompt: 'select_account'
-      });
-
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      console.log('[AuthManager] Login com Google realizado com sucesso:', user.uid);
-      console.log('[AuthManager] Email:', user.email);
-      console.log('[AuthManager] Nome:', user.displayName);
-      
-      return user;
-
-    } catch (error) {
-      console.error('[AuthManager] Erro no login com Google:', error);
-      
-      // Tratar erros específicos do Google Auth
-      if (error.code === 'auth/popup-closed-by-user') {
-        throw this.formatAuthError({ ...error, message: 'Login cancelado pelo usuário' });
-      } else if (error.code === 'auth/popup-blocked') {
-        throw this.formatAuthError({ ...error, message: 'Popup bloqueado pelo navegador. Permita popups para este site.' });
-      } else if (error.code === 'auth/cancelled-popup-request') {
-        throw this.formatAuthError({ ...error, message: 'Solicitação de login cancelada' });
-      } else {
-        throw this.formatAuthError(error);
-      }
-    }
-  }
-
-  /**
-   * Enviar email de recuperação de senha
-   */
-  async sendPasswordReset(email) {
-    try {
-      console.log('[AuthManager] Enviando email de recuperação para:', email);
-      
-      await sendPasswordResetEmail(auth, email);
-      
-      console.log('[AuthManager] Email de recuperação enviado com sucesso');
-      return true;
-      
-    } catch (error) {
-      console.error('[AuthManager] Erro ao enviar email de recuperação:', error);
-      throw this.formatAuthError(error);
-    }
-  }
-
-  /**
-   * Faz logout
+   * Faz logout (reconecta anonimamente)
    */
   async logout() {
     try {
-      console.log('[AuthManager] Fazendo logout');
+      console.log('[AuthManager] Fazendo logout e reconectando anonimamente...');
+      
       await signOut(auth);
+      
+      // Reconectar anonimamente após logout
+      setTimeout(() => {
+        this.signInAnonymously();
+      }, 100);
+      
       console.log('[AuthManager] Logout realizado com sucesso');
       
     } catch (error) {
@@ -188,7 +106,7 @@ class AuthManager {
   }
 
   /**
-   * Verifica se o usuário está autenticado
+   * Verifica se o usuário está autenticado (anonimamente)
    */
   isAuthenticated() {
     return this.currentUser !== null;
@@ -209,17 +127,10 @@ class AuthManager {
   }
 
   /**
-   * Obtém o email do usuário atual
+   * Verifica se é usuário anônimo
    */
-  getCurrentUserEmail() {
-    return this.currentUser?.email || null;
-  }
-
-  /**
-   * Obtém o nome de exibição do usuário atual
-   */
-  getCurrentUserDisplayName() {
-    return this.currentUser?.displayName || this.currentUser?.email || 'Usuário';
+  isAnonymous() {
+    return this.currentUser ? this.currentUser.isAnonymous : false;
   }
 
   /**
@@ -239,49 +150,23 @@ class AuthManager {
   }
 
   /**
-   * Formata erros de autenticação para exibição
+   * Formata erros de autenticação para exibição amigável
    */
   formatAuthError(error) {
     const errorMessages = {
-      'auth/email-already-in-use': 'Este email já está sendo usado por outra conta.',
-      'auth/weak-password': 'A senha deve ter pelo menos 6 caracteres.',
-      'auth/invalid-email': 'Email inválido.',
-      'auth/user-not-found': 'Usuário não encontrado.',
-      'auth/wrong-password': 'Senha incorreta.',
-      'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
       'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.',
-      'auth/invalid-credential': 'Credenciais inválidas.',
-      'auth/user-disabled': 'Esta conta foi desabilitada.',
-      'auth/operation-not-allowed': 'Operação não permitida.',
-      'auth/requires-recent-login': 'Esta operação requer login recente.',
-      'auth/popup-closed-by-user': 'Login cancelado pelo usuário.',
-      'auth/popup-blocked': 'Popup bloqueado pelo navegador. Permita popups para este site.',
-      'auth/cancelled-popup-request': 'Solicitação de login cancelada.',
-      'auth/missing-email': 'Email é obrigatório para recuperação de senha.'
+      'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
+      'auth/operation-not-allowed': 'Autenticação anônima não está habilitada.',
+      'auth/invalid-api-key': 'Chave de API inválida.',
+      'auth/app-deleted': 'Aplicação Firebase foi deletada.',
+      'auth/user-disabled': 'Usuário foi desabilitado.',
+      'auth/web-storage-unsupported': 'Armazenamento web não suportado.'
     };
 
-    const message = errorMessages[error.code] || error.message || 'Erro de autenticação desconhecido';
-    
     return {
-      code: error.code,
-      message: message,
-      originalError: error
+      code: error.code || 'unknown',
+      message: errorMessages[error.code] || error.message || 'Erro desconhecido de autenticação anônima'
     };
-  }
-
-  /**
-   * Valida email
-   */
-  isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  /**
-   * Valida senha
-   */
-  isValidPassword(password) {
-    return password && password.length >= 6;
   }
 }
 

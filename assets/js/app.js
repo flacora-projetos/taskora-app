@@ -1,10 +1,9 @@
-import { app } from "./config/firebase.js";
+import app from "../config/firebase.js";
 import "./store/filtersStore.js";
 import SidebarNav from "./components/layout/SidebarNav.js";
 import Topbar from "./components/layout/Topbar.js";
 import GlobalFiltersBar from "./components/layout/GlobalFiltersBar.js";
 import authManager from "./auth/authManager.js";
-import LoginForm from "./components/auth/LoginForm.js";
 
 // Pages (placeholders rápidos)
 import "./pages/tasks.js";
@@ -64,72 +63,53 @@ function renderRoute() {
 
 // Variáveis de controle de autenticação
 let isAppInitialized = false;
-let loginForm = null;
 
-// Inicializar aplicação com autenticação
+// Inicialização da aplicação
 async function initializeApp() {
-  console.log('[App] Inicializando aplicação com autenticação...');
-  
-  // Aguardar inicialização da autenticação
-  const user = await authManager.waitForAuthInit();
-  
-  if (user) {
-    console.log('[App] Usuário autenticado:', user.email);
+  try {
+    console.log('[Taskora] Inicializando aplicação com autenticação anônima...');
+    
+    // Aguarda a inicialização do auth
+    await authManager.waitForAuthInit();
+    
+    // Com autenticação anônima, sempre mostra a app principal
     showMainApp();
-  } else {
-    console.log('[App] Usuário não autenticado, mostrando tela de login');
-    showLoginForm();
+    
+  } catch (error) {
+    console.error('[Taskora] Erro na inicialização:', error);
+    // Mesmo com erro, tenta mostrar a app
+    showMainApp();
   }
 }
 
-// Mostrar aplicação principal
 function showMainApp() {
-  // Remover tela de login se existir
-  if (loginForm) {
-    loginForm.destroy();
-    loginForm = null;
-  }
+  console.log('[Taskora] Exibindo aplicação principal');
   
-  // Mostrar elementos da aplicação
-  const appShell = document.querySelector('.app-shell');
-  if (appShell) {
-    appShell.style.display = 'flex';
-  }
+  // Exibe a aplicação principal
+  document.body.classList.remove('auth-mode');
+  document.body.classList.add('app-mode');
   
-  // Inicializar roteamento se ainda não foi feito
+  // Renderiza a rota atual
+  renderRoute();
+  
   if (!isAppInitialized) {
-    window.addEventListener("hashchange", renderRoute);
-    renderRoute(); // Renderizar rota inicial
+    // Configura o router
+    window.addEventListener('hashchange', renderRoute);
     isAppInitialized = true;
-    console.log('[App] Aplicação principal inicializada');
-  }
-}
-
-// Mostrar formulário de login
-function showLoginForm() {
-  // Esconder aplicação principal
-  const appShell = document.querySelector('.app-shell');
-  if (appShell) {
-    appShell.style.display = 'none';
-  }
-  
-  // Criar e mostrar formulário de login
-  if (!loginForm) {
-    loginForm = new LoginForm();
-    document.body.appendChild(loginForm.render());
-    console.log('[App] Tela de login exibida');
   }
 }
 
 // Listener para mudanças no estado de autenticação
 authManager.onAuthStateChange((user) => {
   if (user) {
-    console.log('[App] Usuário logou:', user.email);
-    showMainApp();
+    console.log('[Taskora] Usuário conectado anonimamente:', user.uid);
+    if (!isAppInitialized) {
+      showMainApp();
+    }
   } else {
-    console.log('[App] Usuário deslogou');
-    showLoginForm();
-    isAppInitialized = false;
+    console.log('[Taskora] Usuário desconectado, tentando reconectar...');
+    // Tenta reconectar automaticamente
+    authManager.signInAnonymously();
   }
 });
 
@@ -140,7 +120,6 @@ window.addEventListener("load", initializeApp);
 if (typeof window !== 'undefined') {
   window.TaskoraApp = {
     authManager,
-    showLoginForm,
     showMainApp,
     renderRoute
   };
