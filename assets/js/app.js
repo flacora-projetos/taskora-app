@@ -1,4 +1,4 @@
-import { app } from "./firebase.js";
+import { app } from "./config/firebase.js";
 import "./store/filtersStore.js";
 import SidebarNav from "./components/layout/SidebarNav.js";
 import Topbar from "./components/layout/Topbar.js";

@@ -208,7 +208,7 @@ class TasksDragDrop {
       
       // Atualizar no Firebase - apenas o status, preservando todos os outros dados
       const { updateDoc, doc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-      const { db } = await import('../firebase.js');
+      const { db } = await import('../config/firebase.js');
       
       await updateDoc(doc(db, 'tasks', dragData.taskId), {
         status: newStatus,

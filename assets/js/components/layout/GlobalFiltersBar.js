@@ -3,7 +3,7 @@
 // Mantém contrato com TaskoraFilters (auto-aplicar; sem botão Aplicar)
 
 import { listClients, listTeamMembers } from "../../data/metaRepo.js";
-import { db } from "../../firebase.js";
+import { db } from "../../config/firebase.js";
 import {
   collection, query, orderBy, limit, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";

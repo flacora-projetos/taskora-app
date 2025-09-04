@@ -2,7 +2,7 @@
 // Tasks list — layout refinado + NewTaskModal (CRUD: criar/editar/duplicar/excluir)
 // Paleta: terracota #993908, verde #014029, off-white #F2EFEB
 
-import { db } from "../firebase.js";
+import { db } from "../config/firebase.js";
 import {
   collection, query, orderBy, limit, getDocs,
   addDoc, updateDoc, deleteDoc, doc, serverTimestamp
