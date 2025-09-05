@@ -4,6 +4,58 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.8] - 2025-01-15
+
+### ✅ ADICIONADO
+- **Botão "Voltar ao Topo" na Página de Tarefas:** Substituição do botão flutuante "Carregar Mais" por funcionalidade de navegação
+  - 🔝 **Scroll Suave:** Animação suave para retornar ao topo da página
+  - 👁️ **Aparição Inteligente:** Botão aparece após scroll de 300px
+  - ♾️ **Scroll Infinito Mantido:** Funcionalidade de carregamento automático preservada
+  - 🎯 **Posicionamento Fixo:** Botão no canto inferior direito com ícone de seta
+  - 📁 **Arquivo:** `tasks.js` - função `initScrollToTop()` e lógica de scroll
+
+- **Status de Saldo na Listagem de Clientes:** Indicadores visuais de situação financeira
+  - 💰 **Badge "OK":** Saldos positivos com cor verde
+  - ⚠️ **Badge "Baixo":** Saldos entre 0-50 com cor amarela
+  - ❌ **Badge "Esgotado":** Saldos negativos com cor vermelha
+  - 🔄 **Integração Completa:** Funciona junto com status existente (Ativo, Inativo, Prospects)
+  - 📁 **Arquivo:** `clients.js` - função `getBalanceStatus()` e renderização
+
+- **Lógica Inteligente para Cartão de Crédito:** Otimização de alertas de saldo
+  - 💳 **Detecção Automática:** Identifica clientes que usam cartão de crédito
+  - 🔕 **Supressão de Alertas:** Ignora notificações de saldo baixo para pagamentos via cartão
+  - 🎯 **UX Melhorada:** Elimina alertas desnecessários e confusos
+  - 📁 **Arquivo:** `balanceModal.js` - lógica condicional baseada no método de pagamento
+
+### 🔧 CORRIGIDO
+- **Filtro de Cliente no Histórico:** Correção crítica da comunicação entre modal e página
+  - 🎯 **Problema Identificado:** Modal não aplicava `TaskoraFilters` antes da navegação
+  - ✅ **Solução Implementada:** Adicionado `TaskoraFilters.set({ client: clientId })` antes da navegação
+  - 🔄 **Sincronização Correta:** `TaskoraFilters.apply()` executado após carregamento da página
+  - 🛡️ **Fallback Mantido:** Função `selectClientById()` preservada para compatibilidade
+  - 📊 **Logs Detalhados:** Sistema de debugging implementado para rastreamento
+  - 📁 **Arquivo:** `clients.js` - evento de clique do botão "Histórico de Tarefas"
+
+### ✅ MELHORADO
+- **Experiência do Usuário:** Interface mais intuitiva e responsiva
+  - 🚀 **Navegação Otimizada:** Scroll mais eficiente na página de tarefas
+  - 👀 **Visibilidade Financeira:** Status de saldo claro na listagem de clientes
+  - ⚡ **Filtros Automáticos:** Seleção de cliente funciona instantaneamente
+  - 🎯 **Workflow Simplificado:** Menos cliques e ações manuais necessárias
+
+### 🧪 TESTADO
+- **Arquivos de Teste Criados:** Validação completa das funcionalidades
+  - `test-modal-bug.html` - Demonstra problema original do filtro
+  - `test-correction-verification.html` - Valida correção implementada
+  - `test-complete-flow.html` - Testa fluxo completo de filtros
+  - `test-client-selection.html` - Simula seleção de cliente
+  - `debug-client-filter.html` - Debug específico do filtro de cliente
+
+### 📚 DOCUMENTADO
+- **Release Notes:** Criação de `RELEASE_NOTES_2025-01-15.md` com documentação completa
+- **Arquivos Modificados:** Documentação de todas as mudanças nos arquivos principais
+- **Fluxo Corrigido:** Documentação do novo fluxo de filtros entre modal e histórico
+
 ## [v5.5.7] - 2025-01-31
 
 ### 🔧 CORRIGIDO

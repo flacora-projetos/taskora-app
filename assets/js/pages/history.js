@@ -3,6 +3,16 @@ import { listClients } from '../data/clientsRepo.js';
 import { listTasksRaw } from '../data/tasksRepo.js';
 
 (function(global) {
+  // Variáveis globais do módulo
+  let elPageTitle, elStatsGrid, elFiltersPanel, elTimeline;
+  let elTotalTasks, elCompletedTasks, elTotalHours, elCompletionRate;
+  let elStatusFilter, elClientFilter, elOwnerFilter;
+  let elDateFromFilter, elDateToFilter, elQuickFilter;
+  let allClients = [];
+  let allTasks = [];
+  let selectedClient = null;
+  let filteredTasks = [];
+
   // Utilitários
   function escapeHtml(text) {
     const div = document.createElement('div');
@@ -198,15 +208,7 @@ import { listTasksRaw } from '../data/tasksRepo.js';
       <div class="hs-sticky-container">
          <div class="hs-header">
            <h2 id="pageTitle">Histórico de Tarefas</h2>
-           <div class="hs-header-actions">
-             <select class="hs-client-selector" id="clientSelector">
-               <option value="">Selecione um cliente...</option>
-             </select>
-             <div class="hs-client-info" id="clientInfo" style="display: none;">
-               <span class="hs-client-name" id="clientName"></span>
-               <span class="hs-client-tier" id="clientTier"></span>
-             </div>
-           </div>
+           <!-- Seletor principal removido - usando apenas filtro global -->
          </div>
         
         <div class="hs-stats-grid" id="statsGrid" style="display: none;">
@@ -291,30 +293,21 @@ import { listTasksRaw } from '../data/tasksRepo.js';
       </div>
     `;
     
-    // Elementos
-    const elPageTitle = root.querySelector('#pageTitle');
-    const elClientSelector = root.querySelector('#clientSelector');
-    const elClientInfo = root.querySelector('#clientInfo');
-    const elClientName = root.querySelector('#clientName');
-    const elClientTier = root.querySelector('#clientTier');
-    const elStatsGrid = root.querySelector('#statsGrid');
-    const elFiltersPanel = root.querySelector('#filtersPanel');
-    const elTimeline = root.querySelector('#timeline');
-    const elTotalTasks = root.querySelector('#totalTasks');
-    const elCompletedTasks = root.querySelector('#completedTasks');
-    const elTotalHours = root.querySelector('#totalHours');
-    const elCompletionRate = root.querySelector('#completionRate');
-    const elStatusFilter = root.querySelector('#statusFilter');
-    const elClientFilter = root.querySelector('#clientFilter');
-    const elOwnerFilter = root.querySelector('#ownerFilter');
-    const elDateFromFilter = root.querySelector('#dateFromFilter');
-    const elDateToFilter = root.querySelector('#dateToFilter');
-    const elQuickFilter = root.querySelector('#quickFilter');
-    
-    let allClients = [];
-    let allTasks = [];
-    let selectedClient = null;
-    let filteredTasks = [];
+    // Inicializar elementos
+    elPageTitle = root.querySelector('#pageTitle');
+    elStatsGrid = root.querySelector('#statsGrid');
+    elFiltersPanel = root.querySelector('#filtersPanel');
+    elTimeline = root.querySelector('#timeline');
+    elTotalTasks = root.querySelector('#totalTasks');
+    elCompletedTasks = root.querySelector('#completedTasks');
+    elTotalHours = root.querySelector('#totalHours');
+    elCompletionRate = root.querySelector('#completionRate');
+    elStatusFilter = root.querySelector('#statusFilter');
+    elClientFilter = root.querySelector('#clientFilter');
+    elOwnerFilter = root.querySelector('#ownerFilter');
+    elDateFromFilter = root.querySelector('#dateFromFilter');
+    elDateToFilter = root.querySelector('#dateToFilter');
+    elQuickFilter = root.querySelector('#quickFilter');
     
     // Carregar dados iniciais
     async function loadData() {
@@ -329,37 +322,24 @@ import { listTasksRaw } from '../data/tasksRepo.js';
         allClients = clients;
         allTasks = tasks;
         
-        populateClientSelector();
         populateFilterSelects();
         
-        // Inicializar com "Todos" selecionado
-        selectClient('all');
+        // Inicializar com todas as tarefas
+        loadAllTasks();
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
         elTimeline.innerHTML = '<div class="hs-timeline-empty">Erro ao carregar dados. Tente novamente.</div>';
       }
     }
     
-    function populateClientSelector() {
-      elClientSelector.innerHTML = '<option value="all">Todos</option><option value="">Selecione um cliente...</option>';
-      
-      allClients.forEach(client => {
-        const option = document.createElement('option');
-        option.value = client.id;
-        option.textContent = client.name;
-        elClientSelector.appendChild(option);
-      });
-      
-      // Definir "Todos" como padrão
-      elClientSelector.value = 'all';
-    }
+    // Função removida - usando apenas filtro global
     
     function populateFilterSelects() {
       // Popular filtro de clientes
       elClientFilter.innerHTML = '<option value="all">Todos</option>';
       allClients.forEach(client => {
         const option = document.createElement('option');
-        option.value = client.name;
+        option.value = client.id;
         option.textContent = client.name;
         elClientFilter.appendChild(option);
       });
@@ -375,141 +355,85 @@ import { listTasksRaw } from '../data/tasksRepo.js';
       });
     }
     
-    function selectClient(clientId) {
-      if (clientId === 'all') {
-        selectedClient = { id: 'all', name: 'Todos os Clientes' };
-        
-        // Mostrar info para "Todos"
-        elClientName.textContent = 'Todos os Clientes';
-        elClientTier.textContent = 'Global';
-        elClientTier.className = 'hs-client-tier';
-        elClientTier.style.background = '#DBEAFE';
-        elClientTier.style.color = '#1E40AF';
-        
-        elClientInfo.style.display = 'flex';
-        elStatsGrid.style.display = 'grid';
-        elFiltersPanel.style.display = 'block';
-        
-        // Inicializar filtro rápido com "Últimos 30 dias"
-        elQuickFilter.value = 'last30';
-        setDates(addDays(today(), -29), today());
-        
-        loadAllTasks();
-        updatePageTitle();
-        return;
-      }
-      
-      selectedClient = allClients.find(c => c.id === clientId);
-      
-      if (!selectedClient) {
-        elClientInfo.style.display = 'none';
-        elStatsGrid.style.display = 'none';
-        elFiltersPanel.style.display = 'none';
-        elTimeline.innerHTML = `
-          <div class="hs-no-client">
-            <h3>Selecione um cliente</h3>
-            <p>Escolha um cliente no seletor acima para visualizar seu histórico de tarefas.</p>
-          </div>
-        `;
-        return;
-      }
-      
-      // Mostrar info do cliente
-      elClientName.textContent = selectedClient.name;
-      elClientTier.textContent = selectedClient.tier || 'N/A';
-      elClientTier.className = 'hs-client-tier';
-      
-      const tierColors = {
-        'KEY_ACCOUNT': { bg: '#FEF3C7', fg: '#92400E' },
-        'MID_TIER': { bg: '#DBEAFE', fg: '#1E40AF' },
-        'LOW_TIER': { bg: '#F3F4F6', fg: '#6B7280' }
-      };
-      
-      const tierColor = tierColors[selectedClient.tier] || tierColors['LOW_TIER'];
-      elClientTier.style.background = tierColor.bg;
-      elClientTier.style.color = tierColor.fg;
-      
-      elClientInfo.style.display = 'flex';
+    // Função removida - usando apenas filtro global de clientes
+    
+    function loadAllTasks() {
+      // Mostrar painel de filtros e estatísticas
       elStatsGrid.style.display = 'grid';
       elFiltersPanel.style.display = 'block';
       
-      // Inicializar filtro rápido com "Últimos 30 dias"
-      elQuickFilter.value = 'last30';
-      setDates(addDays(today(), -29), today());
-      
-      loadClientTasks();
-      updatePageTitle();
-    }
-    
-    function loadAllTasks() {
-      if (!selectedClient || selectedClient.id !== 'all') return;
-      
-      // Carregar todas as tarefas
+      // Carregar todas as tarefas e aplicar filtros
       filteredTasks = [...allTasks];
       applyFilters();
       updateStats();
       renderTimeline();
-    }
-    
-    function loadClientTasks() {
-      if (!selectedClient || selectedClient.id === 'all') return;
-      
-      // Filtrar tarefas do cliente
-      const clientTasks = allTasks.filter(task => {
-        if (!task.client) return false;
-        
-        // Tentar correspondência por ID do cliente primeiro
-        if (task.clientRef === selectedClient.id) return true;
-        
-        // Fallback: correspondência por nome (mais flexível)
-        const taskClientName = task.client.toLowerCase().trim();
-        const selectedClientName = selectedClient.name.toLowerCase().trim();
-        
-        return taskClientName === selectedClientName || 
-               taskClientName.includes(selectedClientName) ||
-               selectedClientName.includes(taskClientName);
-      });
-      
-      filteredTasks = clientTasks;
-      applyFilters();
-      updateStats();
-      renderTimeline();
+      updatePageTitle();
     }
     
     function applyFilters() {
-      if (!selectedClient) return;
-      
-      let filtered;
-      
-      // Se "Todos" estiver selecionado, começar com todas as tarefas
-      if (selectedClient.id === 'all') {
-        filtered = [...allTasks];
-      } else {
-        // Senão, começar com tarefas do cliente específico
-        filtered = allTasks.filter(task => {
-          if (!task.client) return false;
-          
-          // Tentar correspondência por ID do cliente primeiro
-          if (task.clientRef === selectedClient.id) return true;
-          
-          // Fallback: correspondência por nome (mais flexível)
-          const taskClientName = task.client.toLowerCase().trim();
-          const selectedClientName = selectedClient.name.toLowerCase().trim();
-          
-          return taskClientName === selectedClientName || 
-                 taskClientName.includes(selectedClientName) ||
-                 selectedClientName.includes(taskClientName);
-        });
-      }
+      // Começar com todas as tarefas
+      let filtered = [...allTasks];
       
       // Filtro por status (com normalização para compatibilidade com dados legados)
       if (elStatusFilter.value !== 'all') {
         filtered = filtered.filter(task => normalizeStatus(task.status) === elStatusFilter.value);
       }
       
-      // Filtro por cliente (só aplicar se "Todos" estiver selecionado)
-      if (selectedClient.id === 'all' && elClientFilter.value !== 'all') {
-        filtered = filtered.filter(task => task.client === elClientFilter.value);
+      // Filtro por cliente - VERSÃO CORRIGIDA
+      if (elClientFilter.value !== 'all') {
+        const selectedClient = allClients.find(c => c.id === elClientFilter.value);
+        const clientName = selectedClient ? selectedClient.name : elClientFilter.value;
+        
+        console.log('🎯 [FILTRO] Cliente selecionado:', clientName);
+        console.log('🎯 [FILTRO] Total de tarefas antes do filtro:', filtered.length);
+        
+        filtered = filtered.filter(task => {
+          if (!task.client) {
+            console.log('❌ [FILTRO] Tarefa sem cliente:', task.title);
+            return false;
+          }
+          
+          if (!clientName) {
+            console.log('❌ [FILTRO] Nome do cliente não encontrado');
+            return false;
+          }
+          
+          // Múltiplas estratégias de comparação
+          const taskClient = task.client;
+          
+          // 1. Correspondência exata
+          if (taskClient === clientName) {
+            console.log('✅ [FILTRO] Match exato:', task.title, '|', taskClient);
+            return true;
+          }
+          
+          // 2. Correspondência case-insensitive
+          if (taskClient.toLowerCase() === clientName.toLowerCase()) {
+            console.log('✅ [FILTRO] Match case-insensitive:', task.title, '|', taskClient);
+            return true;
+          }
+          
+          // 3. Correspondência com normalização de espaços
+          const taskClientNorm = taskClient.trim().replace(/\s+/g, ' ');
+          const clientNameNorm = clientName.trim().replace(/\s+/g, ' ');
+          
+          if (taskClientNorm.toLowerCase() === clientNameNorm.toLowerCase()) {
+            console.log('✅ [FILTRO] Match normalizado:', task.title, '|', taskClient, '->', taskClientNorm);
+            return true;
+          }
+          
+          // 4. Correspondência parcial (contém)
+          if (taskClient.toLowerCase().includes(clientName.toLowerCase()) || 
+              clientName.toLowerCase().includes(taskClient.toLowerCase())) {
+            console.log('✅ [FILTRO] Match parcial:', task.title, '|', taskClient);
+            return true;
+          }
+          
+          console.log('❌ [FILTRO] Sem match:', task.title, '|', `"${taskClient}" ≠ "${clientName}"`);
+          return false;
+        });
+        
+        console.log('🎯 [FILTRO] Total de tarefas após filtro:', filtered.length);
       }
       
       // Filtro por responsável
@@ -777,10 +701,7 @@ import { listTasksRaw } from '../data/tasksRepo.js';
       elPageTitle.textContent = getCustomSectionTitle();
     }
     
-    // Event listeners
-    elClientSelector.addEventListener('change', (e) => {
-      selectClient(e.target.value);
-    });
+    // Event listeners para filtros globais
     
     elStatusFilter.addEventListener('change', () => {
       applyFilters();
@@ -854,9 +775,90 @@ import { listTasksRaw } from '../data/tasksRepo.js';
     // Carregar dados iniciais
     loadData();
     
+    // Escutar mudanças dos filtros globais
+    if (window.TaskoraFilters && typeof window.TaskoraFilters.on === 'function') {
+      window.TaskoraFilters.on((state, evt) => {
+        if (evt?.type === 'apply') {
+          console.log('🔄 TaskoraFilters aplicado, atualizando filtros locais:', state);
+          
+          // Sincronizar filtros locais com os globais
+          if (state.client && state.client !== 'all' && elClientFilter) {
+            elClientFilter.value = state.client;
+          }
+          if (state.status && state.status !== 'all' && elStatusFilter) {
+            elStatusFilter.value = state.status;
+          }
+          if (state.owner && state.owner !== 'all' && elOwnerFilter) {
+            elOwnerFilter.value = state.owner;
+          }
+          if (state.dateFrom && elDateFromFilter) {
+            elDateFromFilter.value = state.dateFrom;
+          }
+          if (state.dateTo && elDateToFilter) {
+            elDateToFilter.value = state.dateTo;
+          }
+          
+          // Reaplicar filtros
+          applyFilters();
+          updateStats();
+          renderTimeline();
+          updatePageTitle();
+        }
+      });
+    }
+    
     return root;
   }
   
+  // Função global para selecionar cliente (pode ser chamada de outras páginas)
+  async function selectClientById(clientId) {
+    console.log('🎯 selectClientById chamada com:', clientId);
+    
+    // Aguardar dados serem carregados se necessário
+    if (!allClients || allClients.length === 0) {
+      console.log('⏳ Aguardando carregamento dos dados...');
+      let attempts = 0;
+      while ((!allClients || allClients.length === 0) && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+    }
+    
+    if (elClientFilter && allClients.length > 0) {
+      const client = allClients.find(c => c.id === clientId);
+      if (client) {
+        console.log('✅ Cliente encontrado:', client.name);
+        
+        // Definir filtro de cliente e aplicar
+        elClientFilter.value = client.id;
+        
+        // Mostrar painel de filtros e estatísticas
+        elStatsGrid.style.display = 'grid';
+        elFiltersPanel.style.display = 'block';
+        
+        // Inicializar filtro rápido com "Últimos 30 dias"
+        elQuickFilter.value = 'last30';
+        setDates(addDays(today(), -29), today());
+        
+        // Aplicar filtros
+        applyFilters();
+        updateStats();
+        renderTimeline();
+        updatePageTitle();
+        
+        console.log('📋 Cliente selecionado na página de histórico:', client.name);
+        return true;
+      } else {
+        console.error('❌ Cliente não encontrado com ID:', clientId);
+        console.log('📋 Clientes disponíveis:', allClients.map(c => ({id: c.id, name: c.name})));
+        return false;
+      }
+    } else {
+      console.error('❌ Filtro não disponível ou clientes não carregados');
+      return false;
+    }
+  }
+
   global.TaskoraPages = global.TaskoraPages || {};
-  global.TaskoraPages.history = { render };
+  global.TaskoraPages.history = { render, selectClientById };
 })(window);

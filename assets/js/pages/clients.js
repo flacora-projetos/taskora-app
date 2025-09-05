@@ -155,11 +155,11 @@ import {
         .cl-header-cell:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
         .cl-header-cell.col-name { width: 25%; }
         .cl-header-cell.col-tier { width: 12%; }
-        .cl-header-cell.col-status { width: 10%; }
-        .cl-header-cell.col-responsible { width: 15%; }
-        .cl-header-cell.col-budget { width: 12%; }
-        .cl-header-cell.col-platforms { width: 16%; }
-        .cl-header-cell.col-actions { width: 10%; text-align: right; }
+         .cl-header-cell.col-status { width: 10%; }
+         .cl-header-cell.col-responsible { width: 15%; }
+         .cl-header-cell.col-budget { width: 12%; }
+         .cl-header-cell.col-platforms { width: 16%; }
+         .cl-header-cell.col-actions { width: 10%; text-align: right; }
         .cl-row { box-shadow: 0 1px 1px rgba(0,0,0,0.03), 0 6px 16px rgba(0,0,0,0.03) }
         .cl-cell { background: #fff; border: 1px solid #EEE; padding: 10px 12px; vertical-align: middle; overflow: hidden }
         .cl-cell:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px }
@@ -169,7 +169,7 @@ import {
          .cl-name-clickable:hover { color: #014029; text-decoration: underline; }
          .cl-email { color: #6b7280; font-size: 12px }
         .cl-chip { display: inline-block; padding: 3px 8px; border-radius: 999px; font-weight: 700; font-size: 10px; line-height: 1; border: 1px solid var(--bd); color: var(--fg); background: var(--bg); white-space: nowrap; letter-spacing: 0.2px }
-        .cl-budget { font-weight: 600; color: #059669; font-variant-numeric: tabular-nums }
+         .cl-budget { font-weight: 600; color: #059669; font-variant-numeric: tabular-nums }
         .cl-platforms { display: flex; flex-wrap: wrap; gap: 2px }
         .cl-platform-tag { background: #F3F4F6; color: #374151; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 500 }
         
@@ -1143,8 +1143,8 @@ import {
                            <div class="cl-balance-platform">
                              <div class="cl-balance-header">
                                <span class="cl-balance-platform-name">${platformNames[platform]}</span>
-                               <span class="cl-balance-status ${estimatedBalance <= 0 ? 'depleted' : estimatedBalance < 15.00 ? 'low' : 'good'}">
-                                 ${estimatedBalance <= 0 ? '🔴 Esgotado' : estimatedBalance < 15.00 ? '🟡 Baixo' : '🟢 OK'}
+                               <span class="cl-balance-status ${client.paymentMethod === 'CREDIT_CARD' ? 'good' : (estimatedBalance <= 0 ? 'depleted' : estimatedBalance < 15.00 ? 'low' : 'good')}">
+                                 ${client.paymentMethod === 'CREDIT_CARD' ? '💳 Cartão' : (estimatedBalance <= 0 ? '🔴 Esgotado' : estimatedBalance < 15.00 ? '🟡 Baixo' : '🟢 OK')}
                                </span>
                              </div>
                              <div class="cl-balance-details">
@@ -1307,21 +1307,56 @@ import {
         
         // Event listener para histórico
         const historyBtn = backdrop.querySelector('#historyBtn');
-        historyBtn.addEventListener('click', () => {
+        historyBtn.addEventListener('click', async () => {
           backdrop.remove();
+          
+          // CORREÇÃO: Definir filtro global ANTES de navegar para a página de histórico
+          console.log('🔧 Definindo filtro global para cliente:', client.id, client.name);
+          if (window.TaskoraFilters && typeof window.TaskoraFilters.set === 'function') {
+            window.TaskoraFilters.set({ client: client.id });
+            console.log('✅ TaskoraFilters.set({ client: "' + client.id + '" }) executado');
+          } else {
+            console.warn('⚠️ TaskoraFilters não disponível, usando método fallback');
+          }
+          
           // Navegar para página de histórico com cliente pré-selecionado
           window.location.hash = '#/history';
-          // Aguardar um pouco para a página carregar e então selecionar o cliente
-          setTimeout(() => {
-            const historyPage = document.querySelector('.history-page');
-            if (historyPage) {
-              const clientSelector = historyPage.querySelector('#clientSelector');
-              if (clientSelector) {
-                clientSelector.value = client.id;
-                clientSelector.dispatchEvent(new Event('change'));
+          
+          // Aguardar um pouco para a página carregar e então aplicar filtros
+          setTimeout(async () => {
+            console.log('🔍 Aplicando filtros na página de histórico para cliente:', client.id, client.name);
+            
+            // Aplicar filtros globais se TaskoraFilters estiver disponível
+            if (window.TaskoraFilters && typeof window.TaskoraFilters.apply === 'function') {
+              window.TaskoraFilters.apply();
+              console.log('✅ TaskoraFilters.apply() executado');
+            }
+            
+            // Usar a função global da página de histórico como fallback
+            if (window.TaskoraPages && window.TaskoraPages.history && window.TaskoraPages.history.selectClientById) {
+              try {
+                const success = await window.TaskoraPages.history.selectClientById(client.id);
+                if (success) {
+                  console.log('✅ Cliente selecionado com sucesso via função global');
+                } else {
+                  console.error('❌ Falha ao selecionar cliente via função global');
+                }
+              } catch (error) {
+                console.error('❌ Erro ao selecionar cliente:', error);
+              }
+            } else {
+              console.error('❌ Função selectClientById não disponível');
+              // Fallback para método anterior
+              const historyPage = document.querySelector('.history-page');
+              if (historyPage) {
+                const clientSelector = historyPage.querySelector('#clientSelector');
+                if (clientSelector) {
+                  clientSelector.value = client.id;
+                  clientSelector.dispatchEvent(new Event('change'));
+                }
               }
             }
-          }, 100);
+          }, 500); // Aumentar timeout para garantir que a página e dados estejam carregados
         });
        
        // Fechar modal ao clicar no backdrop
@@ -1899,7 +1934,7 @@ import {
     function getOverallBalanceStatus(client) {
       if (!client.balanceControl) return null;
       
-      // Não exibir flags de saldo para clientes com Cartão de Crédito
+      // Ignorar status de saldo baixo para clientes com Cartão de Crédito
       if (client.paymentMethod === 'CREDIT_CARD') return null;
       
       const platforms = ['metaAds', 'googleAds', 'tiktokAds', 'pinterestAds'];
@@ -2002,6 +2037,11 @@ import {
     function updateEstimatedBalances() {
       const balanceItems = document.querySelectorAll('.cl-balance-platform');
       
+      // Verificar se o cliente usa cartão de crédito
+      const paymentMethodSelect = document.querySelector('[name="paymentMethod"]');
+      const isClientDetailModal = document.querySelector('.cl-detail-modal');
+      const isCreditCard = paymentMethodSelect ? paymentMethodSelect.value === 'CREDIT_CARD' : false;
+      
       balanceItems.forEach(item => {
         const depositInput = item.querySelector('[name*="_deposit"]');
         const dateInput = item.querySelector('[name*="_date"]');
@@ -2016,11 +2056,16 @@ import {
           const estimatedBalance = calculateEstimatedBalance(lastDeposit, depositDate, dailyBudget);
           estimatedDisplay.textContent = formatCurrency(estimatedBalance);
           
-          // Atualizar status visual
+          // Atualizar status visual - ignorar para clientes com cartão de crédito
           const statusElement = item.querySelector('.cl-balance-status');
           if (statusElement) {
             statusElement.className = 'cl-balance-status';
-            if (estimatedBalance <= 0) {
+            
+            // Se for cartão de crédito e estiver no modal de detalhes, não mostrar status
+            if (isCreditCard && isClientDetailModal) {
+              statusElement.classList.add('good');
+              statusElement.textContent = '💳 Cartão';
+            } else if (estimatedBalance <= 0) {
               statusElement.classList.add('depleted');
               statusElement.textContent = '🔴 Esgotado';
             } else if (estimatedBalance < 15.00) {

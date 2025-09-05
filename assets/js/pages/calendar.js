@@ -6,6 +6,7 @@
 
 import { listTasksByDateRange, updateTask, deleteTask } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican } from "../utils/dateFormat.js";
+import { htmlToText } from "../utils/richTextRenderer.js";
 
 /* globals TaskoraFilters, TaskoraLookups */
 
@@ -140,7 +141,9 @@ import { formatToBrazilian, formatToAmerican } from "../utils/dateFormat.js";
   function taskChip(t) {
     const label = (t.client || "").trim() ? t.client : (t.owner || "—");
     const st = statusStyle(t.status);
-    return `<div class="cal-chip" data-open-day="${escapeHtml(t.date || "")}" data-task-id="${escapeHtml(t.id||"")}" title="${escapeHtml(t.description||'')}" style="
+    // Converter HTML para texto plano para o hover
+    const plainDescription = htmlToText(t.description || "");
+    return `<div class="cal-chip" data-open-day="${escapeHtml(t.date || "")}" data-task-id="${escapeHtml(t.id||"")}" title="${escapeHtml(plainDescription)}" style="
       display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
       background:${st.bg}; border:1px solid ${st.bd}; border-radius:8px;
       padding:2px 6px; font-size:11px; color:${st.fg}; margin:2px 0; cursor:pointer;">
@@ -673,8 +676,8 @@ window.addEventListener('resize', () => fitCalendarGrid(grid), { passive: true }
         const iso = btn.getAttribute("data-more");
         const all = (bucket.get(iso) || []).slice();
 
-        openModal(`Tarefas em ${iso}`, all, {
-          onAfterChange: async ()=> await refreshDayAndModal(iso, `Tarefas em ${iso}`)
+        openModal(`Tarefas em ${formatToBrazilian(iso)}`, all, {
+          onAfterChange: async ()=> await refreshDayAndModal(iso, `Tarefas em ${formatToBrazilian(iso)}`)
         });
       });
 
@@ -689,9 +692,9 @@ window.addEventListener('resize', () => fitCalendarGrid(grid), { passive: true }
         const one = all.filter(t => String(t.id) === String(id));
         const items = one.length ? one : all.slice(0,1);
 
-        openModal(`Tarefa em ${iso}`, items, {
+        openModal(`Tarefa em ${formatToBrazilian(iso)}`, items, {
           onAfterChange: async ()=> {
-            const fresh = await refreshDayAndModal(iso, `Tarefa em ${iso}`);
+            const fresh = await refreshDayAndModal(iso, `Tarefa em ${formatToBrazilian(iso)}`);
             return fresh.filter(t => one.length ? String(t.id) === String(id) : true);
           }
         });

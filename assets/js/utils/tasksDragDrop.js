@@ -218,6 +218,9 @@ class TasksDragDrop {
       // Atualizar UI imediatamente
       this.updateTaskRowStatus(dragData.taskId, newStatus);
       
+      // Atualizar dados locais da página de tarefas se disponível
+      this.updateLocalTaskData(dragData.taskId, newStatus);
+      
       // Feedback de sucesso
       this.showFeedback(`Status alterado para: ${this.getStatusLabel(newStatus)}`, 'success');
       
@@ -274,6 +277,31 @@ class TasksDragDrop {
     taskRow.style.animation = 'none';
     taskRow.offsetHeight; // Trigger reflow
     taskRow.style.animation = 'dropSuccess 0.4s ease';
+  }
+
+  updateLocalTaskData(taskId, newStatus) {
+    // Atualizar dados locais da página de tarefas se disponível
+    if (window.TaskoraPages && window.TaskoraPages.tasks) {
+      // Verificar se existem arrays globais de tarefas
+      if (window.allRows) {
+        const taskIndex = window.allRows.findIndex(r => r.id === taskId);
+        if (taskIndex !== -1) {
+          window.allRows[taskIndex].status = newStatus;
+        }
+      }
+      
+      if (window.allRowsOriginal) {
+        const taskIndexOriginal = window.allRowsOriginal.findIndex(r => r.id === taskId);
+        if (taskIndexOriginal !== -1) {
+          window.allRowsOriginal[taskIndexOriginal].status = newStatus;
+        }
+      }
+      
+      // Reaplicar filtros se a função estiver disponível
+      if (window.TaskoraFilters && typeof window.applyFiltersLocally === 'function') {
+        window.applyFiltersLocally(window.TaskoraFilters.get());
+      }
+    }
   }
 
   getStatusConfig(status) {

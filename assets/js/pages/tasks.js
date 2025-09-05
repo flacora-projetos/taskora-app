@@ -11,7 +11,7 @@ import { createTask, updateTask, mapDbToUi } from "../data/tasksRepo.js";
 import { formatToBrazilian, formatToAmerican, parseBrazilianDate } from "../utils/dateFormat.js";
 import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 import { roundToDecimals } from "../utils/formatters.js";
-import { renderDescription } from "../utils/richTextRenderer.js";
+import { renderDescription, htmlToText } from "../utils/richTextRenderer.js";
 import { RichTextEditor } from "../components/richTextEditor.js";
 
 /* global TaskoraFilters */
@@ -269,6 +269,54 @@ import { RichTextEditor } from "../components/richTextEditor.js";
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        
+        /* Botão flutuante de voltar ao topo */
+        .tk-floating-scroll-top {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          z-index: 1000;
+          background: #014029;
+          color: white;
+          border: none;
+          border-radius: 50px;
+          padding: 12px 20px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(1, 64, 41, 0.3);
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        
+        .tk-floating-scroll-top:hover {
+          background: #013522;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(1, 64, 41, 0.4);
+        }
+        
+        .tk-floating-scroll-top:active {
+          transform: translateY(0);
+        }
+        
+        .tk-floating-scroll-top svg {
+          width: 16px;
+          height: 16px;
+        }
+        
+        /* Responsivo para mobile */
+        @media (max-width: 768px) {
+          .tk-floating-scroll-top {
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 16px;
+            font-size: 12px;
+          }
+        }
       </style>
 
       <!-- Campo Sticky: Título + Cards + Filtros -->
@@ -360,6 +408,16 @@ import { RichTextEditor } from "../components/richTextEditor.js";
           </div>
         </div>
       </div>
+      
+      <!-- Botão flutuante de voltar ao topo -->
+      <button id="floating-scroll-top" class="tk-floating-scroll-top" style="display: none;">
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        Voltar ao Topo
+      </button>
+        </div>
+      </div>
     `;
 
     const elTableWrap = root.querySelector("#table-wrap");
@@ -371,10 +429,15 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     const elStatCompleted = root.querySelector("#stat-completed");
     const elScrollSentinel = root.querySelector("#scroll-sentinel");
     const elLoadingIndicator = root.querySelector("#loading-indicator");
+    const elFloatingScrollTop = root.querySelector("#floating-scroll-top");
 
-    let allRows=[]; let page=0;
+    let allRows=[]; let allRowsOriginal=[]; let page=0;
     let isLoadingMore = false;
     let scrollObserver = null;
+    
+    // Expor variáveis globalmente para drag and drop
+    window.allRows = allRows;
+    window.allRowsOriginal = allRowsOriginal;
 
     const setLoading = on => elTableWrap.innerHTML = on ? `<div class="tk-card" style="text-align:center;color:#6b7280">Carregando…</div>` : '';
     
@@ -449,7 +512,8 @@ import { RichTextEditor } from "../components/richTextEditor.js";
           const dDue   = formatToBrazilian(r.dueDate);
           // Renderizar descrição separadamente para evitar escape do HTML
           const descriptionHTML = renderDescription(r.description, { maxLength: 100, allowHTML: true });
-          const plainDescription = r.description || "";
+          // Converter HTML para texto plano para o hover
+          const plainDescription = htmlToText(r.description || "");
           
           return `
             <tr class="tk-row" data-row-id="${r.id}" data-task-row="true" style="cursor: grab;" title="Arraste para alterar o status">
@@ -474,11 +538,12 @@ import { RichTextEditor } from "../components/richTextEditor.js";
       const total=allRows.length, shown=Math.min((page+1)*PAGE_SIZE,total);
       const hasMore = shown < total;
       
-      // Controlar visibilidade do botão e sentinela
-      elMore.hidden = hasMore; // Esconder botão quando há scroll infinito ativo
+      // Controlar visibilidade dos elementos de carregamento
+      elMore.hidden = true; // Sempre esconder o botão original
       elScrollSentinel.style.display = hasMore ? 'flex' : 'none';
+      // Botão "Voltar ao Topo" será controlado pelo scroll, não por hasMore
       
-      // Configurar Intersection Observer para scroll infinito
+      // Configurar Intersection Observer para scroll infinito (como backup)
       if (hasMore && !scrollObserver) {
         setupInfiniteScroll();
       } else if (!hasMore && scrollObserver) {
@@ -508,6 +573,39 @@ import { RichTextEditor } from "../components/richTextEditor.js";
       return items;
     }
 
+    // Função para aplicar filtros nos dados já carregados (sem buscar do Firebase)
+    function applyFiltersLocally(current) {
+      page = 0;
+      
+      const inRange = (docDate) => {
+        if(!current.dateFrom && !current.dateTo) return true;
+        const dd = (docDate || "");
+        if(current.dateFrom && dd < current.dateFrom) return false;
+        if(current.dateTo && dd > current.dateTo) return false;
+        return true;
+      };
+
+      // Usar todos os dados carregados (incluindo atualizações locais)
+      const filteredRows = allRowsOriginal.map(r => {
+        // Verificar se há uma versão atualizada localmente
+        const localUpdate = allRows.find(local => local.id === r.id);
+        return localUpdate || r;
+      }).filter(r =>
+        (!current.status || current.status==="all" || norm(canonStatus(r.status))===norm(current.status)) &&
+        (!current.client || current.client==="all" || r.client===current.client) &&
+        (!current.owner || current.owner==="all" || r.owner===current.owner) &&
+        inRange(r.date || r.dueDate || fmtDateISO(r.createdAt))
+      );
+      
+      allRows = filteredRows;
+      // Atualizar referência global
+      window.allRows = allRows;
+      renderTableSlice();
+    }
+    
+    // Expor função globalmente para drag and drop
+    window.applyFiltersLocally = applyFiltersLocally;
+
     async function fetchAndFilter(current){
       setLoading(true); page=0;
       try{
@@ -518,6 +616,11 @@ import { RichTextEditor } from "../components/richTextEditor.js";
           console.error("[Tasks] Falha na consulta ordenada por createdAt. Fazendo fallback simples.", err);
           docs = await fetchFromFirestoreSimple();
         }
+
+        // Manter uma cópia dos dados originais para filtragem local
+        allRowsOriginal = docs.slice();
+        // Atualizar referência global
+        window.allRowsOriginal = allRowsOriginal;
 
         const inRange = (docDate) => {
           if(!current.dateFrom && !current.dateTo) return true;
@@ -533,9 +636,15 @@ import { RichTextEditor } from "../components/richTextEditor.js";
           (!current.owner || current.owner==="all" || r.owner===current.owner) &&
           inRange(r.date || r.dueDate || fmtDateISO(r.createdAt))
         );
+        // Atualizar referência global
+        window.allRows = allRows;
       }catch(err){
         console.error("[Tasks] Erro ao buscar tarefas:", err);
         allRows = [];
+        allRowsOriginal = [];
+        // Atualizar referências globais
+        window.allRows = allRows;
+        window.allRowsOriginal = allRowsOriginal;
       }finally{
         setLoading(false);
       }
@@ -563,7 +672,7 @@ import { RichTextEditor } from "../components/richTextEditor.js";
       }, 300);
     }
     
-    // Configurar Intersection Observer para scroll infinito
+    // Configurar Intersection Observer para scroll infinito (backup)
     function setupInfiniteScroll() {
       if (scrollObserver) {
         scrollObserver.disconnect();
@@ -572,19 +681,44 @@ import { RichTextEditor } from "../components/richTextEditor.js";
       scrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !isLoadingMore) {
-            loadMoreItems();
+            // Só carregar automaticamente se o usuário estiver realmente no final
+            // O botão flutuante é a opção principal
+            setTimeout(() => {
+              if (entry.isIntersecting && !isLoadingMore) {
+                loadMoreItems();
+              }
+            }, 1000); // Delay de 1 segundo para dar preferência ao botão
           }
         });
       }, {
         root: null,
-        rootMargin: '100px', // Carregar quando estiver 100px antes do elemento
-        threshold: 0.1
+        rootMargin: '50px', // Reduzido para ser menos agressivo
+        threshold: 0.5 // Aumentado para ser mais preciso
       });
       
       scrollObserver.observe(elScrollSentinel);
     }
 
     elMore.addEventListener("click", loadMoreItems);
+    // Função para voltar ao topo
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+    
+    elFloatingScrollTop.addEventListener("click", scrollToTop);
+    
+    // Controlar visibilidade do botão "Voltar ao Topo" baseado no scroll
+    function handleScrollVisibility() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const shouldShow = scrollTop > 300; // Mostrar após 300px de scroll
+      elFloatingScrollTop.style.display = shouldShow ? 'flex' : 'none';
+    }
+    
+    window.addEventListener('scroll', handleScrollVisibility);
+    handleScrollVisibility(); // Verificar estado inicial
 
     // ==================== NewTaskModal (UI) ====================
     const NewTaskModal = (()=>{
@@ -870,6 +1004,7 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         showCenterToast("Tarefa excluída");
         // remove local e re-renderiza rápido
         allRows = allRows.filter(r=>r.id!==id);
+        allRowsOriginal = allRowsOriginal.filter(r=>r.id!==id); // 🔧 Atualizar dados originais
         elTableWrap.querySelector(`tr[data-row-id="${id}"]`)?.remove();
       }catch(err){
         console.error("[Tasks] Erro ao excluir:", err);
@@ -898,8 +1033,12 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         const ref = await addDoc(collection(db,"tasks"), copy);
         showCenterToast("Tarefa duplicada");
         // Atualiza rapidamente a UI (inserindo no topo visual)
-        allRows.unshift({id: ref.id, ...copy, createdAt: {seconds: Math.floor(Date.now()/1000)}});
-        page = 0; renderTableSlice();
+        const duplicatedTask = {id: ref.id, ...copy, createdAt: {seconds: Math.floor(Date.now()/1000)}};
+        allRows.unshift(duplicatedTask);
+        allRowsOriginal.unshift(duplicatedTask); // 🔧 Atualizar dados originais
+        
+        // Aplicar filtros para garantir consistência
+        applyFiltersLocally(TaskoraFilters.get());
       }catch(err){
         console.error("[Tasks] Erro ao duplicar:", err);
         alert("Falha ao duplicar a tarefa.");
@@ -924,7 +1063,13 @@ import { RichTextEditor } from "../components/richTextEditor.js";
             // Atualiza buffer local e a linha
             const idx = allRows.findIndex(r=>r.id===row.id);
             if(idx>=0) allRows[idx] = { ...allRows[idx], ...clean };
-            page = 0; renderTableSlice();
+            
+            // Atualizar dados originais também
+            const idxOriginal = allRowsOriginal.findIndex(r=>r.id===row.id);
+            if(idxOriginal>=0) allRowsOriginal[idxOriginal] = { ...allRowsOriginal[idxOriginal], ...clean };
+            
+            // Aplicar filtros para garantir consistência
+            applyFiltersLocally(TaskoraFilters.get());
           }catch(err){
             console.error("[Tasks] Erro ao atualizar:", err);
             alert("Falha ao salvar alterações.");
@@ -947,20 +1092,22 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         clients, owners,
         async onOk(payload){
           try{
-            console.log('[Tasks] 🚀 Criando tarefa:', payload);
-            const taskId = await createTask(payload);
-            showCenterToast("Tarefa criada com sucesso");
-            console.log('[Tasks] ✅ Tarefa criada com ID:', taskId);
-            
-            // Adicionar tarefa localmente para exibição imediata
-            const newTask = { 
-              id: taskId, 
-              ...payload, 
-              createdAt: { seconds: Math.floor(Date.now() / 1000) } 
-            };
-            allRows.unshift(newTask);
-            page = 0; 
-            renderTableSlice();
+          console.log('[Tasks] 🚀 Criando tarefa:', payload);
+          const taskId = await createTask(payload);
+          showCenterToast("Tarefa criada com sucesso");
+          console.log('[Tasks] ✅ Tarefa criada com ID:', taskId);
+          
+          // Adicionar tarefa localmente para exibição imediata
+          const newTask = { 
+            id: taskId, 
+            ...payload, 
+            createdAt: { seconds: Math.floor(Date.now() / 1000) } 
+          };
+          allRows.unshift(newTask);
+          allRowsOriginal.unshift(newTask); // 🔧 Atualizar dados originais
+          
+          // Aplicar filtros para garantir consistência
+          applyFiltersLocally(TaskoraFilters.get());
           }catch(err){
             console.error("[Tasks] Erro ao criar tarefa:", err);
             alert("Falha ao criar tarefa. Veja o console para detalhes.");
@@ -1082,8 +1229,14 @@ import { RichTextEditor } from "../components/richTextEditor.js";
             allRows[taskIndex].status = newStatus;
           }
           
-          // Re-aplicar filtros para atualizar a listagem instantaneamente
-          fetchAndFilter(TaskoraFilters.get());
+          // Atualizar dados originais também
+          const taskIndexOriginal = allRowsOriginal.findIndex(r => r.id === task.id);
+          if (taskIndexOriginal !== -1) {
+            allRowsOriginal[taskIndexOriginal].status = newStatus;
+          }
+          
+          // Re-aplicar filtros usando dados locais atualizados
+          applyFiltersLocally(TaskoraFilters.get());
           
           // Atualizar estatísticas
           updateStats();
@@ -1178,7 +1331,7 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     
     // Primeira carga + filtros globais (mantido)
     fetchAndFilter(TaskoraFilters.get());
-    TaskoraFilters.on((state, evt)=>{ if(evt?.type==="change") return; fetchAndFilter(state); });
+    TaskoraFilters.on((state, evt)=>{ if(evt?.type==="change") return; applyFiltersLocally(state); });
 
     return root;
   }

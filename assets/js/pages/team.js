@@ -19,6 +19,8 @@ import {
 import { EventBus } from "../utils/eventBus.js";
 import { showToast } from "../utils/toast.js";
 import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters.js";
+// TaskoraFilters é carregado globalmente via filtersStore.js
+import { listTasksByDateRange } from "../data/tasksRepo.js";
 
 (function (global) {
   "use strict";
@@ -28,6 +30,8 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
   let filteredMembers = [];
   let currentFilters = {};
   let isLoading = false;
+  let allTasks = [];
+  let filteredTasks = [];
 
   // Paginação
   const PAGE_SIZE = 20;
@@ -36,6 +40,8 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
   // Elementos DOM
   let elMembersList, elStatsCards, elFilters, elSearchInput;
   let elTotalMembers, elActiveMembers, elAvgRate, elTotalHours;
+  let elStatHours, elStatPending, elStatCompleted, elStatMembers;
+  let elMemberFilter;
 
   /**
    * Renderiza o módulo Team
@@ -155,6 +161,15 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
         .tm-icon--delete { color: #8A1C12; }
         .tm-iconbtn svg { width: 14px; height: 14px; }
         
+        /* Cards de Estatísticas */
+        .tm-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        .tm-stat-card { background: #fff; border: 1px solid #E4E7E4; border-radius: 12px; padding: 24px 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s ease; }
+        .tm-stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .tm-stat-number { font-size: 32px; font-weight: 800; color: #014029; margin-bottom: 8px; line-height: 1; }
+        .tm-stat-label { font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; }
+        @media (max-width: 768px) { .tm-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+        @media (max-width: 480px) { .tm-stats-grid { grid-template-columns: 1fr; gap: 12px; } .tm-stat-card { padding: 20px 16px; } }
+        
         /* Responsividade */
         @media (max-width: 768px) {
           .tm-hide-sm { display: none !important; }
@@ -193,6 +208,26 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
             <h2>TEAM DÁCORA</h2>
           </div>
           
+          <!-- Cards de Estatísticas -->
+          <div class="tm-stats-grid" id="tm-stats-grid">
+            <div class="tm-stat-card">
+              <div class="tm-stat-number" id="tm-stat-hours">0h</div>
+              <div class="tm-stat-label">Horas Trabalhadas</div>
+            </div>
+            <div class="tm-stat-card">
+              <div class="tm-stat-number" id="tm-stat-pending">0</div>
+              <div class="tm-stat-label">Tarefas Pendentes</div>
+            </div>
+            <div class="tm-stat-card">
+              <div class="tm-stat-number" id="tm-stat-completed">0</div>
+              <div class="tm-stat-label">Tarefas Concluídas</div>
+            </div>
+            <div class="tm-stat-card">
+              <div class="tm-stat-number" id="tm-stat-members">0</div>
+              <div class="tm-stat-label">Membros Ativos</div>
+            </div>
+          </div>
+          
           <!-- Filtros Exclusivos do Team -->
           <div class="tm-filters-bar">
             <div class="tm-filters-form">
@@ -216,6 +251,12 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
                 <div class="tm-filter-field">
                    <label class="tm-filter-label">Nível</label>
                    <select id="tm-level-filter" class="tm-filter-select">
+                     <option value="">Todos</option>
+                   </select>
+                 </div>
+                 <div class="tm-filter-field">
+                   <label class="tm-filter-label">Membro</label>
+                   <select id="tm-member-filter" class="tm-filter-select">
                      <option value="">Todos</option>
                    </select>
                  </div>
@@ -332,9 +373,17 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
       elAvgRate = container.querySelector('#tm-avg-rate');
       elTotalHours = container.querySelector('#tm-total-hours');
       elSearchInput = container.querySelector('#tm-search');
+      
+      // Novos elementos para estatísticas de tarefas
+      elStatHours = container.querySelector('#tm-stat-hours');
+      elStatPending = container.querySelector('#tm-stat-pending');
+      elStatCompleted = container.querySelector('#tm-stat-completed');
+      elStatMembers = container.querySelector('#tm-stat-members');
+      elMemberFilter = container.querySelector('#tm-member-filter');
 
       setupEventListeners(container);
       await loadInitialData();
+      await loadTasksData();
       
     } catch (error) {
       console.error('Erro ao inicializar módulo Team:', error);
@@ -355,6 +404,7 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
       container.querySelector('#tm-status-filter')?.addEventListener('change', applyFilters);
       container.querySelector('#tm-specialty-filter')?.addEventListener('change', applyFilters);
       container.querySelector('#tm-level-filter')?.addEventListener('change', applyFilters);
+      container.querySelector('#tm-member-filter')?.addEventListener('change', updateTaskStatsCards);
       container.querySelector('#tm-clear-filters')?.addEventListener('click', clearFilters);
     
     // Modal
@@ -547,6 +597,74 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
   }
 
   /**
+   * Carrega dados de tarefas
+   */
+  async function loadTasksData() {
+    try {
+      // Carregar tarefas dos últimos 12 meses
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 12);
+      
+      allTasks = await listTasksByDateRange(startDate, endDate);
+      filteredTasks = [...allTasks];
+      
+      updateTaskStatsCards();
+    } catch (error) {
+      console.error('Erro ao carregar tarefas:', error);
+    }
+  }
+
+  /**
+   * Atualiza cards de estatísticas de tarefas
+   */
+  function updateTaskStatsCards() {
+    // Filtrar tarefas baseado no filtro de membro selecionado
+    const selectedMember = elMemberFilter ? elMemberFilter.value : '';
+    let tasksToAnalyze = filteredTasks;
+    
+    if (selectedMember) {
+      tasksToAnalyze = filteredTasks.filter(task => 
+        task.owner === selectedMember
+      );
+    }
+    
+    // Calcular estatísticas
+    const totalHours = tasksToAnalyze.reduce((sum, task) => {
+      const hours = task.hours || 0;
+      return sum + (typeof hours === 'number' ? hours : 0);
+    }, 0);
+    
+    const pendingTasks = tasksToAnalyze.filter(task => {
+      const status = (task.status || '').toLowerCase();
+      return status === 'não realizada' || status === 'em progresso' || status === 'iniciada';
+    }).length;
+    
+    const completedTasks = tasksToAnalyze.filter(task => {
+      const status = (task.status || '').toLowerCase();
+      return status === 'concluída';
+    }).length;
+    
+    const activeMembers = allMembers.filter(m => m.status === 'Ativo').length;
+    
+    // Debug para verificar os dados
+    console.log('[Team] Estatísticas calculadas:', {
+      totalTasks: tasksToAnalyze.length,
+      totalHours,
+      pendingTasks,
+      completedTasks,
+      activeMembers,
+      selectedMember
+    });
+    
+    // Atualizar elementos DOM
+    if (elStatHours) elStatHours.textContent = `${roundToDecimals(totalHours, 1)}h`;
+    if (elStatPending) elStatPending.textContent = pendingTasks;
+    if (elStatCompleted) elStatCompleted.textContent = completedTasks;
+    if (elStatMembers) elStatMembers.textContent = activeMembers;
+  }
+
+  /**
    * Atualiza cards de estatísticas
    */
   function updateStatsCards() {
@@ -565,6 +683,9 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
     if (elActiveMembers) elActiveMembers.textContent = stats.activeMembers;
     if (elAvgRate) elAvgRate.textContent = `R$ ${stats.averageHourlyRate}`;
     if (elTotalHours) elTotalHours.textContent = `${stats.totalHoursWorked}h`;
+    
+    // Atualizar também as estatísticas de tarefas
+    updateTaskStatsCards();
   }
 
   /**
@@ -591,6 +712,25 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
         option.textContent = level;
         levelSelect.appendChild(option);
       });
+    }
+    
+    // Membros
+    if (elMemberFilter) {
+      // Limpar opções existentes (exceto "Todos")
+      while (elMemberFilter.children.length > 1) {
+        elMemberFilter.removeChild(elMemberFilter.lastChild);
+      }
+      
+      // Adicionar membros ativos
+      allMembers
+        .filter(member => member.status === 'Ativo')
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(member => {
+          const option = document.createElement('option');
+          option.value = member.name;
+          option.textContent = member.name;
+          elMemberFilter.appendChild(option);
+        });
     }
 
     // Popula selects do modal também
@@ -639,9 +779,9 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
   }
 
   /**
-   * Aplica filtros
+   * Aplica filtros localmente nos dados já carregados
    */
-  function applyFilters() {
+  function applyFiltersLocally() {
     const filters = {
       status: document.getElementById('tm-status-filter')?.value || '',
       specialty: document.getElementById('tm-specialty-filter')?.value || '',
@@ -659,15 +799,24 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
   }
 
   /**
+   * Aplica filtros (mantido para compatibilidade)
+   */
+  function applyFilters() {
+    applyFiltersLocally();
+  }
+
+  /**
    * Limpa filtros
    */
   function clearFilters() {
     document.getElementById('tm-status-filter').value = '';
     document.getElementById('tm-specialty-filter').value = '';
     document.getElementById('tm-level-filter').value = '';
+    if (elMemberFilter) elMemberFilter.value = '';
     
     filteredMembers = [...allMembers];
     renderMembersList();
+    updateTaskStatsCards();
   }
 
   /**
@@ -762,7 +911,7 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
       }
       
       closeMemberModal();
-      applyFilters();
+      applyFiltersLocally();
       updateStatsCards();
       
     } catch (error) {
@@ -792,7 +941,7 @@ import { formatCurrency, formatDate, roundToDecimals } from "../utils/formatters
       try {
         await deleteTeamMember(memberId);
         allMembers = allMembers.filter(m => m.id !== memberId);
-        applyFilters();
+        applyFiltersLocally();
         updateStatsCards();
       } catch (error) {
         console.error('Erro ao excluir membro:', error);
