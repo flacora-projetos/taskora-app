@@ -32,16 +32,16 @@ O **Taskora** é a base tecnológica do aplicativo utilizado pela **Dácora**.
 No front-end, a identidade visual **permanece 100% como Dácora**, com a assinatura **"powered by Taskora"**.  
 Toda a evolução descrita aqui é **estrutural e técnica**, não alterando a UI ou branding.
 
-**Versão atual:** `taskora_v5.5.8_secure_firebase.html`  
+**Versão atual:** `taskora_v5.5.9_insights_charts.html`  
 **Arquivo principal:** `taskora_v5.5.5_secure_firebase.html` (com redirecionamento via `index.html`)  
-**Última atualização:** v5.5.8 - 15/01/2025 (Melhorias UX + Correções Críticas)
+**Última atualização:** v5.5.9 - 16/01/2025 (Gráficos Interativos + Melhorias Visuais)
 
 O Taskora organiza informações em módulos principais:
 - **Clientes** ✅ (Totalmente implementado)
 - **Tarefas** ✅ (Totalmente implementado)  
 - **Calendário** ✅ (Totalmente implementado)
 - **Histórico** ✅ (Totalmente implementado - v5.3)
-- **Insights** ⏳ (Placeholder - "Em breve")
+- **Insights** ✅ (Totalmente implementado - v5.5.9 com gráficos Chart.js)
 - **Team** ⏳ (Placeholder - "Em breve")
 - **Ajustes** ⏳ (Placeholder - "Preferências locais")
 

@@ -4,6 +4,62 @@
 Este arquivo registra todas as mudanças significativas no aplicativo Taskora.  
 A partir da base 2025-08-26, o Taskora deixa de depender do banco da Dácora e passa a ter **schema próprio**, embora a UI continue como **white label da Dácora powered by Taskora**.
 
+## [v5.5.9] - 2025-01-16
+
+### ✅ ADICIONADO
+- **Gráficos Interativos na Página Insights:** Visualização avançada de dados com Chart.js
+  - 📊 **Gráfico de Pizza:** Horas trabalhadas por responsável com cores personalizadas
+  - 📈 **Gráfico de Barras:** Número de tarefas por responsável
+  - 🎨 **Paleta de Cores Viasul:** Cores alinhadas com identidade visual (#016B3A, #B8621B, #5A5A5A)
+  - 🔄 **Integração com Filtros:** Gráficos respondem aos mesmos filtros da tabela
+  - 📱 **Design Responsivo:** Layout adaptável com containers flexíveis
+  - 📁 **Arquivo:** `insights.js` - funções `createHoursChart()` e `createTasksChart()`
+
+- **Estrutura HTML dos Gráficos:** Grid de visualizações após cards de métricas
+  - 🏗️ **Container de Gráficos:** Grid responsivo 2x1 para desktop
+  - 🎯 **Canvas Elements:** Elementos canvas para renderização Chart.js
+  - 📐 **Dimensionamento:** Altura fixa de 400px para consistência visual
+  - 📁 **Arquivo:** `insights.js` - estrutura HTML injetada dinamicamente
+
+### 🔧 CORRIGIDO
+- **Lógica de Cálculo de Horas:** Padronização entre card e gráfico de pizza
+  - 🎯 **Problema Identificado:** Gráfico usava `(task.hours || 0)` enquanto card usava `typeof task.hours === 'number'`
+  - ✅ **Solução Implementada:** Ambos agora validam se `hours` é um número antes do cálculo
+  - 🔄 **Consistência Total:** Card e gráfico exibem valores idênticos
+  - 📊 **Precisão Decimal:** Mantido `Math.round()` para evitar problemas de precisão
+  - 📁 **Arquivo:** `insights.js` - função `getHoursDataByOwner()`
+
+- **Ícone do Gráfico de Pizza:** Correção do ícone de horas trabalhadas
+  - 🎯 **Problema:** Ícone genérico não representava horas trabalhadas
+  - ✅ **Solução:** Alterado para ⏱️ (relógio) para melhor representação
+  - 👁️ **UX Melhorada:** Ícone mais intuitivo e alinhado com o contexto
+  - 📁 **Arquivo:** `insights.js` - título do gráfico de pizza
+
+### 🎨 MELHORADO
+- **Identidade Visual dos Gráficos:** Cores alinhadas com app Viasul
+  - 🌈 **Paleta Personalizada:** Substituição de cores genéricas por tons da marca
+  - 🎯 **Cor Principal:** Verde Viasul (#016B3A) como cor primária
+  - 🟤 **Cor Secundária:** Marrom terracota (#B8621B) para Daniel dos Anjos
+  - ⚫ **Cor Neutra:** Cinza carvão (#5A5A5A) para outros responsáveis
+  - 🔄 **Consistência:** Mesma paleta aplicada em ambos os gráficos
+  - 📁 **Arquivo:** `insights.js` - arrays `backgroundColor` dos gráficos
+
+- **Tipografia dos Cards de Métricas:** Alinhamento com design do preview
+  - 🔤 **Fonte Principal:** 'Red Hat Display' aplicada aos cards
+  - 📏 **Tamanhos Ajustados:** Título 12px, valor 32px para melhor hierarquia
+  - 🎨 **Cores Refinadas:** Título em #6B7280 (cinza), valor em #014029 (verde escuro)
+  - 📐 **Espaçamento:** Margem e line-height otimizados
+  - 🔤 **Transformações:** Text-transform uppercase e letter-spacing nos títulos
+  - 📁 **Arquivo:** `insights.js` - estilos `.metric-title` e `.metric-value`
+
+### 🧪 TESTADO
+- **Funcionalidade dos Gráficos:** Validação completa da integração Chart.js
+  - ✅ **Carregamento:** Chart.js carrega corretamente via CDN
+  - ✅ **Renderização:** Gráficos aparecem sem erros de console
+  - ✅ **Filtros:** Gráficos atualizam conforme filtros aplicados
+  - ✅ **Responsividade:** Layout adapta em diferentes resoluções
+  - ✅ **Dados:** Valores consistentes entre cards e gráficos
+
 ## [v5.5.8] - 2025-01-15
 
 ### ✅ ADICIONADO

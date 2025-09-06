@@ -13,6 +13,7 @@ import { initTasksDragDrop } from "../utils/tasksDragDrop.js";
 import { roundToDecimals } from "../utils/formatters.js";
 import { renderDescription, htmlToText } from "../utils/richTextRenderer.js";
 import { RichTextEditor } from "../components/richTextEditor.js";
+import GlobalFiltersBar from "../components/layout/GlobalFiltersBar.js";
 
 /* global TaskoraFilters */
 
@@ -72,21 +73,27 @@ import { RichTextEditor } from "../components/richTextEditor.js";
   };
 
   // ===================== Normalização de status =====================
-  const STATUS_OFFICIAL = ["iniciada","em progresso","concluída","não realizada"];
-  const norm = s => (s||"").toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[_\s]+/g,"").toLowerCase();
-  function canonStatus(raw){
-    const n = norm(raw);
-    if(!n) return "";
-    // Mapeamento para "iniciada" - incluindo status legados
-     if(["aberta","aberto","afazer","todo","open","nova","pendente","backlog","iniciadas"].includes(n)) return "iniciada";
-    // Mapeamento para "em progresso"
-    if(["emandamento","emprogresso","inprogress","doing","andamento","progresso"].includes(n)) return "em progresso";
-    // Mapeamento para "concluída"
-    if(["concluida","concluido","finalizada","finalizado","done","completed","fechada","fechado"].includes(n)) return "concluída";
-    // Mapeamento para "não realizada" - incluindo cancelada e naorealizada
-     if(["naorealizada","naorealizado","cancelada","cancelado","notdone","canceled","nrealizada"].includes(n)) return "não realizada";
-    if(STATUS_OFFICIAL.map(norm).includes(n)) return raw;
-    return raw || "";
+  // Usar mesma lógica do history.js e insights.js para consistência
+  function canonStatus(status) {
+    if (!status) return 'não realizada';
+    const statusStr = status.toString().toLowerCase();
+    
+    // Mapeamento de valores legados para valores atuais
+    const legacyMapping = {
+      'nao_realizada': 'não realizada',
+      'em_progresso': 'em progresso', 
+      'concluida': 'concluída',
+      'cancelada': 'não realizada',
+      'iniciadas': 'iniciada'
+    };
+    
+    // Verificar se é um valor legado
+    if (legacyMapping[statusStr]) {
+      return legacyMapping[statusStr];
+    }
+    
+    // Retornar valor original se já estiver no formato atual
+    return status;
   }
 
   // =========================== UI helpers ==========================
@@ -343,11 +350,11 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         <div class="tk-stats-grid" id="stats-grid">
           <div class="tk-stat-card">
             <div class="tk-stat-number" id="stat-total">0</div>
-            <div class="tk-stat-label">Tarefas (total)</div>
+            <div class="tk-stat-label">Tarefas (total do período)</div>
           </div>
           <div class="tk-stat-card">
             <div class="tk-stat-number" id="stat-hours">0</div>
-            <div class="tk-stat-label">Horas (total)</div>
+            <div class="tk-stat-label">Horas Trabalhadas (Tarefas Concluídas)</div>
           </div>
           <div class="tk-stat-card">
             <div class="tk-stat-number" id="stat-pending">0</div>
@@ -431,30 +438,36 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     const elLoadingIndicator = root.querySelector("#loading-indicator");
     const elFloatingScrollTop = root.querySelector("#floating-scroll-top");
 
-    let allRows=[]; let allRowsOriginal=[]; let page=0;
+    let allRows=[]; let allRowsOriginal=[]; let filteredTasks=[]; let page=0;
     let isLoadingMore = false;
     let scrollObserver = null;
     
     // Expor variáveis globalmente para drag and drop
     window.allRows = allRows;
     window.allRowsOriginal = allRowsOriginal;
+    window.filteredTasks = filteredTasks;
 
     const setLoading = on => elTableWrap.innerHTML = on ? `<div class="tk-card" style="text-align:center;color:#6b7280">Carregando…</div>` : '';
     
     function updateStats() {
-      const total = allRows.length;
+      // Usar sempre filteredTasks para consistência com history.js e insights.js
+      const total = filteredTasks.length;
       
-      // Calcular total de horas trabalhadas
-      const totalHours = allRows.reduce((sum, row) => {
-        const hours = parseFloat(row.hours) || 0;
-        return sum + hours;
+      // Calcular total de horas trabalhadas apenas de tarefas concluídas
+      const totalHours = filteredTasks.reduce((sum, row) => {
+        const status = canonStatus(row.status || '').toLowerCase();
+        if (status === 'concluída') {
+          const hours = parseFloat(row.hours) || 0;
+          return sum + hours;
+        }
+        return sum;
       }, 0);
       
-      const pending = allRows.filter(row => {
+      const pending = filteredTasks.filter(row => {
         const status = canonStatus(row.status || '').toLowerCase();
         return status === 'iniciada' || status === 'em progresso' || status === 'não realizada';
       }).length;
-      const completed = allRows.filter(row => {
+      const completed = filteredTasks.filter(row => {
         const status = canonStatus(row.status || '').toLowerCase();
         return status === 'concluída';
       }).length;
@@ -591,31 +604,52 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         const localUpdate = allRows.find(local => local.id === r.id);
         return localUpdate || r;
       }).filter(r =>
-        (!current.status || current.status==="all" || norm(canonStatus(r.status))===norm(current.status)) &&
-        (!current.client || current.client==="all" || r.client===current.client) &&
+        (!current.status || current.status==="all" || canonStatus(r.status).toLowerCase()===current.status.toLowerCase()) &&
+        (!current.client || current.client==="all" || matchClient(r.client, current.client)) &&
         (!current.owner || current.owner==="all" || r.owner===current.owner) &&
         inRange(r.date || r.dueDate || fmtDateISO(r.createdAt))
       );
       
       allRows = filteredRows;
-      // Atualizar referência global
+      filteredTasks = filteredRows;
+      // Atualizar referências globais
       window.allRows = allRows;
+      window.filteredTasks = filteredTasks;
       renderTableSlice();
     }
     
+    // Função para comparar clientes com múltiplas estratégias (igual ao history.js)
+    function matchClient(taskClient, filterClient) {
+      if (!taskClient || !filterClient) return false;
+      
+      // 1. Correspondência exata
+      if (taskClient === filterClient) return true;
+      
+      // 2. Correspondência case-insensitive
+      if (taskClient.toLowerCase() === filterClient.toLowerCase()) return true;
+      
+      // 3. Correspondência com normalização de espaços
+      const taskClientNorm = taskClient.trim().replace(/\s+/g, ' ');
+      const filterClientNorm = filterClient.trim().replace(/\s+/g, ' ');
+      
+      if (taskClientNorm.toLowerCase() === filterClientNorm.toLowerCase()) return true;
+      
+      // 4. Correspondência parcial (contém)
+      if (taskClient.toLowerCase().includes(filterClient.toLowerCase()) || 
+          filterClient.toLowerCase().includes(taskClient.toLowerCase())) return true;
+      
+      return false;
+    }
+
     // Expor função globalmente para drag and drop
     window.applyFiltersLocally = applyFiltersLocally;
 
     async function fetchAndFilter(current){
       setLoading(true); page=0;
       try{
-        let docs=[];
-        try{
-          docs = await fetchFromFirestoreOrdered();
-        }catch(err){
-          console.error("[Tasks] Falha na consulta ordenada por createdAt. Fazendo fallback simples.", err);
-          docs = await fetchFromFirestoreSimple();
-        }
+        // Importar e usar a mesma função das outras páginas
+        const { listTasksRaw } = await import('../data/tasksRepo.js');
+        let docs = await listTasksRaw(1000); // Usar mesmo limite das outras páginas
 
         // Manter uma cópia dos dados originais para filtragem local
         allRowsOriginal = docs.slice();
@@ -631,13 +665,15 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         };
 
         allRows = docs.filter(r =>
-          (!current.status || current.status==="all" || norm(canonStatus(r.status))===norm(current.status)) &&
-          (!current.client || current.client==="all" || r.client===current.client) &&
+          (!current.status || current.status==="all" || canonStatus(r.status).toLowerCase()===current.status.toLowerCase()) &&
+          (!current.client || current.client==="all" || matchClient(r.client, current.client)) &&
           (!current.owner || current.owner==="all" || r.owner===current.owner) &&
           inRange(r.date || r.dueDate || fmtDateISO(r.createdAt))
         );
-        // Atualizar referência global
+        filteredTasks = allRows;
+        // Atualizar referências globais
         window.allRows = allRows;
+        window.filteredTasks = filteredTasks;
       }catch(err){
         console.error("[Tasks] Erro ao buscar tarefas:", err);
         allRows = [];
@@ -649,6 +685,8 @@ import { RichTextEditor } from "../components/richTextEditor.js";
         setLoading(false);
       }
       renderTableSlice();
+      // Atualizar estatísticas após carregar dados
+      updateStats();
     }
 
     // Função para carregar mais itens (usada tanto pelo botão quanto pelo scroll infinito)
@@ -1329,6 +1367,12 @@ import { RichTextEditor } from "../components/richTextEditor.js";
     // Adicionar cleanup quando a página for removida
     root.addEventListener('DOMNodeRemoved', cleanup);
     
+    // Inicializar filtros globais
+    const globalFiltersContainer = root.querySelector('#global-filters-container');
+    if (globalFiltersContainer) {
+      GlobalFiltersBar.mount(globalFiltersContainer);
+    }
+
     // Primeira carga + filtros globais (mantido)
     fetchAndFilter(TaskoraFilters.get());
     TaskoraFilters.on((state, evt)=>{ if(evt?.type==="change") return; applyFiltersLocally(state); });

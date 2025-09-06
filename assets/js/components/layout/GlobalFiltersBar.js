@@ -257,18 +257,29 @@ export function GlobalFiltersBar(rootEl) {
       const owners = teamMembers.map(member => member.name);
       const clientEl = $("#f-client");
       const ownerEl  = $("#f-owner");
+      
+      // Popular clientes - usar nome como valor (compatível com tasks)
       for(const c of clients){
         const opt = document.createElement("option");
-        opt.value = c.value ?? c;
-        opt.textContent = c.label ?? c;
+        opt.value = c.name || c.displayName || c;
+        opt.textContent = c.name || c.displayName || c;
         clientEl.appendChild(opt);
       }
+      
+      console.log('[GlobalFilters] Clientes carregados:', clients.map(c => ({id: c.id, name: c.name || c.displayName})));
+      
+      // Popular responsáveis
       for(const o of owners){
         const opt = document.createElement("option");
-        opt.value = o.value ?? o;
-        opt.textContent = o.label ?? o;
+        opt.value = o;
+        opt.textContent = o;
         ownerEl.appendChild(opt);
       }
+      
+      console.log('[GlobalFilters] Filtros populados:', { 
+        clients: clients.length, 
+        teamMembers: teamMembers.length 
+      });
     }catch(e){
       console.error("[Taskora] Erro ao popular selects de filtros:", e);
     }
@@ -278,14 +289,18 @@ export function GlobalFiltersBar(rootEl) {
   let _applyTimer = null;
   function scheduleApply() {
     clearTimeout(_applyTimer);
-    _applyTimer = setTimeout(() => {
+    _applyTimer = setTimeout(async () => {
       const from = $("#f-date-from").value || "";
       const to   = $("#f-date-to").value   || "";
+      
+      // Usar o valor do cliente diretamente (nome, não ID)
+      let clientValue = $("#f-client").value || "all";
+      console.log('[GlobalFilters] Cliente selecionado:', clientValue);
 
       // IMPORTANTE: publicamos AMBOS os pares para máxima compatibilidade entre telas.
       TaskoraFilters.set({
         status: $("#f-status").value || "all",
-        client: $("#f-client").value || "all",
+        client: clientValue,
         owner:  $("#f-owner").value  || "all",
 
         // nomes usados em Tasks e exportações:
@@ -520,7 +535,7 @@ export function GlobalFiltersBar(rootEl) {
   setFromState(TaskoraFilters.get());
 
   function setFromState(s){
-    $("#f-status").value    = s.status || "all";
+    $("#f-status").value     = s.status || "all";
     $("#f-client").value    = s.client || "all";
     $("#f-owner").value     = s.owner || "all";
     // aceita ambos os nomes
@@ -528,12 +543,10 @@ export function GlobalFiltersBar(rootEl) {
     $("#f-date-to").value   = s.dateTo   || s.endDate   || "";
     $("#f-quick").value     = s.quick || "custom";
     
-    // Se o filtro rápido está definido mas as datas estão vazias, aplicar as datas do filtro rápido
+    // SEMPRE aplicar as datas do filtro rápido se não for 'custom'
     const quickValue = s.quick || "custom";
-    const hasDateFrom = s.dateFrom || s.startDate;
-    const hasDateTo = s.dateTo || s.endDate;
     
-    if (quickValue !== "custom" && (!hasDateFrom || !hasDateTo)) {
+    if (quickValue !== "custom") {
       // Aplicar as datas do filtro rápido
       if (quickValue === "today") {
         setDates(today(), today());

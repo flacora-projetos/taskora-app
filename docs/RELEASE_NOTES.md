@@ -1,10 +1,46 @@
-# 🚀 RELEASE NOTES - TASKORA v5.5.8
+# 🚀 RELEASE NOTES - TASKORA v5.5.9
 
 ## 📣 Resumo das Novidades
 
 Caro time Taskora,
 
-Temos o prazer de anunciar a versão mais recente do Taskora (v5.5.8), que traz melhorias significativas na experiência do usuário e correções críticas de funcionalidades!
+Temos o prazer de anunciar a versão mais recente do Taskora (v5.5.9), que revoluciona a página Insights com gráficos interativos e melhorias visuais significativas!
+
+### ✨ Destaques desta versão:
+
+- **📊 Gráficos Interativos:** Implementação de visualizações avançadas com Chart.js na página Insights
+- **🎨 Identidade Visual Viasul:** Cores personalizadas alinhadas com a marca (#016B3A, #B8621B, #5A5A5A)
+- **🔄 Integração Total:** Gráficos respondem aos mesmos filtros da tabela de dados
+- **🔤 Tipografia Refinada:** Fonte 'Red Hat Display' aplicada aos cards de métricas
+- **🎯 Consistência de Dados:** Padronização da lógica de cálculo entre cards e gráficos
+- **📱 Design Responsivo:** Layout adaptável para diferentes dispositivos
+
+## 📊 Visualizações Avançadas
+
+### Gráficos Interativos na Página Insights
+- **Gráfico de Pizza:** Horas trabalhadas por responsável com tooltip detalhado
+- **Gráfico de Barras:** Número de tarefas por responsável
+- **Cores Personalizadas:** Paleta Viasul com verde (#016B3A), marrom (#B8621B) e cinza (#5A5A5A)
+- **Filtros Integrados:** Gráficos atualizam automaticamente conforme filtros aplicados
+- **Layout Responsivo:** Grid 2x1 para desktop, empilhado para mobile
+
+## 🎨 Melhorias Visuais
+
+### Tipografia dos Cards de Métricas
+- **Fonte Principal:** 'Red Hat Display' para consistência com o design
+- **Hierarquia Visual:** Títulos 12px, valores 32px para melhor legibilidade
+- **Cores Refinadas:** Títulos em cinza (#6B7280), valores em verde escuro (#014029)
+- **Transformações:** Text-transform uppercase e letter-spacing nos títulos
+
+---
+
+# 🚀 RELEASE NOTES - TASKORA v5.5.8
+
+## 📣 Resumo das Novidades (Versão Anterior)
+
+Caro time Taskora,
+
+Temos o prazer de anunciar a versão Taskora (v5.5.8), que trouxe melhorias significativas na experiência do usuário e correções críticas de funcionalidades!
 
 ### ✨ Destaques desta versão:
 

@@ -148,7 +148,7 @@ async function mapUiToDb(payload) {
     orgId: 'dacora',
     clientRef: clientRef ?? null,
     assigneeRef: assigneeRef ?? null,
-    title: firstNonEmpty(payload.title, payload.task, payload.name) || '',
+    title: firstNonEmpty(payload.title, payload.task, payload.name, payload.description) || 'Tarefa sem título',
     description: payload.description || '',
     status: payload.status || 'NAO_REALIZADA',
     priority: payload.priority || 'MEDIUM',

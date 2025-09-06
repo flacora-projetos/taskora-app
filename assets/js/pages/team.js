@@ -212,7 +212,7 @@ import { listTasksByDateRange } from "../data/tasksRepo.js";
           <div class="tm-stats-grid" id="tm-stats-grid">
             <div class="tm-stat-card">
               <div class="tm-stat-number" id="tm-stat-hours">0h</div>
-              <div class="tm-stat-label">Horas Trabalhadas</div>
+              <div class="tm-stat-label">Horas Trabalhadas (Tarefas Concluídas)</div>
             </div>
             <div class="tm-stat-card">
               <div class="tm-stat-number" id="tm-stat-pending">0</div>
@@ -629,10 +629,14 @@ import { listTasksByDateRange } from "../data/tasksRepo.js";
       );
     }
     
-    // Calcular estatísticas
+    // Calcular estatísticas apenas de tarefas concluídas
     const totalHours = tasksToAnalyze.reduce((sum, task) => {
-      const hours = task.hours || 0;
-      return sum + (typeof hours === 'number' ? hours : 0);
+      const status = (task.status || '').toLowerCase();
+      if (status === 'concluída') {
+        const hours = task.hours || 0;
+        return sum + (typeof hours === 'number' ? hours : 0);
+      }
+      return sum;
     }, 0);
     
     const pendingTasks = tasksToAnalyze.filter(task => {

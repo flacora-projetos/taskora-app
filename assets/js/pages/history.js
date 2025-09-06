@@ -214,7 +214,7 @@ import { listTasksRaw } from '../data/tasksRepo.js';
         <div class="hs-stats-grid" id="statsGrid" style="display: none;">
           <div class="hs-stat-card">
             <div class="hs-stat-number" id="totalTasks">0</div>
-            <div class="hs-stat-label">Total de Tarefas</div>
+            <div class="hs-stat-label">Total Geral de Tarefas</div>
           </div>
           <div class="hs-stat-card">
             <div class="hs-stat-number" id="completedTasks">0</div>
@@ -222,7 +222,7 @@ import { listTasksRaw } from '../data/tasksRepo.js';
           </div>
           <div class="hs-stat-card">
             <div class="hs-stat-number" id="totalHours">0h</div>
-            <div class="hs-stat-label">Horas Trabalhadas</div>
+            <div class="hs-stat-label">Horas Trabalhadas (Tarefas Concluídas)</div>
           </div>
           <div class="hs-stat-card">
             <div class="hs-stat-number" id="completionRate">0%</div>
@@ -469,11 +469,14 @@ import { listTasksRaw } from '../data/tasksRepo.js';
       const total = filteredTasks.length;
       const completed = filteredTasks.filter(t => normalizeStatus(t.status) === 'concluída').length;
       
-      // Calcular horas usando o campo hours (decimal) do repositório
+      // Calcular horas usando o campo hours (decimal) do repositório apenas de tarefas concluídas
       const totalMinutes = filteredTasks.reduce((sum, t) => {
-        // Usar o campo hours como número decimal (aceita qualquer valor, incluindo 0)
-        if (typeof t.hours === 'number') {
-          return sum + (t.hours * 60); // converter horas para minutos
+        // Verificar se a tarefa está concluída
+        if (normalizeStatus(t.status) === 'concluída') {
+          // Usar o campo hours como número decimal (aceita qualquer valor, incluindo 0)
+          if (typeof t.hours === 'number') {
+            return sum + (t.hours * 60); // converter horas para minutos
+          }
         }
         return sum;
       }, 0);

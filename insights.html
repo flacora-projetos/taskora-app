@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Taskora - Insights & Analytics</title>
+
+  <!-- Fonte: Red Hat Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/calendar.css" />
+  <link rel="stylesheet" href="assets/css/calendar-sizing-override.css" />
+
+</head>
+<body>
+  <!-- Configuração segura do Firebase -->
+  <script type="module" src="assets/js/config/firebase-config.js"></script>
+  <script type="module" src="assets/js/tools/calendar-fit.js"></script>
+  <script type="module" src="assets/js/tools/calendar-sizing-override.js"></script>
+  
+  <!-- Sistema de drag & drop para tarefas -->
+  <script type="module" src="assets/js/utils/dragDropManager.js"></script>
+  <script type="module" src="assets/js/utils/tasksDragDrop.js"></script>
+  
+  <!-- Rich Text Renderer -->
+  <script src="assets/js/utils/richTextRenderer.js"></script>
+  
+  <!-- App principal -->
+  <script type="module" src="assets/js/app.js"></script>
+  <script type="module" src="assets/js/tools/tasks-live-refresh.js"></script>
+  <script src="assets/js/pages/insights.js"></script>
+
+  <div id="app" class="app-shell">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <!-- Conteúdo -->
+    <div class="content-area">
+      <!-- Topbar -->
+      <header id="topbar" class="topbar"></header>
+
+      <!-- Global Filters -->
+      <div id="global-filters" class="global-filters"></div>
+
+      <!-- Main Content -->
+      <main id="page-root" class="main-content">
+      </main>
+    </div>
+  </div>
+
+
+</body>
+</html>

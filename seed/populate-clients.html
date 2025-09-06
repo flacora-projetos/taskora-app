@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popular Coleção Clients - Taskora</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+        button { background: #014029; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #022d1f; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .log { background: white; padding: 15px; border-radius: 4px; margin-top: 20px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+        .success { color: #014029; }
+        .error { color: #dc3545; }
+        .warning { color: #856404; }
+        .info { color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Popular Coleção Clients no Firebase</h1>
+        <p>Este script irá criar a coleção 'clients' no Firebase com dados de exemplo.</p>
+        <p><strong>⚠️ Importante:</strong> Execute apenas uma vez para evitar duplicatas.</p>
+        
+        <button id="populateBtn" onclick="populateClients()">Criar Clientes</button>
+        <button onclick="clearLog()">Limpar Log</button>
+        
+        <div id="log" class="log">
+            <p>Clique em "Criar Clientes" para começar...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+
+        // Aguardar configuração do Firebase
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        if (!window.firebaseConfig) {
+            await import('../assets/js/config/firebase-config.js');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+
+        let firebaseApp = null;
+        let db = null;
+        let auth = null;
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        window.clearLog = function() {
+            document.getElementById('log').innerHTML = '<p>Log limpo. Pronto para nova execução...</p>';
+        }
+
+        // Dados de exemplo para clientes
+        const SAMPLE_CLIENTS = [
+            {
+                displayName: 'Flávio Corá',
+                email: 'flavio@dacora.com.br',
+                phone: '(11) 99999-0001',
+                status: 'ATIVO',
+                tier: 'Premium',
+                responsible: 'Ana Silva'
+            },
+            {
+                displayName: 'Tech Solutions Ltda',
+                email: 'contato@techsolutions.com.br',
+                phone: '(11) 99999-0002',
+                status: 'ATIVO',
+                tier: 'Standard',
+                responsible: 'Carlos Santos'
+            },
+            {
+                displayName: 'Marketing Digital Pro',
+                email: 'info@marketingpro.com.br',
+                phone: '(11) 99999-0003',
+                status: 'ATIVO',
+                tier: 'Premium',
+                responsible: 'Maria Costa'
+            },
+            {
+                displayName: 'Startup Inovadora',
+                email: 'hello@startup.com.br',
+                phone: '(11) 99999-0004',
+                status: 'ATIVO',
+                tier: 'Basic',
+                responsible: 'João Oliveira'
+            },
+            {
+                displayName: 'E-commerce Plus',
+                email: 'vendas@ecommerceplus.com.br',
+                phone: '(11) 99999-0005',
+                status: 'ATIVO',
+                tier: 'Standard',
+                responsible: 'Ana Silva'
+            }
+        ];
+
+        window.populateClients = async function() {
+            const btn = document.getElementById('populateBtn');
+            btn.disabled = true;
+            btn.textContent = 'Criando...';
+            
+            try {
+                log('🚀 Iniciando população da coleção clients...', 'info');
+                
+                // Inicializar Firebase
+                if (!firebaseApp) {
+                    if (!window.firebaseConfig) {
+                        throw new Error('Configuração do Firebase não encontrada');
+                    }
+                    firebaseApp = initializeApp(window.firebaseConfig);
+                    db = getFirestore(firebaseApp);
+                    auth = getAuth(firebaseApp);
+                    log('✅ Firebase inicializado', 'success');
+                }
+                
+                // Autenticar anonimamente
+                await signInAnonymously(auth);
+                log('✅ Autenticação anônima realizada', 'success');
+                
+                // Criar clientes
+                log(`📝 Criando ${SAMPLE_CLIENTS.length} clientes...`, 'info');
+                
+                for (let i = 0; i < SAMPLE_CLIENTS.length; i++) {
+                    const clientData = {
+                        ...SAMPLE_CLIENTS[i],
+                        orgId: 'dacora',
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
+                    };
+                    
+                    const docRef = await addDoc(collection(db, 'clients'), clientData);
+                    log(`✅ Cliente criado: ${clientData.displayName} (ID: ${docRef.id})`, 'success');
+                }
+                
+                log('🎉 Todos os clientes foram criados com sucesso!', 'success');
+                log('💡 Agora você pode testar os filtros na página Insights', 'info');
+                
+            } catch (error) {
+                log(`❌ Erro: ${error.message}`, 'error');
+                console.error('Erro completo:', error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Criar Clientes';
+            }
+        }
+    </script>
+</body>
+</html>

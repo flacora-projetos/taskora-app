@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Taskora - Insights Preview</title>
+
+  <!-- Fonte: Red Hat Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: 'Red Hat Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      color: #333;
+      background: #f8f9fa;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .preview-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .preview-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: linear-gradient(135deg, #016B3A 0%, #014029 100%);
+      border-radius: 12px;
+      color: white;
+    }
+
+    .preview-title {
+      margin: 0 0 10px 0;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+    }
+
+    .preview-subtitle {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    .insights-layout {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    /* Topbar simulada */
+    .mock-topbar {
+      background: #B8621B;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mock-brand {
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .mock-user {
+      font-weight: 500;
+      font-size: 11px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    /* Abas de navegação */
+    .insights-tabs {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      padding: 0 20px;
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 15px 20px;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      color: #016B3A;
+      background: rgba(1, 107, 58, 0.05);
+    }
+
+    .tab.active {
+      color: #016B3A;
+      border-bottom-color: #016B3A;
+      background: rgba(1, 107, 58, 0.08);
+    }
+
+    /* Filtros */
+    .insights-filters {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      padding: 15px 20px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .filter-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+    }
+
+    .filter-select {
+      height: 32px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 0 10px;
+      font-size: 12px;
+      color: #333;
+      min-width: 120px;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #016B3A;
+    }
+
+    /* Conteúdo principal */
+    .insights-content {
+      padding: 30px;
+    }
+
+    /* Grid de cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .metric-card {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+
+    .metric-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .metric-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .metric-icon.clients { background: rgba(1, 107, 58, 0.1); color: #016B3A; }
+    .metric-icon.tasks { background: rgba(184, 98, 27, 0.1); color: #B8621B; }
+    .metric-icon.team { background: rgba(108, 117, 125, 0.1); color: #6c757d; }
+    .metric-icon.usage { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+
+    .metric-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+      margin: 0;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #014029;
+      margin: 0 0 5px 0;
+    }
+
+    .metric-change {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .metric-change.positive { color: #198754; }
+    .metric-change.negative { color: #dc3545; }
+
+    /* Gráficos simulados */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .chart-container {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .chart-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+      margin: 0 0 20px 0;
+    }
+
+    .chart-placeholder {
+      height: 300px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-weight: 500;
+      border: 2px dashed #dee2e6;
+    }
+
+    /* Tabela de dados */
+    .data-table {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .table-header {
+      background: #f8f9fa;
+      padding: 20px 25px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .table-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+      margin: 0;
+    }
+
+    .table-content {
+      padding: 25px;
+    }
+
+    .mock-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .mock-table th {
+      text-align: left;
+      padding: 12px 0;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .mock-table td {
+      padding: 15px 0;
+      border-bottom: 1px solid #f1f3f4;
+      color: #333;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active { background: rgba(25, 135, 84, 0.1); color: #198754; }
+    .status-badge.pending { background: rgba(255, 193, 7, 0.1); color: #f57c00; }
+    .status-badge.completed { background: rgba(1, 107, 58, 0.1); color: #016B3A; }
+
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Placeholder Content */
+    .placeholder-content {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .placeholder-content h2 {
+      color: #016B3A;
+      margin-bottom: 10px;
+    }
+
+    .placeholder-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .placeholder-description {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #888;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .insights-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-group {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-container">
+    <div class="preview-header">
+      <h1 class="preview-title">📊 Página Insights - Preview</h1>
+      <p class="preview-subtitle">Layout de apresentação seguindo a identidade visual do Taskora</p>
+      <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 14px;">
+        <strong>📝 Observação:</strong> O cabeçalho verde será fixo para todas as abas (Dashboard, Clientes, Tarefas, etc.) mantendo a navegação consistente.
+      </div>
+    </div>
+
+    <div class="insights-layout">
+      <!-- Topbar simulada -->
+      <div class="mock-topbar">
+        <div class="mock-brand">Dácora - <span id="current-tab-name">Dashboard</span></div>
+        <div class="mock-user">Powered by Taskora</div>
+      </div>
+
+      <!-- Abas de navegação -->
+      <div class="insights-tabs">
+        <button class="tab active">📈 Dashboard</button>
+        <button class="tab">👥 Clientes</button>
+        <button class="tab">✅ Tarefas</button>
+        <button class="tab">👨‍💼 Team</button>
+        <button class="tab">📱 Uso do App</button>
+        <button class="tab">🌐 Plataformas</button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="insights-filters">
+        <div class="filter-group">
+          <label class="filter-label">Período</label>
+          <select class="filter-select">
+            <option>Últimos 30 dias</option>
+            <option>Últimos 7 dias</option>
+            <option>Este mês</option>
+            <option>Personalizado</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Responsável</label>
+          <select class="filter-select">
+            <option>Todos os responsáveis</option>
+            <option>João Silva</option>
+            <option>Maria Santos</option>
+            <option>Pedro Costa</option>
+            <option>Ana Oliveira</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Cliente</label>
+          <select class="filter-select">
+            <option>Todos os clientes</option>
+            <option>Empresa ABC</option>
+            <option>Startup XYZ</option>
+            <option>Loja Online</option>
+            <option>Tech Corp</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select class="filter-select">
+            <option>Todos os status</option>
+            <option>Ativo</option>
+            <option>Pendente</option>
+            <option>Concluído</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Conteúdo principal -->
+      <div class="insights-content">
+        <!-- Conteúdo das abas -->
+        <div id="dashboard-content" class="tab-content active">
+          <!-- Grid de métricas -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <div class="metric-icon clients">👥</div>
+                <h3 class="metric-title">Total de Clientes</h3>
+              </div>
+              <div class="metric-value">247</div>
+              <div class="metric-change positive">↗ +12% vs mês anterior</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <div class="metric-icon tasks">✅</div>
+                <h3 class="metric-title">Tarefas Concluídas</h3>
+              </div>
+              <div class="metric-value">1,834</div>
+              <div class="metric-change positive">↗ +8% vs mês anterior</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <div class="metric-icon team">👨‍💼</div>
+                <h3 class="metric-title">Produtividade da Equipe</h3>
+              </div>
+              <div class="metric-value">94%</div>
+              <div class="metric-change positive">↗ +3% vs mês anterior</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <div class="metric-icon usage">📱</div>
+                <h3 class="metric-title">Tempo Médio de Uso</h3>
+              </div>
+              <div class="metric-value">4.2h</div>
+              <div class="metric-change negative">↘ -5% vs mês anterior</div>
+            </div>
+          </div>
+
+          <!-- Grid de gráficos -->
+          <div class="charts-grid">
+            <div class="chart-container">
+              <h3 class="chart-title">📈 Tendência de Produtividade (30 dias)</h3>
+              <div class="chart-placeholder">
+                Gráfico de linha interativo<br>
+                <small>Chart.js ou D3.js</small>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <h3 class="chart-title">🎯 Distribuição por Status</h3>
+              <div class="chart-placeholder">
+                Gráfico de pizza<br>
+                <small>Tarefas por status</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabela de dados -->
+          <div class="data-table">
+            <div class="table-header">
+              <h3 class="table-title">📋 Últimas Atividades</h3>
+            </div>
+            <div class="table-content">
+              <table class="mock-table">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Tarefa</th>
+                    <th>Responsável</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Empresa ABC</td>
+                    <td>Desenvolvimento de landing page</td>
+                    <td>João Silva</td>
+                    <td><span class="status-badge completed">Concluído</span></td>
+                    <td>15/01/2025</td>
+                  </tr>
+                  <tr>
+                    <td>Startup XYZ</td>
+                    <td>Revisão de design do app</td>
+                    <td>Maria Santos</td>
+                    <td><span class="status-badge active">Ativo</span></td>
+                    <td>14/01/2025</td>
+                  </tr>
+                  <tr>
+                    <td>Loja Online</td>
+                    <td>Integração de pagamento</td>
+                    <td>Pedro Costa</td>
+                    <td><span class="status-badge pending">Pendente</span></td>
+                    <td>13/01/2025</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outras abas com placeholder -->
+        <div id="clientes-content" class="tab-content">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">🚧</div>
+            <h2>Análise de Clientes</h2>
+            <p>Em andamento</p>
+            <div class="placeholder-description">Esta seção conterá métricas detalhadas sobre clientes, projetos ativos, faturamento e satisfação.</div>
+          </div>
+        </div>
+
+        <div id="tarefas-content" class="tab-content">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">🚧</div>
+            <h2>Análise de Tarefas</h2>
+            <p>Em andamento</p>
+            <div class="placeholder-description">Esta seção conterá análises detalhadas de tarefas, prazos, complexidade e distribuição por categoria.</div>
+          </div>
+        </div>
+
+        <div id="team-content" class="tab-content">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">🚧</div>
+            <h2>Análise de Equipe</h2>
+            <p>Em andamento</p>
+            <div class="placeholder-description">Esta seção conterá métricas de performance da equipe, carga de trabalho e produtividade individual.</div>
+          </div>
+        </div>
+
+        <div id="uso-content" class="tab-content">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">🚧</div>
+            <h2>Uso do Aplicativo</h2>
+            <p>Em andamento</p>
+            <div class="placeholder-description">Esta seção conterá estatísticas de uso, funcionalidades mais utilizadas e padrões de acesso.</div>
+          </div>
+        </div>
+
+        <div id="plataformas-content" class="tab-content">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">🚧</div>
+            <h2>Análise de Plataformas</h2>
+            <p>Em andamento</p>
+            <div class="placeholder-description">Esta seção conterá análises de performance em diferentes plataformas e dispositivos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simulação de interatividade das abas
+    document.querySelectorAll('.tab').forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        // Remove active de todas as abas
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Adiciona active na aba clicada
+        tab.classList.add('active');
+        
+        // Mostra o conteúdo correspondente
+        const contentIds = ['dashboard-content', 'clientes-content', 'tarefas-content', 'team-content', 'uso-content', 'plataformas-content'];
+        const targetContent = document.getElementById(contentIds[index]);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+        
+        // Atualizar nome da aba no cabeçalho
+        const tabName = tab.textContent.replace(/^[📈👥✅👨‍💼📱🌐]\s*/, ''); // Remove emoji
+        document.getElementById('current-tab-name').textContent = tabName;
+      });
+    });
+
+    // Simulação de hover nos cards
+    document.querySelectorAll('.metric-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-4px)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>

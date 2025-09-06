@@ -39,8 +39,13 @@ function renderRoute() {
   const page = routes[hash] || routes["#/tasks"];
   
   // hide/show global filters based on page
-  const hideGlobalFilters = ["#/clients", "#/history", "#/tasks", "#/team"].includes(hash);
+  const hideGlobalFilters = ["#/clients", "#/history", "#/tasks", "#/team", "#/insights"].includes(hash);
   elFilters.style.display = hideGlobalFilters ? "none" : "block";
+  
+  // Clear any existing global filters mount to avoid conflicts
+  if (hash === "#/tasks") {
+    elFilters.innerHTML = "";
+  }
   
   // atualiza active do menu
   SidebarNav.setActive(hash);

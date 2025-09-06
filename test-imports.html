@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Insights Filters</title>
+    <script type="module" src="assets/js/config/firebase-config.js"></script>
+</head>
+<body>
+    <h1>Testing Insights Filters</h1>
+    <div id="results"></div>
+    
+    <script type="module">
+        // Aguardar configuração do Firebase
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        async function testFilters() {
+            const results = document.getElementById('results');
+            
+            try {
+                console.log('=== TESTE DOS FILTROS INSIGHTS ===');
+                results.innerHTML += '<h2>Testando carregamento de dados...</h2>';
+                
+                // Test metaRepo imports
+                console.log('Importando metaRepo...');
+                const { listClients, listTeamMembers } = await import('./assets/js/data/metaRepo.js');
+                
+                console.log('Funções importadas:', { listClients, listTeamMembers });
+                results.innerHTML += '<p>✅ Funções importadas com sucesso</p>';
+                
+                // Test listClients
+                console.log('=== TESTANDO LISTCLIENTS ===');
+                results.innerHTML += '<h3>Testando listClients...</h3>';
+                const clients = await listClients();
+                console.log('Clientes carregados:', clients);
+                results.innerHTML += `<p>✅ Clientes: ${clients.length} items</p>`;
+                results.innerHTML += `<p>Lista: ${clients.join(', ')}</p>`;
+                
+                // Test listTeamMembers
+                console.log('=== TESTANDO LISTTEAMMEMBERS ===');
+                results.innerHTML += '<h3>Testando listTeamMembers...</h3>';
+                const teamMembers = await listTeamMembers();
+                console.log('Team members carregados:', teamMembers);
+                results.innerHTML += `<p>✅ Team members: ${teamMembers.length} items</p>`;
+                results.innerHTML += `<p>Lista: ${teamMembers.map(m => m.name).join(', ')}</p>`;
+                
+                // Test tasksRepo
+                console.log('=== TESTANDO TASKSREPO ===');
+                results.innerHTML += '<h3>Testando listTasks...</h3>';
+                const { listTasks } = await import('./assets/js/data/tasksRepo.js');
+                const tasks = await listTasks(10);
+                console.log('Tasks carregadas:', tasks.length);
+                results.innerHTML += `<p>✅ Tasks: ${tasks.length} items</p>`;
+                
+                results.innerHTML += '<h2>✅ Todos os testes concluídos!</h2>';
+                
+            } catch (error) {
+                console.error('Erro nos testes:', error);
+                results.innerHTML += `<p>❌ Erro: ${error.message}</p>`;
+                results.innerHTML += `<p>Stack: ${error.stack}</p>`;
+            }
+        }
+        
+        // Aguardar um pouco mais para garantir que o Firebase está configurado
+        setTimeout(testFilters, 2000);
+    </script>
+</body>
+</html>

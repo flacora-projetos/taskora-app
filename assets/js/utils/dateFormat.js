@@ -65,9 +65,9 @@ export function formatToBrazilian(date) {
   
   if (isNaN(d)) return '';
   
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const year = d.getUTCFullYear();
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
   
   return `${day}/${month}/${year}`;
 }
@@ -104,9 +104,9 @@ export function formatToAmerican(date) {
   
   if (isNaN(d)) return '';
   
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const year = d.getUTCFullYear();
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
   
   return `${year}-${month}-${day}`;
 }

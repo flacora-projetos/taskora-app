@@ -17,27 +17,35 @@ async function getDb() {
 }
 
 export async function listClients() {
-  const db = await getDb();
-  const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
-  const { collection, getDocs, where, query } = fs;
+  try {
+    const db = await getDb();
+    const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+    const { collection, getDocs, where, query } = fs;
 
-  // Oficial
-  const q = query(collection(db, 'clients'), where('orgId', '==', 'dacora'));
-  const snap = await getDocs(q);
-  const items = [];
-  snap.forEach(d => {
-    const v = d.data();
-    if (v?.displayName) items.push(String(v.displayName));
-  });
+    // Oficial
+    const q = query(collection(db, 'clients'), where('orgId', '==', 'dacora'));
+    const snap = await getDocs(q);
+    const items = [];
+    snap.forEach(d => {
+      const v = d.data();
+      if (v?.displayName) items.push(String(v.displayName));
+    });
 
-  // Fallback (lê tasks.client se não houver clients)
-  if (items.length === 0) {
-    const tSnap = await getDocs(collection(db, 'tasks'));
-    const set = new Set();
-    tSnap.forEach(d => { const v = d.data(); if (v?.client) set.add(String(v.client)); });
-    return Array.from(set);
+    // Fallback (lê tasks.client se não houver clients)
+    if (items.length === 0) {
+      const tSnap = await getDocs(collection(db, 'tasks'));
+      const set = new Set();
+      tSnap.forEach(d => { 
+        const v = d.data(); 
+        if (v?.client) set.add(String(v.client)); 
+      });
+      return Array.from(set).sort((a,b)=>a.localeCompare(b));
+    }
+    return items.sort((a,b)=>a.localeCompare(b));
+  } catch (error) {
+    console.error('[MetaRepo] Erro em listClients:', error);
+    return [];
   }
-  return items.sort((a,b)=>a.localeCompare(b));
 }
 
 export async function listOwners() {
@@ -71,8 +79,6 @@ export async function listOwners() {
  */
 export async function listTeamMembers() {
   try {
-    console.log('[Team Integration] Buscando membros do Firebase...');
-    
     const db = await getDb();
     const fs = await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
     const { collection, getDocs, where, query } = fs;
@@ -82,6 +88,7 @@ export async function listTeamMembers() {
       collection(db, 'team'), 
       where('status', '==', 'Ativo')
     );
+    
     const snap = await getDocs(q);
     const members = [];
     
@@ -97,8 +104,6 @@ export async function listTeamMembers() {
       }
     });
 
-    console.log(`[Team Integration] ${members.length} membros ativos encontrados:`, members.map(m => m.name));
-
     // Fallback: se não houver membros ativos, usar listOwners como backup
     if (members.length === 0) {
       console.warn('[Team Integration] Nenhum membro ativo encontrado, usando fallback para owners');
@@ -113,7 +118,6 @@ export async function listTeamMembers() {
     
     // Fallback final para owners
     try {
-      console.warn('[Team Integration] Usando fallback para owners devido ao erro');
       const owners = await listOwners();
       return owners.map(name => ({ id: null, name, email: null, specialty: null }));
     } catch (fallbackError) {

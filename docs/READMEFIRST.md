@@ -1,5 +1,5 @@
 # 📖 READMEFIRST - Orientações Iniciais  
-**Versão do app:** `taskora_v5.5.5_secure_firebase.html`
+**Versão do app:** `taskora_v5.5.9_insights_charts.html`
 
 Este documento deve ser lido **antes de qualquer modificação no app Taskora**.  
 Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de trabalho, evitando retrabalho, inconsistências e perda de tempo.
@@ -9,7 +9,8 @@ Ele garante que todo novo colaborador ou chat siga corretamente o fluxo de traba
 ## 📌 Objetivo
 - O **Taskora** é a base tecnológica usada pela **Dácora** em **white label**.  
 - **UI e branding permanecem Dácora**, com a assinatura **"powered by Taskora"** (não alterar).  
-- Esta versão do app é **Taskora v5.5.5 com configuração segura do Firebase**, identificada por: **`taskora_v5.5.5_secure_firebase.html`**.  
+- Esta versão do app é **Taskora v5.5.9 com gráficos interativos**, identificada por: **`taskora_v5.5.9_insights_charts.html`**.  
+- **Novidades v5.5.9:** Página Insights totalmente implementada com gráficos Chart.js, cores da identidade visual Viasul, tipografia refinada e integração completa com filtros
 - **Novidades v5.5.5:** Configuração segura do Firebase com proteção de chaves de API, integração completa entre módulos Team e Tasks, seletores de mês/ano no calendário
 - Firestore inicia em **modo Produção**, com **autenticação anônima habilitada** (sem tela de login).
 
@@ -29,7 +30,7 @@ Antes de escrever qualquer linha de código:
 
 ---
 
-## 2) Estado Atual da Aplicação (v5.3)
+## 2) Estado Atual da Aplicação (v5.5.9)
 
 ### **Módulos Totalmente Implementados ✅**
 - **Clientes** (`assets/js/pages/clients.js` + `assets/js/data/clientsRepo.js`)
@@ -47,6 +48,13 @@ Antes de escrever qualquer linha de código:
   - Sistema "Mostrar Mais" (2 tarefas por célula)
   - Edição inline, pills coloridas por status
   - Integração com filtros globais
+  
+- **Insights** (`assets/js/pages/insights.js`)
+  - Gráficos interativos com Chart.js (pizza e barras)
+  - Cards de métricas com tipografia 'Red Hat Display'
+  - Cores da identidade visual Viasul (#016B3A, #B8621B, #5A5A5A)
+  - Integração completa com filtros e dados em tempo real
+  - Layout responsivo e tooltips informativos
   
 - **Histórico** (`assets/js/pages/history.js`) **[NOVO v5.3]**
   - Seletor de cliente inteligente
